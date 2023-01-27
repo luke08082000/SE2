@@ -1,0 +1,49 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+.wrapper {
+    display: flex;
+    position: relative;
+}
+
+.wrapper .sidebar {
+    position: fixed;
+    width: 200px;
+    height: 100%;
+    background: #232222;
+    padding: 30px 0;
+}
+
+.wrapper .sidebar ul {
+    padding: 15px;
+
+}
+
+.wrapper .sidebar ul a {
+    color: rgba(164, 122, 43, 0.655);
+    display: block;
+}
+
+.wrapper .sidebar ul:hover {
+    background: rgb(252, 191, 21);
+}
+
+.wrapper .sidebar :nth-child(5) {
+    position: absolute;
+    bottom: 0;
+}
+
+.wrapper .main-content {
+    width: 100%;
+    margin-left: 200px;
+}
+
+.wrapper .main-content .header {
+    padding: 20px;
+    background: lightblue;
+    border-bottom: 1px solid;
+}
