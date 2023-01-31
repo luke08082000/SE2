@@ -1,21 +1,17 @@
 const express = require('express');
 
+const isAuth = require('../middleware/is-auth');
+
+const studentController = require('../controllers/student');
+
 const router = express.Router();
 
-router.get('/home', (req, res) => {
-    res.render('student/home');
-});
+router.get('/home', isAuth, studentController.getHome);
 
-router.get('/activities', (req, res) => {
-    res.render('student/activities');
-});
+router.get('/activities', isAuth, studentController.getActivities);
 
-router.get('/capstone-projects', (req, res) => {
-    res.render('student/capstone-projects');
-});
+router.get('/capstone-projects', isAuth, studentController.getCapstoneProjects);
 
-router.get('/group', (req, res) => {
-    res.render('student/group');
-});
+router.get('/group', isAuth, studentController.getGroup);
 
 module.exports = router;
