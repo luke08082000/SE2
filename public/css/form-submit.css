@@ -1,0 +1,22 @@
+.container {
+    width: 90%;
+    margin: 0 auto;
+    margin-inline: 250px 100px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+.container .card {
+    border-bottom: 2px dotted black;
+    margin-block: 1rem;
+}
+.container .card-actions {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 5px 5px;
+}

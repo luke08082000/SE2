@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navigation.css">
+    <link rel="stylesheet" href="/css/form-submit.css">
+    <title>Home</title>
+</head>
+<body>
+    <%- include ('partials/navigation.ejs') %>
+    
+    <% if (forms.length > 0) { %>
+        <div class="container">
+            <% for (let form of forms) { %>
+                <form action="/capstone-projects" method="POST" enctype="multipart/form-data">
+                    <article class="card">
+                        <div class="form-control card-header">
+                            <h1 class="form__title"><%= form.title %></h1>
+                            <% if (form.status === "Submitted") { %><p>Submitted</p><% } %>
+                        </div>
+                        <div class="form-control">
+                            <p><%= form.description %></p>
+                        </div>
+                        <div class="form-control">
+                            <p><%= form.deadline %></p>
+                        </div>
+                        <% if (role === "Student") { %>
+                        <div class="form-control">
+                            <h4>PDF File</h4>
+                            <input type="file" class="form-control" name="file" id="file">
+                        </div>
+                        <% } %>
+                        <div class="card-actions">
+                        <% if (role === "Student") { %>
+                            <button class="btn" type="submit">Submit</button>
+                        <% } %>
+                            <button class="btn">View</button>
+                        <% if (role === "Faculty") { %>
+                            <button class="btn">Approve</button>
+                        <% } %>
+                        </div>
+                        <input type="hidden" value="<%= form.id %>" name="formId">
+                        <input type="hidden" value="<%= form.status %>" name="formStatus">
+                    </article>
+                </form>
+            <% } %>
+        </div>
+    <% } %>
+    
+</body>
+</html>

@@ -2,33 +2,28 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const User = sequelize.define('user', {
+const Submission = sequelize.define('submission', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
     },
-    firstName: {
+    title: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    lastName: {
+    description: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    email: {
-        type: Sequelize.STRING,
+    deadline: {
+        type: Sequelize.DATE,
         allowNull: false
     },
-    password: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    role: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }
+    status: Sequelize.STRING,
+    fileName: Sequelize.STRING,
+    createdBy: Sequelize.STRING
 })
 
-module.exports = User;
+module.exports = Submission;

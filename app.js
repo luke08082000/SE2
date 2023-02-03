@@ -5,14 +5,26 @@ const sequelize = require('./util/database');
 const mysql = require('mysql2/promise');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const multer = require('multer');
 
 const User = require('./models/user');
+const Submission = require('./models/submission');
 
 const authRoutes = require('./routes/auth');
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'pdf-files');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.filename + '-' + file.originalname);
+    }
+})
+
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({storage: fileStorage}).single('file'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const mysqlOptions
@@ -39,8 +51,7 @@ const sessionStore = new MySQLStore({}, connection)
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-const studentRoutes = require('./routes/student');
-const academicStaffRoutes = require('./routes/academic-staff');
+const navRoutes = require('./routes/nav');
 
 app.use(session({
     key: 'cookieMonster',
@@ -56,13 +67,14 @@ app.use((req, res, next) => {
     next();
 })
 
+User.hasMany(Submission);
+Submission.hasOne(User);
+
 app.use(authRoutes);
 
-//student routes
-app.use('/student', studentRoutes);
+//nav routes
+app.use(navRoutes);
 
-//staff routes
-app.use('/academic-staff', academicStaffRoutes);
 
 //User.create({
 //    firstName: 'test',

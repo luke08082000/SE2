@@ -1,0 +1,12 @@
+<div class="wrapper">
+    <nav class="sidebar">
+        <ul><a href="/home">Home</a></ul>
+        <% if (role === "Faculty") { %><ul><a href="/activities">Activities</a></ul><% } %>
+        <ul><a href="/capstone-projects">Capstone Project</a></ul>
+        <ul><a href="/group">Group</a></ul>
+        <ul><form action="/auth/logout" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+        </ul>
+    </nav>
+</div>
