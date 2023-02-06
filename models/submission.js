@@ -23,6 +23,8 @@ const Submission = sequelize.define('submission', {
     },
     status: Sequelize.STRING,
     fileName: Sequelize.STRING,
+    filePath: Sequelize.STRING,
+    submittedBy: Sequelize.STRING,
     createdBy: Sequelize.STRING
 })
 

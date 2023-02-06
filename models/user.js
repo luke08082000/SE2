@@ -28,7 +28,12 @@ const User = sequelize.define('user', {
     role: {
         type: Sequelize.STRING,
         allowNull: false
-    }
+    },
+    emailVerified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
+    token: Sequelize.STRING
 })
 
 module.exports = User;

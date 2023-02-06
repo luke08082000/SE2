@@ -16,10 +16,12 @@ const app = express();
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'pdf-files');
+        cb(null, 'public/pdf-files');
     },
     filename: (req, file, cb) => {
-        cb(null, file.filename + '-' + file.originalname);
+        const date = new Date().toISOString().replace(/:/g, '-');
+        const newFilename = `${date}-${file.originalname}`;
+        cb(null, newFilename);
     }
 })
 
@@ -69,7 +71,9 @@ app.use((req, res, next) => {
 
 User.hasMany(Submission);
 Submission.hasOne(User);
-
+app.get('/view-pdf', (req, res) => {
+    res.render('pdf');
+})
 app.use(authRoutes);
 
 //nav routes
@@ -82,6 +86,7 @@ app.use(navRoutes);
 //    email: 'test@test',
 //    password: 'test'
 //});
+
 
 sequelize
 .sync()
