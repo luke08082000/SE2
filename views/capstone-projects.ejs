@@ -13,45 +13,46 @@
     
     <% if (forms.length > 0) { %>
         <div class="container">
-            <% for (let form of forms) { %>
-                <form action="/capstone-projects" method="POST" enctype="multipart/form-data">
-                    <article class="card">
-                        <div class="form-control card-header">
-                            <h1 class="form__title"><%= form.title %></h1>
-                            <% if (form.status === "Submitted") { %><p>Submitted</p><% } %>
-                        </div>
-                        <div class="form-control">
-                            <p><%= form.description %></p>
-                        </div>
-                        <div class="form-control">
-                            <p><%= form.deadline %></p>
-                        </div>
-                        <% if (role === "Student") { %>
-                        <div class="form-control">
-                            <h4>PDF File</h4>
-                            <input type="file" class="form-control" name="file" id="file" accept=".pdf">
-                        </div>
-                        <% } %>
-                        <div class="form-control">
-                            <h4>View File</h4>
-                            <iframe src="<%= form.filePath %>" frameborder="0" width="70%" height="500px"></iframe>
-                        </div>
-                        <div class="card-actions">
-                        <% if (role === "Student") { %>
-                            <button class="btn" type="submit">Submit</button>
-                        <% } %>
-                            <button class="btn">View</button>
-                        <% if (role === "Faculty") { %>
-                            <button class="btn">Approve</button>
-                        <% } %>
-                        </div>
-                        <input type="hidden" value="<%= form.id %>" name="formId">
-                        <input type="hidden" value="<%= form.status %>" name="formStatus">
-                    </article>
-                </form>
-            <% } %>
+          <% for (let i = 0; i < forms.length; i++) { %>
+            <form action="/capstone-projects" method="POST" enctype="multipart/form-data">
+              <article class="card">
+                <div class="form-control card-header">
+                  <h1 class="form__title"><%= forms[i].title %></h1>
+                  <% if (forms[i].status === "Submitted") { %><p>Submitted</p><% } %>
+                </div>
+                <div class="form-control">
+                  <p><%= forms[i].description %></p>
+                </div>
+                <div class="form-control">
+                  <p><%= forms[i].deadline %></p>
+                </div>
+                <% if (role === "Student") { %>
+                <div class="form-control">
+                  <h4>PDF File</h4>
+                  <input type="file" class="form-control" name="file" id="file" accept=".pdf">
+                </div>
+                <% } %>
+                <div class="form-control" id="viewer-<%= i %>">
+                  <h4>View File</h4>
+                  <iframe src="<%= forms[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
+                </div>
+                <div class="card-actions">
+                  <% if (role === "Student") { %>
+                  <button class="btn" type="submit">Submit</button>
+                  <a onclick="toggleIframe(<%= i %>)">View</a>
+                  <% } %>
+                  <% if (role === "Faculty") { %>
+                  <button class="btn">Approve</button>
+                  <% } %>
+                </div>
+                <input type="hidden" value="<%= forms[i].id %>" name="formId">
+                <input type="hidden" value="<%= forms[i].status %>" name="formStatus">
+              </article>
+            </form>
+          <% } %>
         </div>
-    <% } %>
-    
+      <% } %>
+      
+      <script src="/js/main.js"></script>
 </body>
 </html>
