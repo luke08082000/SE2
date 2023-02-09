@@ -1,12 +1,12 @@
-<div class="wrapper">
-    <nav class="sidebar">
-        <ul><a href="/home">Home</a></ul>
-        <% if (role === "Faculty") { %><ul><a href="/activities">Activities</a></ul><% } %>
-        <ul><a href="/capstone-projects">Capstone Project</a></ul>
-        <ul><a href="/group">Group</a></ul>
-        <ul><form action="/auth/logout" method="POST">
-                <button type="submit">Logout</button>
-            </form>
-        </ul>
-    </nav>
+<div class="sidebar">
+    <center>
+        <img src="/img/IICS_Logo.png" class="image" alt = "">
+    </center>
+    <a href = "/home"> <i class="fa-solid fa-house"></i><spam>Home</spam></a> 
+    <a href = "/activities"> <i class="fa-solid fa-pen"></i> <spam>Activities</spam> </a>
+    <a href = "/capstone-projects"> <i class="fa-solid fa-hammer"></i> <spam>Capstone projects</spam> </a>
+    <a href = "Group"> <i class="fa-solid fa-people-group"></i> <spam>Group</spam> </a>
+    <form action="/auth/logout" method="POST">
+        <a1 href = "/auth/logout"> <i class="fa-solid fa-right-from-bracket"></i> <button>Logout</button></a>
+    </form>
 </div>
