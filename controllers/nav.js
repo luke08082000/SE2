@@ -1,5 +1,8 @@
 const User = require('../models/user');
 const Submission = require('../models/submission');
+const Group = require('../models/group');
+const Membership = require('../models/membership');
+
 const multer = require('multer');
 
 
@@ -37,6 +40,8 @@ exports.postActivities = (req, res) => {
     .catch(err => console.log(err))
 }
 
+
+
 exports.getCapstoneProjects = (req, res) => {
     const role = req.session.user.role;
     const url = '/pdf-files/pdf.pdf'
@@ -51,16 +56,6 @@ exports.getCapstoneProjects = (req, res) => {
     })
     .catch(err => console.log(err))
 };
-
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'public/pdf-files');
-    },
-    filename: function (req, file, cb) {
-      cb(null, new Date().toISOString() + '-' + file.originalname);
-    }
-  });
 
 
 exports.postCapstoneProjects = (req, res) => {
@@ -83,8 +78,24 @@ exports.postCapstoneProjects = (req, res) => {
 
 exports.getGroup = (req, res) => {
     const role = req.session.user.role;
-    res.render('group', {
-        role: role
-    });
+    Group.findAll()
+    .then(group => {
+        res.render('group', {
+            group: group,
+            role: role
+        });
+    })
+    .catch(err => console.log(err))
+    
 };
 
+exports.postGroup = (req, res) => {
+    if (req.session.user.role === "Faculty") {
+        Group.create()
+        .then(group => {
+            console.log('new group created');
+            res.redirect('/group');
+        })
+        .catch(err => console.log(err))
+    }
+};

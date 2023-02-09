@@ -20,4 +20,6 @@ router.post('/capstone-projects', isAuth, navController.postCapstoneProjects);
 
 router.get('/group', isAuth, navController.getGroup);
 
+router.post('/group', isAuth, navController.postGroup);
+
 module.exports = router;

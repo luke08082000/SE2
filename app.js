@@ -7,12 +7,15 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const multer = require('multer');
 
+//MODELS
 const User = require('./models/user');
 const Submission = require('./models/submission');
 const Group = require('./models/group');
 const Membership = require('./models/membership');
 
+//ROUTES
 const authRoutes = require('./routes/auth');
+const navRoutes = require('./routes/nav');
 
 const app = express();
 
@@ -55,7 +58,7 @@ const sessionStore = new MySQLStore({}, connection)
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-const navRoutes = require('./routes/nav');
+
 
 app.use(session({
     key: 'cookieMonster',
@@ -79,19 +82,9 @@ Membership.belongsTo(Group);
 Group.hasMany(Membership);
 
 
-
+//ROUTES
 app.use(authRoutes);
-
-//nav routes
 app.use(navRoutes);
-
-
-//User.create({
-//    firstName: 'test',
-//    lastName: 'test',
-//    email: 'test@test',
-//    password: 'test'
-//});
 
 
 sequelize

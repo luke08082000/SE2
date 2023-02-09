@@ -14,32 +14,26 @@
 <body>
   <div class="container">
     <div class="card-grid">
+    <% if (group.length > 0) { %>
+        <% for (let i = 0; i < group.length; i++) { %>
       <div class="card">
-        <h4>Group 1</h4>
-        <ul>
-          <li>John Doe</li>
-          <li>Jane Doe</li>
-          <li>Jim Smith</li>
-          <li>Joan Johnson</li>
-        </ul>
+        <form>
+            <h4>Group <%= i + 1 %></h4>
+            <ul>
+                <li>John Doe</li>
+            </ul>
+            <button>Join Group</button>
+        </form>
       </div>
-      <div class="card">
-        <h4>Group 2</h4>
-        <ul>
-          <li>Michael Jordan</li>
-          <li>Kobe Bryant</li>
-          <li>LeBron James</li>
-          <li>Shaquille O'Neal</li>
-        </ul>
-      </div>
+      <% } %>
+    <% } %>
       <div class="card">
         <h4>Create Group</h4>
-        <form>
-            
+        <form action="/group" method="POST">
             <button>+</button>
         </form>
           
-        
+    
     </div>
 </body>
 </html>
