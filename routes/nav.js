@@ -22,4 +22,5 @@ router.get('/group', isAuth, navController.getGroup);
 
 router.post('/group', isAuth, navController.postGroup);
 
+
 module.exports = router;

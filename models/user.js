@@ -33,6 +33,7 @@ const User = sequelize.define('user', {
         type: Sequelize.BOOLEAN,
         defaultValue: false
     },
+    groupId: Sequelize.INTEGER,
     token: Sequelize.STRING
 })
 

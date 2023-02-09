@@ -11,7 +11,6 @@ const multer = require('multer');
 const User = require('./models/user');
 const Submission = require('./models/submission');
 const Group = require('./models/group');
-const Membership = require('./models/membership');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -77,9 +76,8 @@ app.use((req, res, next) => {
 //RELATIONSHIPS
 User.hasMany(Submission);
 Submission.hasOne(User);
-User.belongsTo(Membership, { onDelete: 'CASCADE' });
-Membership.belongsTo(Group);
-Group.hasMany(Membership);
+User.belongsTo(Group);
+Group.hasMany(User);
 
 
 //ROUTES

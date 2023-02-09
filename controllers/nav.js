@@ -1,9 +1,6 @@
 const User = require('../models/user');
 const Submission = require('../models/submission');
 const Group = require('../models/group');
-const Membership = require('../models/membership');
-
-const multer = require('multer');
 
 
 exports.getHome = (req, res) => {
@@ -82,7 +79,8 @@ exports.getGroup = (req, res) => {
     .then(group => {
         res.render('group', {
             group: group,
-            role: role
+            role: role,
+            id: group.id
         });
     })
     .catch(err => console.log(err))
@@ -90,12 +88,31 @@ exports.getGroup = (req, res) => {
 };
 
 exports.postGroup = (req, res) => {
-    if (req.session.user.role === "Faculty") {
+    if (req.session.user.role === "Faculty") { //create group as a faculty
         Group.create()
         .then(group => {
             console.log('new group created');
             res.redirect('/group');
         })
-        .catch(err => console.log(err))
-    }
-};
+    } else if (req.session.user.role === "Student") { //join group as a student
+        const groupId = req.body.groupId;
+        const userId = req.session.user.id;
+        if (req.session.user.groupId === null) {
+            Group.findOne({ where: { id:  groupId } })
+            .then(group => {
+                User.update({ groupId: groupId }, {
+                    where: {
+                        id: userId
+                    }
+                })
+                .then(user => {
+                    res.redirect('/group');
+                })
+            })
+            .catch(err => console.log(err))
+        } else {
+            console.log('You already have a group')
+            res.redirect('/group');
+        }
+    } //needs error handling
+}
