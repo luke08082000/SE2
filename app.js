@@ -11,6 +11,7 @@ const multer = require('multer');
 const User = require('./models/user');
 const Submission = require('./models/submission');
 const Group = require('./models/group');
+const Membership = require('./models/membership');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -78,8 +79,14 @@ User.hasMany(Submission);
 Submission.hasOne(User);
 User.belongsTo(Group);
 Group.hasMany(User);
-
-
+User.belongsToMany(Group, {
+  through: Membership,
+  foreignKey: 'userId'
+});
+Group.belongsToMany(User, {
+  through: Membership,
+  foreignKey: 'groupId'
+});
 //ROUTES
 app.use(authRoutes);
 app.use(navRoutes);

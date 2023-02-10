@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Submission = require('../models/submission');
 const Group = require('../models/group');
+const Membership = require('../models/membership');
 
 
 exports.getHome = (req, res) => {
@@ -75,16 +76,21 @@ exports.postCapstoneProjects = (req, res) => {
 
 exports.getGroup = (req, res) => {
     const role = req.session.user.role;
-    Group.findAll()
-    .then(group => {
-        res.render('group', {
-            group: group,
-            role: role,
-            id: group.id
-        });
+    const hasGroup = req.session.user.groupId;
+    Group.findAll({
+        include: [{
+            model: User,
+            through: Membership
+        }]
     })
-    .catch(err => console.log(err))
-    
+    .then(groups => {
+        res.render('group', {
+            group: groups,
+            role: role,
+            hasGroup: hasGroup
+        })
+    })
+    .catch(err => console.log(err))    
 };
 
 exports.postGroup = (req, res) => {
@@ -97,22 +103,21 @@ exports.postGroup = (req, res) => {
     } else if (req.session.user.role === "Student") { //join group as a student
         const groupId = req.body.groupId;
         const userId = req.session.user.id;
-        if (req.session.user.groupId === null) {
-            Group.findOne({ where: { id:  groupId } })
-            .then(group => {
-                User.update({ groupId: groupId }, {
-                    where: {
-                        id: userId
-                    }
-                })
-                .then(user => {
+        Membership.findOne({ where: { userId: userId } })
+            .then(member => {
+                if (member) {
+                    console.log('You already belong to a group')
                     res.redirect('/group');
-                })
+                } else {
+                    Group.findOne({ where: { id:  groupId } })
+                        .then(group => {
+                            Membership.create({ userId: userId, groupId: groupId })
+                            .then(member => {
+                                res.redirect('/group');
+                            })
+                        }).catch(err => console.log(err))
+                }
             })
-            .catch(err => console.log(err))
-        } else {
-            console.log('You already have a group')
-            res.redirect('/group');
-        }
-    } //needs error handling
+        .catch(err => console.log(err))
+    }
 }
