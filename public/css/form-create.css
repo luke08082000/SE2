@@ -1,12 +1,18 @@
 .container {
-    width: 400px;
+    width: 90%;
     margin: 0 auto;
-    margin-top: 3rem;
+    margin-inline: 250px 100px;
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px #ccc;
 }
+
+.container form {
+    width: 50%;
+    margin-left: 7rem;
+}
+
 .form-control {
     width: 100%;
     padding: 12px 20px;
@@ -16,9 +22,8 @@
     border-radius: 4px;
 }
 .container .btn {
-    width: 50%;
+    width: 30%;
     padding-block: 1rem;
     display: block;
-    margin: 0 auto;
 }
 

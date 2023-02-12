@@ -1,0 +1,13 @@
+.container {
+    width: 100%;
+    margin-left: 250px;
+    padding-top: 100px;
+}
+
+.container .main-list {
+    list-style-type: none;
+}
+
+.container .main-list .list-item {
+    padding-block: 10px;
+}

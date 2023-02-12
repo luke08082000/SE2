@@ -6,8 +6,16 @@ const Membership = require('../models/membership');
 
 exports.getHome = (req, res) => {
     const role = req.session.user.role;
+    const firstName = req.session.user.firstName;
+    const lastName = req.session.user.lastName;
+    const email = req.session.user.email;
+    const groupId = req.session.user.groupId;
     res.render('home', {
-        role: role
+        role: role,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        groupId: groupId
     });
 };
 

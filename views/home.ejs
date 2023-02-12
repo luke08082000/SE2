@@ -5,9 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include ('partials/links.ejs') %>
+    <link rel="stylesheet" href="css/home.css">
     <title>Home</title>
 </head>
 <body>
     <%- include ('partials/navigation.ejs') %>
+
+    <div class="container">
+        <ul class="main-list">
+            <li class="list-item"><h4>First Name: </h4><%= firstName %></li>
+            <li class="list-item"><h4>Last Name: </h4><%= lastName %></li>
+            <li class="list-item"><h4>Email: </h4><%= email %></li>
+            <li class="list-item"><h4>Role: </h4><%= role %></li>
+            <% if(role === "Student") { %>
+            <li class="list-item"><h4>GroupId: </h4><%= groupId %></li>
+            <% } %>
+        </ul>
+    </div>
 </body>
 </html>
