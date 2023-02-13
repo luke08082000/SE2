@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/form-create.css">
+    <% if(role === "Faculty") { %><link rel="stylesheet" href="/css/form-create.css"><% } %>
+    <link rel="stylesheet" href="/css/form-submit.css">
     <%- include ('partials/links.ejs') %>
     <title>Home</title>
 </head>
 <body>
   <%- include ('partials/navigation.ejs') %>
-    
+  <% if(role === "Faculty") { %>  
   <div class="container">
       <form action="/activities" method="POST" >
         <h1>Create Submission Form</h1>
@@ -29,6 +30,55 @@
         <button type="submit" class="btn btn-primary">Create</button>
       </form>
   </div>
-        
+  <% } %>
+  <% if (role === "Student") { %>
+    <% if (forms.length > 0) { %>
+      <div class="container">
+        <% for (let i = 0; i < forms.length; i++) { %>
+          <% let submitted = false; %>
+          <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
+            <% if (forms[i].submissions[j].status === "Pending") { %>
+              <% submitted = true; %>
+            <% } %>
+          <% } %>
+          <% if (!submitted) { %>
+            <form action="/activities" method="POST" enctype="multipart/form-data">
+              <article class="card">
+                <div class="form-control card-header">
+                  <h1 class="form__title"><%= forms[i].title %></h1>
+                </div>
+                
+                <div class="form-control">
+                  <p>Deadline: <%= forms[i].deadline.toLocaleDateString("en-US", {year: 'numeric', month: '2-digit', day: '2-digit'}) %></p>
+                </div>
+                <% if (role === "Student") { %>
+                <div class="form-control">
+                  <h4>PDF File</h4>
+                  <input type="file" class="form-control" name="file" id="file" accept=".pdf">
+                </div>
+                <% } %>
+                <% if (forms[i].submissions.length > 0) { %>
+                  <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
+                  <div class="form-control" id="viewer-<%= j %>">
+                    <iframe src="<%= forms[i].submissions[j].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
+                  </div>
+                  <% } %>
+                <% } %>
+                <div class="card-actions">
+                  <% if (role === "Student") { %>
+                  <button class="btn" type="submit">Submit</button>
+                  <% } %>
+                  
+                </div>
+                <input type="hidden" value="<%= forms[i].id %>" name="formId">
+                <input type="hidden" value="<%= forms[i].status %>" name="formStatus">
+              </article>
+            </form>
+          <% } %>
+        <% } %>
+      </div>
+    <% } %>
+    
+  <% } %>
 </body>
 </html>

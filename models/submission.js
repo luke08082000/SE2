@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
+const SubmissionForm = require('../models/submissionForm');
+
 const Submission = sequelize.define('submission', {
     id: {
         type: Sequelize.INTEGER,
@@ -9,23 +11,13 @@ const Submission = sequelize.define('submission', {
         allowNull: false,
         primaryKey: true
     },
-    title: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    description: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    deadline: {
-        type: Sequelize.DATE,
-        allowNull: false
-    },
+    description: Sequelize.STRING,
+    deadline: Sequelize.DATE,
     status: Sequelize.STRING,
     fileName: Sequelize.STRING,
     filePath: Sequelize.STRING,
     submittedBy: Sequelize.STRING,
-    createdBy: Sequelize.STRING
+    groupId: Sequelize.INTEGER
 })
 
 module.exports = Submission;

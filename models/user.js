@@ -26,13 +26,17 @@ const User = sequelize.define('user', {
         allowNull: false
     },
     role: {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.ENUM,
+        values: ['Student', 'Faculty', 'admin'],
+        defaultValue: 'Student'
     },
     emailVerified: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+        type: Sequelize.ENUM,
+        values: ['unverified', 'verified'],
+        defaultValue: 'unverified'
     },
+    groupId: Sequelize.INTEGER,
+    submissionId: Sequelize.INTEGER,
     token: Sequelize.STRING
 })
 

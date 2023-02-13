@@ -9,7 +9,10 @@ const multer = require('multer');
 
 //MODELS
 const User = require('./models/user');
+const FacultyRole = require('./models/facultyRole');
+const FacultyUserRole = require('./models/facultyUserRole');
 const Submission = require('./models/submission');
+const SubmissionForm = require('./models/submissionForm');
 const Group = require('./models/group');
 const Membership = require('./models/membership');
 
@@ -75,18 +78,36 @@ app.use((req, res, next) => {
 })
 
 //RELATIONSHIPS
-User.hasMany(Submission);
-Submission.hasOne(User);
-User.belongsTo(Group);
-Group.hasMany(User);
+User.belongsToMany(FacultyRole, { through: FacultyUserRole, as: 'roles' });
+FacultyRole.belongsToMany(User, { through: FacultyUserRole });
+
+User.hasMany(SubmissionForm, { foreignKey: 'userId' });
+SubmissionForm.belongsTo(User, { foreignKey: 'userId' });
+
+User.hasMany(Submission, { foreignKey: 'userId' });
+Submission.belongsTo(User, { foreignKey: 'userId' });
+
+SubmissionForm.hasMany(Submission, { foreignKey: 'submissionId' });
+Submission.belongsTo(SubmissionForm, { foreignKey: 'submissionId' });
+
+
 User.belongsToMany(Group, {
-  through: Membership,
-  foreignKey: 'userId'
+    through: Membership,
+    foreignKey: 'userId'
 });
-Group.belongsToMany(User, {
-  through: Membership,
-  foreignKey: 'groupId'
+  Group.belongsToMany(User, {
+    through: Membership,
+    foreignKey: 'groupId'
 });
+
+User.hasOne(Membership, { foreignKey: 'userId' });
+Membership.belongsTo(User, { foreignKey: 'userId' });
+Group.hasMany(Membership, { foreignKey: 'groupId' });
+Membership.belongsTo(Group, { foreignKey: 'groupId' });
+
+Submission.belongsTo(Group, { foreignKey: 'groupId' });
+Group.hasMany(Submission, { foreignKey: 'groupId' });
+
 //ROUTES
 app.use(authRoutes);
 app.use(navRoutes);

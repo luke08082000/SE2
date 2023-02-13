@@ -78,7 +78,7 @@ exports.postRegister = (req, res, next) => {
                 email: email,
                 role: role,
                 password: hashedPassword,
-                emailVerified: false,
+                emailVerified: 'unverified',
                 token: token
             })
             return user.save();

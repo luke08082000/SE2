@@ -10,9 +10,9 @@ const router = express.Router();
 
 router.get('/home', isAuth, navController.getHome);
 
-router.get('/activities', isAuth, isFaculty, navController.getActivities);
+router.get('/activities', isAuth, navController.getActivities);
 
-router.post('/activities', isAuth, isFaculty, navController.postActivities);
+router.post('/activities', isAuth, navController.postActivities);
 
 router.get('/capstone-projects', isAuth, navController.getCapstoneProjects);
 

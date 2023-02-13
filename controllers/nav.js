@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Submission = require('../models/submission');
+const SubmissionForm = require('../models/submissionForm');
 const Group = require('../models/group');
 const Membership = require('../models/membership');
 
@@ -21,9 +22,27 @@ exports.getHome = (req, res) => {
 
 exports.getActivities = (req, res) => {
     const role = req.session.user.role;
-    res.render('activities', {
-        role: role
-    });
+    if (role === "Student") {
+        SubmissionForm.findAll({
+            include: [{
+                model: Submission,
+                as: 'submissions'
+            }]
+        })
+        .then(forms => {
+            res.render('activities', {
+                forms: forms,
+                role: role,
+                status: forms.status
+            });
+        })
+        .catch(err => console.log(err))
+    }
+    if (role === "Faculty") {
+        res.render('activities', {
+            role: role
+        })
+    }
 };
 
 exports.postActivities = (req, res) => {
@@ -31,55 +50,76 @@ exports.postActivities = (req, res) => {
     const description = req.body.description;
     const deadline = req.body.deadline;
     const email = req.session.email;
-    User.findByPk(req.session.user.id)
-    .then(user => {
-        user.createSubmission({
-            title: title,
-            description: description,
-            deadline: deadline,
-            createdBy: email
+    const role = req.session.user.role;
+    if(role === "Faculty") {
+        User.findByPk(req.session.user.id)
+        .then(user => {
+            return SubmissionForm.create({
+                title: title,
+                description: description,
+                deadline: deadline,
+                createdBy: email,
+                userId: user.id
+            })
         })
-    })
-    .then(result => {
-        res.redirect('/capstone-projects');
-    })
-    .catch(err => console.log(err))
+        .then(result => {
+            res.redirect('/capstone-projects');
+        })
+        .catch(err => console.log(err))
+    }
+    if (role === "Student") {
+        const filePath = req.file.path.substring(6) // to exclude public folder
+        const fileName = req.file.filename;
+        const formId = req.body.formId;
+        const email = req.session.user.email;
+        SubmissionForm.findByPk(formId)
+        .then(submission => {
+            Submission.create ({ 
+                fileName: fileName,
+                filePath: filePath,
+                status: 'Pending',
+                submittedBy: email,
+                userId: req.session.user.id,
+                submissionId: formId,
+                groupId: req.session.user.groupId
+            })
+            res.redirect('/capstone-projects');
+        })
+        .catch(err => console.log(err))
+        }
 }
+
 
 
 
 exports.getCapstoneProjects = (req, res) => {
     const role = req.session.user.role;
-    const url = '/pdf-files/pdf.pdf'
-    Submission.findAll()
-    .then(submissionForms => {
+    const userGroup = req.session.user.groupId;
+    SubmissionForm.findAll({
+        include: [{
+            model: Submission,
+            as: 'submissions'
+        }]
+    })
+    .then(forms => {
         res.render('capstone-projects', {
-            url: url,
-            forms: submissionForms,
+            userGroup: userGroup,
+            forms: forms,
             role: role,
-            status: submissionForms.status
+            status: forms.status,
         });
     })
     .catch(err => console.log(err))
 };
 
 
+  
+  
+  
+
+
 exports.postCapstoneProjects = (req, res) => {
-    const filePath = req.file.path.substring(6) // to exclude public folder
-    const fileName = req.file.filename;
-    const formId = req.body.formId;
-    const email = req.session.user.email;
-    Submission.findByPk(formId)
-    .then(submission => {
-        submission.update({ 
-            fileName: fileName,
-            filePath: filePath,
-            status: 'Submitted',
-            submittedBy: email
-        })
-        res.redirect('/capstone-projects');
-    })
-    .catch(err => console.log(err))
+    
 }
 
 exports.getGroup = (req, res) => {
@@ -120,6 +160,12 @@ exports.postGroup = (req, res) => {
                     Group.findOne({ where: { id:  groupId } })
                         .then(group => {
                             Membership.create({ userId: userId, groupId: groupId })
+                            User.findOne({ where: { id: userId } })
+                            .then(user => {
+                                user.update({ groupId: groupId })
+                                req.session.user = user;
+                                user.save()
+                            })
                             .then(member => {
                                 res.redirect('/group');
                             })
