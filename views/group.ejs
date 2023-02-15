@@ -13,35 +13,90 @@
 </head>
 <body>
   
-  <div class="container">
-    <div class="card-grid">
-      <% if (group.length > 0) { %>
-        <% for (let i = 0; i < group.length; i++) { %>
-            <div class="card">
-                <form action="/group" method="POST">
-                    <h4>Group <%= i + 1 %></h4>
-                    <h6>Members: </h6>
+    <div class="container">
+        <div class="top-container">
+          <% if (role === 'Faculty') { %>
+            <div class="card card-faculty">
+              <h4>Create Group</h4>
+              <form action="/group" method="POST">
+                <div class="form-control">
+                  <button>Add Group</button>
+                </div>
+                <div class="form-control">
+                  <label for="name">Group Name:</label>
+                  <input type="text" class="form-control" id="name" name="name" required>
+                  <select name="section" id="section">
+                    <option value="3ISA">3ISA</option>
+                    <option value="3ISB">3ISB</option>
+                    <option value="4ISA">4ISA</option>
+                    <option value="4ISB">4ISB</option>
+                    <option value="n/a">N/A</option>
+                  </select>
+                </div>
+              </form>
+            </div>
+          <% } %>
+          <div class="card-container">
+              <% if(role === "Faculty") { %>
+                <div class="card filter-card">
+                    <form>
+                    <label for="section">Filter by Section:</label>
+                    <select id="sectionFilter" name="sectionFilter">
+                        <option value="">All Sections</option>
+                        <option value="3ISA">3ISA</option>
+                        <option value="3ISB">3ISB</option>
+                        <option value="4ISA">4ISA</option>
+                        <option value="4ISB">4ISB</option>
+                    </select>
+                    <button type="button" onclick="filterGroups()">Filter</button>
+                    </form>
+                </div>
+            <% } %>
+          </div>
+        </div>
+      
+        <div class="card-grid">
+            <% for (let i = 0; i < group.length; i++) { %>
+                <% if (role === "Faculty" || (role === "Student" && ((hasGroup && group[i].id === user.groupId) || (!hasGroup && group[i].section === section)))) { %>
+                  <div class="card">
+                    <h4><%= group[i].name %></h4>
+                    <h6>Section: <span class="section"><%= group[i].section %></span></h6>
+                    <h6>Members:</h6>
                     <ul>
-                        <% group[i].users.forEach(user => { %>
-                            <li><%= user.email %></li>
-                        <% }); %>
+                      <% group[i].users.forEach(user => { %>
+                        <li><%= user.email %></li>
+                      <% }); %>
                     </ul>
                     <% if (!hasGroup && role === "Student") { %>
-                      <button>Join Group</button>
+                      <form action="/group" method="POST">
+                        <button>Join Group</button>
+                        <input type="hidden" value="<%= group[i].id %>" name="groupId">
+                        <input type="hidden" value="<%= group[i].section %>" name="groupSection">
+                      </form>
                     <% } %>
-                    <input type="hidden" value="<%= group[i].id %>" name="groupId">
-                </form>
-            </div>
-        <% } %>
-    <% } %>    
-    <% if (role === 'Faculty') { %>
-      <div class="card">
-        <h4>Create Group</h4>
-        <form action="/group" method="POST">
-            <button>+</button>
-        </form>
-    </div>
-    <% } %>
+                  </div>
+                <% } %>
+              <% } %>
+              
+        </div>
+      </div>
+      
     
+    <script>
+        function filterGroups() {
+        const sectionSelect = document.getElementById("sectionFilter");
+        const section = sectionSelect.value;
+        const cards = document.querySelectorAll(".card-grid .card");
+        cards.forEach(card => {
+            const cardSection = card.querySelector(".section").textContent;
+            if (section === "" || section === cardSection) {
+            card.style.display = "block";
+            } else {
+            card.style.display = "none";
+            }
+        });
+        }
+    </script>
+
 </body>
 </html>

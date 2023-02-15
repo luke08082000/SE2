@@ -10,6 +10,7 @@ const SubmissionForm = sequelize.define('submission-form', {
         primaryKey: true
     },
     title: Sequelize.STRING,
+    section: Sequelize.STRING,
     deadline: Sequelize.DATE,
     createdBy: Sequelize.STRING
 })

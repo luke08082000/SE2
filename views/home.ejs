@@ -12,15 +12,29 @@
     <%- include ('partials/navigation.ejs') %>
 
     <div class="container">
-        <ul class="main-list">
-            <li class="list-item"><h4>First Name: </h4><%= firstName %></li>
-            <li class="list-item"><h4>Last Name: </h4><%= lastName %></li>
-            <li class="list-item"><h4>Email: </h4><%= email %></li>
-            <li class="list-item"><h4>Role: </h4><%= role %></li>
-            <% if(role === "Student") { %>
-            <li class="list-item"><h4>GroupId: </h4><%= groupId %></li>
-            <% } %>
-        </ul>
-    </div>
+        <div class="card">
+          <h4>First Name:</h4>
+          <p><%= firstName %></p>
+        </div>
+        <div class="card">
+          <h4>Last Name:</h4>
+          <p><%= lastName %></p>
+        </div>
+        <div class="card">
+          <h4>Email:</h4>
+          <p><%= email %></p>
+        </div>
+        <div class="card">
+          <h4>Role:</h4>
+          <p><%= role %></p>
+        </div>
+        <% if(role === "Student") { %>
+        <div class="card">
+          <h4>Group:</h4>
+          <p><%= groupName %></p>
+        </div>
+        <% } %>
+      </div>
+      
 </body>
 </html>

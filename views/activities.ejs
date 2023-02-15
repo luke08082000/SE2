@@ -27,6 +27,15 @@
           <label for="deadline">Deadline (Date and Time)</label>
           <input type="datetime-local" class="form-control" id="deadline" name="deadline" required>
         </div>
+        <div class="form-group">
+          <label for="section">Section</label>
+          <select name="section" id="section">
+            <option value="3ISA">3ISA</option>
+            <option value="3ISB">3ISB</option>
+            <option value="4ISA">4ISA</option>
+            <option value="4ISB">4ISB</option>
+          </select>
+        </div>
         <button type="submit" class="btn btn-primary">Create</button>
       </form>
   </div>
@@ -41,7 +50,7 @@
               <% submitted = true; %>
             <% } %>
           <% } %>
-          <% if (!submitted) { %>
+          <% if (!submitted && forms[i].section === section) { %>
             <form action="/activities" method="POST" enctype="multipart/form-data">
               <article class="card">
                 <div class="form-control card-header">

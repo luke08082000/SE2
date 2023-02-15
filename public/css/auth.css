@@ -42,3 +42,18 @@ body {
   list-style-type: none;
   text-decoration: none;
 }
+
+select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #444;
+  margin-block: 1rem;
+
+}
+
+option {
+  color: #444;
+}

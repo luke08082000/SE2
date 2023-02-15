@@ -11,17 +11,23 @@ exports.getHome = (req, res) => {
     const lastName = req.session.user.lastName;
     const email = req.session.user.email;
     const groupId = req.session.user.groupId;
-    res.render('home', {
-        role: role,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        groupId: groupId
-    });
+    const section = req.session.user.section;
+    Group.findOne({ where: {id: groupId} })
+    .then(group => {
+        res.render('home', {
+            role: role,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            section: section,
+            groupName: !group ? 'No group yet' : group.name
+        })
+    })
 };
 
 exports.getActivities = (req, res) => {
     const role = req.session.user.role;
+    const section = req.session.user.section;
     if (role === "Student") {
         SubmissionForm.findAll({
             include: [{
@@ -33,6 +39,7 @@ exports.getActivities = (req, res) => {
             res.render('activities', {
                 forms: forms,
                 role: role,
+                section: section,
                 status: forms.status
             });
         })
@@ -50,6 +57,7 @@ exports.postActivities = (req, res) => {
     const description = req.body.description;
     const deadline = req.body.deadline;
     const email = req.session.email;
+    const section = req.body.section;
     const role = req.session.user.role;
     if(role === "Faculty") {
         User.findByPk(req.session.user.id)
@@ -59,6 +67,7 @@ exports.postActivities = (req, res) => {
                 description: description,
                 deadline: deadline,
                 createdBy: email,
+                section: section,
                 userId: user.id
             })
         })
@@ -125,6 +134,8 @@ exports.postCapstoneProjects = (req, res) => {
 exports.getGroup = (req, res) => {
     const role = req.session.user.role;
     const hasGroup = req.session.user.groupId;
+    const section = req.session.user.section;
+    const user = req.session.user
     Group.findAll({
         include: [{
             model: User,
@@ -135,7 +146,9 @@ exports.getGroup = (req, res) => {
         res.render('group', {
             group: groups,
             role: role,
-            hasGroup: hasGroup
+            hasGroup: hasGroup,
+            section: section,
+            user: user
         })
     })
     .catch(err => console.log(err))    
@@ -143,7 +156,12 @@ exports.getGroup = (req, res) => {
 
 exports.postGroup = (req, res) => {
     if (req.session.user.role === "Faculty") { //create group as a faculty
-        Group.create()
+        const section = req.body.section;
+        const name = req.body.name;
+        Group.create({
+            section: section,
+            name: name
+        })
         .then(group => {
             console.log('new group created');
             res.redirect('/group');
@@ -164,7 +182,7 @@ exports.postGroup = (req, res) => {
                             .then(user => {
                                 user.update({ groupId: groupId })
                                 req.session.user = user;
-                                user.save()
+                                return user.save()
                             })
                             .then(member => {
                                 res.redirect('/group');

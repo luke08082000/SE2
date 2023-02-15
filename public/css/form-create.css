@@ -24,6 +24,21 @@
 .container .btn {
     width: 30%;
     padding-block: 1rem;
+    margin-block: 1rem;
+    border-radius: 1rem;
     display: block;
 }
 
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #444;
+  }
+  
+  option {
+    color: #444;
+  }
+  

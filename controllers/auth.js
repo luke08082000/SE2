@@ -1,10 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const nodemailer = require('nodemailer');
-//const sgMail = require('@sendgrid/mail');
-//const SENDGRID_API_KEY = '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';
-
-//sgMail.setApiKey(SENDGRID_API_KEY);
 
 const crypto = require('crypto');
 
@@ -63,6 +59,7 @@ exports.postRegister = (req, res, next) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
     const role = req.body.role;
+    const section = req.body.section;
     User.findOne({ where: { email: email } })
     .then(userDoc => {
         if(userDoc) {
@@ -79,6 +76,7 @@ exports.postRegister = (req, res, next) => {
                 role: role,
                 password: hashedPassword,
                 emailVerified: 'unverified',
+                section: section,
                 token: token
             })
             return user.save();
@@ -97,13 +95,6 @@ exports.postRegister = (req, res, next) => {
                     console.log('Email sent: ' + info.response);
                 }
             })
-            //sgMail.send({
-            //    to: email,
-            //    from: 'luke.manongsong@gmail.com',  //temp email na verified ng sendgrid
-            //    subject: 'Congratulations! You have successfuly created an account.',
-            //    text: 'and easy to do anywhere, even with Node.js',
-            //    html: '<strong>and easy to do anywhere, even with Node.js</strong>'
-            //});
             res.redirect('/auth/login')
         })
     })
