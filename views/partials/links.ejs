@@ -1,3 +1,8 @@
-<link rel="stylesheet" href = "/css/navigation.css">
+<% if(role === "Student") { %>
+<link rel="stylesheet" href = "/css/nav-student.css">
+<% } %>
+<% if(role === "Faculty") { %>
+<link rel="stylesheet" href = "/css/nav-faculty.css">
+<% } %>
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">  

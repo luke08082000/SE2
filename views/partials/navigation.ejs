@@ -1,12 +1,38 @@
-<div class="sidebar">
+ <div class="sidebar">
     <center>
         <img src="/img/IICS_Logo.png" class="image" alt = "">
     </center>
     <a href = "/home"> <i class="fa-solid fa-house"></i><spam>Home</spam></a> 
     <a href = "/activities"> <i class="fa-solid fa-pen"></i> <spam>Activities</spam> </a>
     <a href = "/capstone-projects"> <i class="fa-solid fa-hammer"></i> <spam>Capstone projects</spam> </a>
-    <a href = "Group"> <i class="fa-solid fa-people-group"></i> <spam>Group</spam> </a>
+    <a href = "/group"> <i class="fa-solid fa-people-group"></i> <spam>Group</spam> </a>
     <form action="/auth/logout" method="POST">
         <a1 href = "/auth/logout"> <i class="fa-solid fa-right-from-bracket"></i> <button>Logout</button></a>
     </form>
-</div>
+</div> 
+
+<% if (role === "Faculty") { %>
+<div class="sidebar">
+    <center>
+      <img src="/img/IICS_Logo.png" class="image" alt="">
+    </center>
+    <a href="/home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <div class="dropdown">
+      <button class="dropdown-btn"><i class="fa-solid fa-pen"></i>Activities
+        <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-content">
+        <a href="#">Approve documents</a>
+        <a href="/activities/create-form">Create Form</a>
+        <a href="#">Assume Roles</a>
+      </div>
+    </div>
+    <a href="/capstone-projects"><i class="fa-solid fa-hammer"></i><span>Capstone projects</span></a>
+    <a href="/group"><i class="fa-solid fa-people-group"></i><span>Group</span></a>
+    <form action="/auth/logout" method="POST">
+      <a1 href="/auth/logout"><i class="fa-solid fa-right-from-bracket"></i><button>Logout</button></a1>
+    </form>
+  </div>
+  
+  <script src="/js/navigation.js"></script>
+  <% } %>

@@ -1,4 +1,4 @@
-body {
+   body {
     margin: 0;
     padding: 0;
     font-family: "Roboto", sans-serif;
@@ -18,7 +18,7 @@ body {
     margin-bottom: 60px;
   }
   
-  .sidebar a{
+  .sidebar a, .dropdown{
     color: #FCBF15;
     display: block;
     width: 100%;
@@ -50,4 +50,7 @@ body {
 
 .sidebar a i {
   padding-right: 7.5px;
-}
+} 
+
+
+

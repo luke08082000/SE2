@@ -10,9 +10,13 @@ const router = express.Router();
 
 router.get('/home', isAuth, navController.getHome);
 
-router.get('/activities', isAuth, navController.getActivities);
+router.get('/activities', isAuth, navController.getActivities); // Student only
 
-router.post('/activities', isAuth, navController.postActivities);
+router.post('/activities', isAuth, navController.postActivities); // Student only
+
+router.get('/activities/create-form', isAuth, isFaculty, navController.getCreateForm); // Faculty only
+
+router.post('/activities/create-form', isAuth, isFaculty, navController.postCreateForm); // Faculty only
 
 router.get('/capstone-projects', isAuth, navController.getCapstoneProjects);
 

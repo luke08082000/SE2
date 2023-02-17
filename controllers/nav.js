@@ -53,29 +53,8 @@ exports.getActivities = (req, res) => {
 };
 
 exports.postActivities = (req, res) => {
-    const title = req.body.title;
-    const description = req.body.description;
-    const deadline = req.body.deadline;
-    const email = req.session.email;
-    const section = req.body.section;
     const role = req.session.user.role;
-    if(role === "Faculty") {
-        User.findByPk(req.session.user.id)
-        .then(user => {
-            return SubmissionForm.create({
-                title: title,
-                description: description,
-                deadline: deadline,
-                createdBy: email,
-                section: section,
-                userId: user.id
-            })
-        })
-        .then(result => {
-            res.redirect('/capstone-projects');
-        })
-        .catch(err => console.log(err))
-    }
+    
     if (role === "Student") {
         const filePath = req.file.path.substring(6) // to exclude public folder
         const fileName = req.file.filename;
@@ -98,7 +77,36 @@ exports.postActivities = (req, res) => {
         }
 }
 
+exports.getCreateForm = (req, res) => {
+    const role = req.session.user.role;
+    res.render('activities/create-form', {
+        role: role
+    })
+}
 
+exports.postCreateForm = (req, res) => {
+    const title = req.body.title;
+    const description = req.body.description;
+    const deadline = req.body.deadline;
+    const email = req.session.email;
+    const section = req.body.section;
+    const role = req.session.user.role;
+    User.findByPk(req.session.user.id)
+        .then(user => {
+            return SubmissionForm.create({
+                title: title,
+                description: description,
+                deadline: deadline,
+                createdBy: email,
+                section: section,
+                userId: user.id
+            })
+        })
+        .then(result => {
+            res.redirect('/capstone-projects');
+        })
+        .catch(err => console.log(err))
+}
 
 
 exports.getCapstoneProjects = (req, res) => {

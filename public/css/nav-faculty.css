@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+  
+  }
+  .sidebar{
+    background:  #231F20;
+    padding-top: 30px;
+    position: fixed;
+    left: 0;
+    min-width: 250px;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .sidebar .image{
+    width: 150px;
+    height: 150px;
+    margin-bottom: 60px;
+  }
+  
+  .sidebar a, .dropdown{
+    color: #FCBF15;
+    display: block;
+    width: 100%;
+    line-height: 80px;
+    text-decoration: none;
+    padding-left: 50px;
+    box-sizing: border-box;
+  }
+
+  .sidebar .dropdown a {
+    padding-left: 25px;
+  }
+  
+  .sidebar .dropdown-btn {
+    font-size: 16px;
+    font-family: "Roboto", sans-serif;
+    padding: 0;
+  }
+  
+  .sidebar .dropdown-content {
+    display: none;
+  }
+  
+  .sidebar .dropdown-content a {
+    line-height: 50px;
+  }
+  
+  .sidebar a1{
+    color: #FCBF15;
+    display: block;
+    width: 100%;
+    line-height: 80px;
+    text-decoration: none;
+    text-align: center;
+    box-sizing: border-box;
+    margin-top: 90px;
+  
+  }
+  
+  .sidebar button {
+    background: none;
+    color: #FCBF15;
+    line-height: 80px;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .sidebar a i, .dropdown-btn i {
+  padding-right: 7.5px;
+  }
