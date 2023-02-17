@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href = "/css/nav-faculty.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">  
+    <link rel="stylesheet" href="../css/form-submit.css">
+    <title>Home</title>
+</head>
+<body>
+  <%- include ('../partials/navigation.ejs') %>
+
+  <div class="container">
+    <h2>Filter Submissions</h2>
+    <div class="form-group">
+      <label for="section">Section:</label>
+      <select name="section" id="section">
+        <option value="">All</option>
+        <option value="3ISA">3ISA</option>
+        <option value="3ISB">3ISB</option>
+        <option value="4ISA">4ISA</option>
+        <option value="4ISB">4ISB</option>
+      </select>
+    </div>
+    <button id="filter-btn" class="btn btn-primary">Filter</button>
+  </div>
+  
+  <% if (forms.length > 0) { %>
+    <div class="container" id="form-container">
+      <% for (let i = 0; i < forms.length; i++) { %>
+        <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
+          <% if (forms[i].submissions[j].status !== null) { %>
+            <article class="card section-<%= forms[i].section %>">
+              <div class="form-control card-header">
+                <h1 class="form__title"><%= forms[i].title %></h1>
+              </div>
+              <div class="form-control">
+                <h4>Status: <%= forms[i].submissions[j].status %></h4>
+              </div>
+              <div class="form-control" id="viewer-<%= j %>">
+                <iframe src="<%= forms[i].submissions[j].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
+              </div>
+              <div class="card-actions">
+                <% if(role === "Faculty") { %>
+                <button>Approve</button>
+                <% } %>
+                <a onclick="toggleIframe(<%= i %>)">View</a>
+              </div>
+              <input type="hidden" value="<%= forms[i].id %>" name="formId">
+              <input type="hidden" value="<%= forms[i].status %>" name="formStatus">
+            </article>
+          <% } %>
+        <% } %>
+      <% } %>
+    </div>
+  <% } %>
+  
+  <script>
+    const filterButton = document.getElementById('filter-btn');
+    const formContainer = document.getElementById('form-container');
+    const sectionFilter = document.getElementById('section');
+  
+    filterButton.addEventListener('click', () => {
+      const selectedSection = sectionFilter.value;
+      const cards = formContainer.querySelectorAll('.card');
+  
+      cards.forEach(card => {
+        if (selectedSection === '' || card.classList.contains(`section-${selectedSection}`)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  </script>
+  
+  </body>

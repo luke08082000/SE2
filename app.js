@@ -87,7 +87,7 @@ SubmissionForm.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Submission, { foreignKey: 'userId' });
 Submission.belongsTo(User, { foreignKey: 'userId' });
 
-SubmissionForm.hasMany(Submission, { foreignKey: 'submissionId' });
+SubmissionForm.hasMany(Submission, { foreignKey: 'submissionId' }); // ID nung submissionForm
 Submission.belongsTo(SubmissionForm, { foreignKey: 'submissionId' });
 
 

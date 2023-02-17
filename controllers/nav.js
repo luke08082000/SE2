@@ -54,7 +54,6 @@ exports.getActivities = (req, res) => {
 
 exports.postActivities = (req, res) => {
     const role = req.session.user.role;
-    
     if (role === "Student") {
         const filePath = req.file.path.substring(6) // to exclude public folder
         const fileName = req.file.filename;
@@ -76,6 +75,29 @@ exports.postActivities = (req, res) => {
         .catch(err => console.log(err))
         }
 }
+
+exports.getApproveDocuments = (req, res) => {
+    const role = req.session.user.role;
+    const userGroup = req.session.user.groupId;
+    const currentUser = req.session.user;
+    SubmissionForm.findAll({
+        include: [{
+            model: Submission,
+            as: 'submissions'
+        }]
+    })
+    .then(forms => {
+        res.render('activities/approve-documents', {
+            forms: forms,
+            userGroup: userGroup,
+            role: role,
+            currentUser: currentUser,
+            status: forms.status
+        });
+    })
+    .catch(err => console.log(err))
+}
+
 
 exports.getCreateForm = (req, res) => {
     const role = req.session.user.role;
@@ -103,7 +125,7 @@ exports.postCreateForm = (req, res) => {
             })
         })
         .then(result => {
-            res.redirect('/capstone-projects');
+            res.redirect('/activities/approve-documents');
         })
         .catch(err => console.log(err))
 }

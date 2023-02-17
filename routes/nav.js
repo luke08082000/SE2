@@ -14,6 +14,8 @@ router.get('/activities', isAuth, navController.getActivities); // Student only
 
 router.post('/activities', isAuth, navController.postActivities); // Student only
 
+router.get('/activities/approve-documents', isAuth, isFaculty, navController.getApproveDocuments);
+
 router.get('/activities/create-form', isAuth, isFaculty, navController.getCreateForm); // Faculty only
 
 router.post('/activities/create-form', isAuth, isFaculty, navController.postCreateForm); // Faculty only

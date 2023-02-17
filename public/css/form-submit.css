@@ -9,11 +9,24 @@
 }
 
 .container .card {
-    border-bottom: 2px dotted black;
-    margin-block: 1rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 87%;
+    margin-bottom: 1rem;
 }
 .container .card-actions {
     margin-bottom: 1rem;
+}
+
+.container button {
+    background-color: #0070f3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
 }
 
 .form-control {
