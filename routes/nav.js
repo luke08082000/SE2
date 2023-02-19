@@ -10,9 +10,11 @@ const router = express.Router();
 
 router.get('/home', isAuth, navController.getHome);
 
-router.get('/activities', isAuth, navController.getActivities); // Student only
+router.get('/activities/submit', isAuth, navController.getSubmit); // Student only
 
-router.post('/activities', isAuth, navController.postActivities); // Student only
+router.post('/activities/submit', isAuth, navController.postSubmit); // Student only
+
+router.get('/activities/monitor', isAuth, navController.getMonitor); // Student only
 
 router.get('/activities/approve-documents', isAuth, isFaculty, navController.getApproveDocuments);
 

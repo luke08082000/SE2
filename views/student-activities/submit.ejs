@@ -6,24 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <% if(role === "Faculty") { %><link rel="stylesheet" href="/css/form-create.css"><% } %>
     <link rel="stylesheet" href="/css/form-submit.css">
-    <link rel="stylesheet" href="css/act-nav.css">
-    <%- include ('partials/links.ejs') %>
+    <%- include ('../partials/links.ejs') %>
     <title>Home</title>
 </head>
 <body>
-  <%- include ('partials/navigation.ejs') %>
+  <%- include ('../partials/navigation.ejs') %>
   <% if (role === "Student") { %>
     <% if (forms.length > 0) { %>
       <div class="container">
+        <div class="page-title-container">
+          <h1>Submit Documents</h1>
+        </div>
         <% for (let i = 0; i < forms.length; i++) { %>
           <% let submitted = false; %>
           <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
-            <% if (forms[i].submissions[j].status === "Pending") { %>
+            <% if (forms[i].submissions[j].groupId === user.groupId) { %>
               <% submitted = true; %>
             <% } %>
           <% } %>
           <% if (!submitted && forms[i].section === section) { %>
-            <form action="/activities" method="POST" enctype="multipart/form-data">
+            <form action="/activities/submit" method="POST" enctype="multipart/form-data">
               <article class="card">
                 <div class="form-control card-header">
                   <h1 class="form__title"><%= forms[i].title %></h1>
@@ -34,7 +36,7 @@
                 </div>
                 <% if (role === "Student") { %>
                 <div class="form-control">
-                  <h4>PDF File</h4>
+                  <label for="file">PDF file</label>
                   <input type="file" class="form-control" name="file" id="file" accept=".pdf">
                 </div>
                 <% } %>

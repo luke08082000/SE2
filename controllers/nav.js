@@ -25,8 +25,9 @@ exports.getHome = (req, res) => {
     })
 };
 
-exports.getActivities = (req, res) => {
+exports.getSubmit = (req, res) => {
     const role = req.session.user.role;
+    const user = req.session.user;
     const section = req.session.user.section;
     if (role === "Student") {
         SubmissionForm.findAll({
@@ -36,7 +37,8 @@ exports.getActivities = (req, res) => {
             }]
         })
         .then(forms => {
-            res.render('activities', {
+            res.render('student-activities/submit', {
+                user: user,
                 forms: forms,
                 role: role,
                 section: section,
@@ -52,7 +54,7 @@ exports.getActivities = (req, res) => {
     }
 };
 
-exports.postActivities = (req, res) => {
+exports.postSubmit = (req, res) => {
     const role = req.session.user.role;
     if (role === "Student") {
         const filePath = req.file.path.substring(6) // to exclude public folder
@@ -70,7 +72,7 @@ exports.postActivities = (req, res) => {
                 submissionId: formId,
                 groupId: req.session.user.groupId
             })
-            res.redirect('/capstone-projects');
+            res.redirect('/activities/monitor');
         })
         .catch(err => console.log(err))
         }
@@ -87,7 +89,7 @@ exports.getApproveDocuments = (req, res) => {
         }]
     })
     .then(forms => {
-        res.render('activities/approve-documents', {
+        res.render('faculty-activities/approve-documents', {
             forms: forms,
             userGroup: userGroup,
             role: role,
@@ -101,7 +103,7 @@ exports.getApproveDocuments = (req, res) => {
 
 exports.getCreateForm = (req, res) => {
     const role = req.session.user.role;
-    res.render('activities/create-form', {
+    res.render('faculty-activities/create-form', {
         role: role
     })
 }
@@ -131,6 +133,25 @@ exports.postCreateForm = (req, res) => {
 }
 
 
+exports.getMonitor = (req, res) => {
+    const role = req.session.user.role;
+    const userGroup = req.session.user.groupId;
+    SubmissionForm.findAll({
+        include: [{
+            model: Submission,
+            as: 'submissions'
+        }]
+    })
+    .then(forms => {
+        res.render('student-activities/monitor', {
+            userGroup: userGroup,
+            forms: forms,
+            role: role,
+            status: forms.status,
+        });
+    })
+    .catch(err => console.log(err))
+};
 exports.getCapstoneProjects = (req, res) => {
     const role = req.session.user.role;
     const userGroup = req.session.user.groupId;
@@ -150,11 +171,6 @@ exports.getCapstoneProjects = (req, res) => {
     })
     .catch(err => console.log(err))
 };
-
-
-  
-  
-  
 
 
 exports.postCapstoneProjects = (req, res) => {

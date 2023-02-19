@@ -15,6 +15,7 @@
     padding: 20px;
     width: 87%;
     margin-bottom: 1rem;
+    display: flex;
 }
 .container .card-actions {
     margin-bottom: 1rem;
