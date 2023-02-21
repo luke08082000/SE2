@@ -1,78 +1,84 @@
 const User = require('../models/user');
+
 const Submission = require('../models/submission');
 const SubmissionForm = require('../models/submissionForm');
 const Group = require('../models/group');
-const Membership = require('../models/membership');
-
+const UserStudent = require('../models/userStudent');
+const UserFaculty = require('../models/userFaculty');
 
 exports.getHome = (req, res) => {
     const role = req.session.user.role;
     const firstName = req.session.user.firstName;
     const lastName = req.session.user.lastName;
     const email = req.session.user.email;
-    const groupId = req.session.user.groupId;
-    const section = req.session.user.section;
-    Group.findOne({ where: {id: groupId} })
-    .then(group => {
+ 
+    UserStudent.findOne({ where: { userId: req.session.user.id } })
+    .then(student => {
         res.render('home', {
             role: role,
             firstName: firstName,
             lastName: lastName,
-            email: email,
-            section: section,
-            groupName: !group ? 'No group yet' : group.name
+            email: email
         })
     })
 };
 
-exports.getSubmit = (req, res) => {
+exports.getSubmit = (req, res) => { // should only output forms that the group have not yet submitted to
     const role = req.session.user.role;
     const user = req.session.user;
     const section = req.session.user.section;
-    if (role === "Student") {
-        SubmissionForm.findAll({
-            include: [{
-                model: Submission,
-                as: 'submissions'
-            }]
-        })
+    UserStudent.findOne({ where: { userId: user.id } })
+    .then(student => {
+        SubmissionForm.findAll({ where: { section: student.section } }) // find all forms for the given section
         .then(forms => {
-            res.render('student-activities/submit', {
-                user: user,
-                forms: forms,
-                role: role,
-                section: section,
-                status: forms.status
-            });
+            if (!forms) {
+                res.redirect('/home');
+            }
+            const formIds = forms.map(form => form.id);
+            Submission.findAll({ where: { submissionId: formIds } }) // find all submissions for the given forms
+            .then(submissions => {
+                let submitted = false;
+                console.log(submitted + " is submitted")
+                res.render('student-activities/submit', {
+                    submitted: submitted,
+                    submissions: submissions,
+                    student: student,
+                    user: user,
+                    forms: forms,
+                    role: role,
+                    section: student.section,
+                    status: forms.status
+                });
+            })
+            
         })
-        .catch(err => console.log(err))
-    }
-    if (role === "Faculty") {
-        res.render('activities', {
-            role: role
-        })
-    }
+    })
 };
-
+  
 exports.postSubmit = (req, res) => {
     const role = req.session.user.role;
     if (role === "Student") {
         const filePath = req.file.path.substring(6) // to exclude public folder
         const fileName = req.file.filename;
         const formId = req.body.formId;
+        const title = req.body.formTitle;
         const email = req.session.user.email;
-        SubmissionForm.findByPk(formId)
-        .then(submission => {
-            Submission.create ({ 
-                fileName: fileName,
-                filePath: filePath,
-                status: 'Pending',
-                submittedBy: email,
-                userId: req.session.user.id,
-                submissionId: formId,
-                groupId: req.session.user.groupId
+        UserStudent.findOne({ where : { userId: req.session.user.id }})
+        .then(student => {
+            SubmissionForm.findByPk(formId)
+            .then(submission => {
+                Submission.create ({ 
+                    fileName: fileName,
+                    filePath: filePath,
+                    status: 'Pending',
+                    submittedBy: email,
+                    userId: student.userId,
+                    submissionId: formId,
+                    groupId: student.groupId,
+                    title: title
+                })
+                res.redirect('/activities/monitor');
             })
-            res.redirect('/activities/monitor');
         })
         .catch(err => console.log(err))
         }
@@ -115,7 +121,7 @@ exports.postCreateForm = (req, res) => {
     const email = req.session.email;
     const section = req.body.section;
     const role = req.session.user.role;
-    User.findByPk(req.session.user.id)
+    UserFaculty.findOne({ where: { userId: req.session.user.id } })
         .then(user => {
             return SubmissionForm.create({
                 title: title,
@@ -135,42 +141,45 @@ exports.postCreateForm = (req, res) => {
 
 exports.getMonitor = (req, res) => {
     const role = req.session.user.role;
-    const userGroup = req.session.user.groupId;
-    SubmissionForm.findAll({
-        include: [{
-            model: Submission,
-            as: 'submissions'
-        }]
-    })
-    .then(forms => {
-        res.render('student-activities/monitor', {
-            userGroup: userGroup,
-            forms: forms,
-            role: role,
-            status: forms.status,
-        });
+    UserStudent.findOne({ where: { userId: req.session.user.id } })
+    .then(student => {
+        Group.findOne({ where: { id: student.groupId } })
+        .then(group => {
+            Submission.findAll({ where: { groupId: group.id }}) // lagyan ng title ung submission model
+            .then(submissions => {
+                res.render('student-activities/monitor', {
+                    student: student,
+                    submissions: submissions,
+                    role: role,
+                    status: submissions.status,
+                });
+            })
+        })
     })
     .catch(err => console.log(err))
 };
+
 exports.getCapstoneProjects = (req, res) => {
     const role = req.session.user.role;
-    const userGroup = req.session.user.groupId;
-    SubmissionForm.findAll({
-        include: [{
-            model: Submission,
-            as: 'submissions'
-        }]
-    })
-    .then(forms => {
-        res.render('capstone-projects', {
-            userGroup: userGroup,
-            forms: forms,
-            role: role,
-            status: forms.status,
-        });
+    UserStudent.findOne({ where: { userId: req.session.user.id } })
+    .then(student => {
+        Group.findOne({ where: { id: student.groupId } })
+        .then(group => {
+            Submission.findAll({ where: { groupId: group.id }}) // lagyan ng title ung submission model
+            .then(submissions => {
+                res.render('capstone-projects', {
+                    student: student,
+                    submissions: submissions,
+                    role: role,
+                    status: submissions.status,
+                });
+            })
+        })
     })
     .catch(err => console.log(err))
 };
+
+  
 
 
 exports.postCapstoneProjects = (req, res) => {
@@ -179,26 +188,30 @@ exports.postCapstoneProjects = (req, res) => {
 
 exports.getGroup = (req, res) => {
     const role = req.session.user.role;
-    const hasGroup = req.session.user.groupId;
-    const section = req.session.user.section;
-    const user = req.session.user
-    Group.findAll({
-        include: [{
-            model: User,
-            through: Membership
-        }]
-    })
-    .then(groups => {
-        res.render('group', {
-            group: groups,
-            role: role,
-            hasGroup: hasGroup,
-            section: section,
-            user: user
+    UserStudent.findOne({ where: { userId: req.session.user.id } })
+    .then(student => {
+        Group.findAll({
+            include: [{
+                model: User,
+                through: UserStudent
+            }]
+        })
+        .then(groups => {
+            res.render('group', {
+                groupId: role !== "Student" ? '' : student.groupId,
+                hasGroup: role !== "Student" ? '' : student.groupId,
+                section: role !== "Student" ? '' : student.section,
+                user: student,
+                group: groups,
+                role: role
+            });
         })
     })
-    .catch(err => console.log(err))    
-};
+    .catch(err => console.log(err));
+}
+
+
+
 
 exports.postGroup = (req, res) => {
     if (req.session.user.role === "Faculty") { //create group as a faculty
@@ -215,27 +228,19 @@ exports.postGroup = (req, res) => {
     } else if (req.session.user.role === "Student") { //join group as a student
         const groupId = req.body.groupId;
         const userId = req.session.user.id;
-        Membership.findOne({ where: { userId: userId } })
-            .then(member => {
-                if (member) {
-                    console.log('You already belong to a group')
+        UserStudent.findOne({ where: { userId: userId } }) //find current userStudent
+            .then(student => {
+                if(student.groupId) { //if student has groupId 
+                    console.log('May Group ka na!')
                     res.redirect('/group');
                 } else {
-                    Group.findOne({ where: { id:  groupId } })
-                        .then(group => {
-                            Membership.create({ userId: userId, groupId: groupId })
-                            User.findOne({ where: { id: userId } })
-                            .then(user => {
-                                user.update({ groupId: groupId })
-                                req.session.user = user;
-                                return user.save()
-                            })
-                            .then(member => {
-                                res.redirect('/group');
-                            })
-                        }).catch(err => console.log(err))
+                    student.update({ groupId: groupId }) //update student groupId
+                    student.save();
+                    res.redirect('/group');
                 }
             })
         .catch(err => console.log(err))
     }
 }
+
+

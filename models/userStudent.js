@@ -2,13 +2,14 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const Membership = sequelize.define('membership', {
+const UserStudent = sequelize.define('user-student', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
-    }
+    },
+    section: Sequelize.STRING
 })
 
-module.exports = Membership;
+module.exports = UserStudent;

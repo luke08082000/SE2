@@ -13,24 +13,20 @@
   <%- include ('../partials/navigation.ejs') %>
   <% if (role === "Student") { %>
     <% if (forms.length > 0) { %>
+      <% console.log(forms.length) %>
       <div class="container">
         <div class="page-title-container">
           <h1>Submit Documents</h1>
         </div>
         <% for (let i = 0; i < forms.length; i++) { %>
-          <% let submitted = false; %>
-          <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
-            <% if (forms[i].submissions[j].groupId === user.groupId) { %>
-              <% submitted = true; %>
-            <% } %>
-          <% } %>
-          <% if (!submitted && forms[i].section === section) { %>
+          <% if (forms[i].section === section && !submissions.find(submission => submission.submissionId === forms[i].id && submission.groupId === student.groupId)) { %>
+            <% console.log('dumaan dito') %>
+            <% console.log(forms[i].section) %>
             <form action="/activities/submit" method="POST" enctype="multipart/form-data">
               <article class="card">
                 <div class="form-control card-header">
                   <h1 class="form__title"><%= forms[i].title %></h1>
                 </div>
-                
                 <div class="form-control">
                   <p>Deadline: <%= forms[i].deadline.toLocaleDateString("en-US", {year: 'numeric', month: '2-digit', day: '2-digit'}) %></p>
                 </div>
@@ -40,28 +36,26 @@
                   <input type="file" class="form-control" name="file" id="file" accept=".pdf">
                 </div>
                 <% } %>
-                <% if (forms[i].submissions.length > 0) { %>
-                  <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
-                  <div class="form-control" id="viewer-<%= j %>">
-                    <iframe src="<%= forms[i].submissions[j].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
+                <% if (submissions.length > 0) { %>
+                  <div class="form-control" id="viewer-<%= i %>">
+                    <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
                   </div>
-                  <% } %>
                 <% } %>
                 <div class="card-actions">
                   <% if (role === "Student") { %>
                   <button class="btn" type="submit">Submit</button>
                   <% } %>
-                  
                 </div>
                 <input type="hidden" value="<%= forms[i].id %>" name="formId">
                 <input type="hidden" value="<%= forms[i].status %>" name="formStatus">
+                <input type="hidden" value="<%= forms[i].title %>" name="formTitle">
               </article>
             </form>
           <% } %>
         <% } %>
       </div>
     <% } %>
-    
   <% } %>
+  
 </body>
 </html>

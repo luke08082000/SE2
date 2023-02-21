@@ -9,12 +9,11 @@ const multer = require('multer');
 
 //MODELS
 const User = require('./models/user');
-const FacultyRole = require('./models/facultyRole');
-const FacultyUserRole = require('./models/facultyUserRole');
 const Submission = require('./models/submission');
 const SubmissionForm = require('./models/submissionForm');
 const Group = require('./models/group');
-const Membership = require('./models/membership');
+const UserStudent = require('./models/userStudent');
+const UserFaculty = require('./models/userFaculty');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -56,8 +55,6 @@ const mysqlOptions
 const connection = mysql.createPool(mysqlOptions);
 const sessionStore = new MySQLStore({}, connection)
 
-
-
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -78,35 +75,39 @@ app.use((req, res, next) => {
 })
 
 //RELATIONSHIPS
-User.belongsToMany(FacultyRole, { through: FacultyUserRole, as: 'roles' });
-FacultyRole.belongsToMany(User, { through: FacultyUserRole });
 
-User.hasMany(SubmissionForm, { foreignKey: 'userId' });
-SubmissionForm.belongsTo(User, { foreignKey: 'userId' });
+// User.hasMany(SubmissionForm, { foreignKey: 'userId' });
+// SubmissionForm.belongsTo(User, { foreignKey: 'userId' });
 
-User.hasMany(Submission, { foreignKey: 'userId' });
-Submission.belongsTo(User, { foreignKey: 'userId' });
+// User.hasMany(Submission, { foreignKey: 'userId' });
+// Submission.belongsTo(User, { foreignKey: 'userId' });
 
 SubmissionForm.hasMany(Submission, { foreignKey: 'submissionId' }); // ID nung submissionForm
 Submission.belongsTo(SubmissionForm, { foreignKey: 'submissionId' });
 
-
+//Student to group relationship
 User.belongsToMany(Group, {
-    through: Membership,
+    through: UserStudent,
     foreignKey: 'userId'
 });
   Group.belongsToMany(User, {
-    through: Membership,
+    through: UserStudent,
     foreignKey: 'groupId'
 });
 
-User.hasOne(Membership, { foreignKey: 'userId' });
-Membership.belongsTo(User, { foreignKey: 'userId' });
-Group.hasMany(Membership, { foreignKey: 'groupId' });
-Membership.belongsTo(Group, { foreignKey: 'groupId' });
-
+//User to student relationship
+User.hasOne(UserStudent, { foreignKey: 'userId', onDelete: 'CASCADE' });
+UserStudent.belongsTo(User, { foreignKey: 'userId' });
+//User to faculty relationship
+User.hasOne(UserFaculty, { foreignKey: 'userId', onDelete: 'CASCADE' });
+UserFaculty.belongsTo(User, { foreignKey: 'userId' });
+//Student to group relationship
+UserStudent.belongsTo(Group, { foreignKey: 'userId' });
+Group.hasMany(UserStudent, { foreignKey: 'groupId' });
+//Submission to group relationship
 Submission.belongsTo(Group, { foreignKey: 'groupId' });
 Group.hasMany(Submission, { foreignKey: 'groupId' });
+
 
 //ROUTES
 app.use(authRoutes);

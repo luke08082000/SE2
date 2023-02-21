@@ -57,15 +57,18 @@
       
         <div class="card-grid">
             <% for (let i = 0; i < group.length; i++) { %>
-                <% if (role === "Faculty" || (role === "Student" && ((hasGroup && group[i].id === user.groupId) || (!hasGroup && group[i].section === section)))) { %>
+                <% if (role === 'Faculty' || (role === 'Student' && (hasGroup && group[i].id.toString() === user.groupId || hasGroup && group[i].id === user.groupId)) || !hasGroup && group[i].section === section) { %>
+                  <% console.log('it went through') %>
                   <div class="card">
                     <h4><%= group[i].name %></h4>
                     <h6>Section: <span class="section"><%= group[i].section %></span></h6>
                     <h6>Members:</h6>
                     <ul>
+                      <% if(group[i].users) { %>
                       <% group[i].users.forEach(user => { %>
                         <li><%= user.email %></li>
-                      <% }); %>
+                        <% }); %>
+                        <% } %>
                     </ul>
                     <% if (!hasGroup && role === "Student") { %>
                       <form action="/group" method="POST">

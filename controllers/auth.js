@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const UserStudent = require('../models/userStudent');
+const UserFaculty = require('../models/userFaculty');
 const nodemailer = require('nodemailer');
 
 const crypto = require('crypto');
@@ -21,6 +23,7 @@ exports.getLogin = (req, res, next) => {
     res.render('auth/login')
 };
 
+
 exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -31,7 +34,7 @@ exports.postLogin = (req, res, next) => {
         }
         bcrypt
         .compare(password, user.password)
-        .then(doMatch => {
+        .then (doMatch => {
             if (doMatch) {
                 req.session.user = user;
                 req.session.isLoggedIn = true;
@@ -40,7 +43,6 @@ exports.postLogin = (req, res, next) => {
                     return res.redirect('/home');
                 })
             }
-            console.log('dumaan dito');
             res.redirect('/auth/login')
         })
         .catch(err => console.log(err))
@@ -51,6 +53,8 @@ exports.postLogin = (req, res, next) => {
 exports.getRegister = (req, res, next) => {
     res.render('auth/register')
 };
+
+  
 
 exports.postRegister = (req, res, next) => {
     const firstName = req.body.firstName;
@@ -68,7 +72,6 @@ exports.postRegister = (req, res, next) => {
         return bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
-            console.log( "This is my role: " + role);
             const user = new User({
                 firstName: firstName,
                 lastName: lastName,
@@ -76,12 +79,23 @@ exports.postRegister = (req, res, next) => {
                 role: role,
                 password: hashedPassword,
                 emailVerified: 'unverified',
-                section: section,
                 token: token
             })
             return user.save();
         })
         .then(user => {
+            console.log(user.role)
+            if(user.role === "Student") {
+                UserStudent.create({
+                    userId: user.id,
+                    section: section
+                })
+            }
+            if(user.role === "Faculty") {
+                UserFaculty.create({
+                    userId: user.id
+                })
+            }
             var message = {
                 from: 'capstone.requirements@gmail.com',
                 to: user.email,

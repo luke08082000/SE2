@@ -11,24 +11,21 @@
 <body>
   <%- include ('../partials/navigation.ejs') %>
   <% if(role === "Student") { %>
-    <% if (forms.length > 0) { %>
+    <% if (submissions.length > 0) { %>
+      <% console.log(submissions.length) %>
+      <% console.log(student.groupId + " student group id") %>
       <div class="container">
-        <div class="page-title-container">
-          <h1>Monitor Your Submissions</h1>
-        </div>
-        <% for (let i = 0; i < forms.length; i++) { %>
-          <% if (forms[i].submissions.length > 0) { %>
-            <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
-              <% if (forms[i].submissions[j].status !== null && forms[i].submissions[j].groupId === userGroup) { %>
+        <% for (let i = 0; i < submissions.length; i++) { %>
+          <% console.log(submissions[i].title) %>
                 <article class="card">
                   <div class="form-control card-header">
-                    <h1 class="form__title"><%= forms[i].title %></h1>
+                    <h1 class="form__title"><%= submissions[i].title %></h1>
                   </div>
                   <div class="form-control">
-                    <h4>Status: <%= forms[i].submissions[j].status %></h4>
+                    <h4>Status: <%= submissions[i].status %></h4>
                   </div>
-                  <div class="form-control" id="viewer-<%= j %>">
-                    <iframe src="<%= forms[i].submissions[j].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
+                  <div class="form-control" id="viewer-<%= i %>">
+                    <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
                   </div>
                   <div class="card-actions">
                     <% if(role === "Faculty") { %>
@@ -36,12 +33,7 @@
                     <% } %>
                     <a onclick="toggleIframe(<%= i %>)">View</a>
                   </div>
-                  <input type="hidden" value="<%= forms[i].id %>" name="formId">
-                  <input type="hidden" value="<%= forms[i].status %>" name="formStatus">
                 </article>
-              <% } %>
-            <% } %>
-          <% } %>
         <% } %>
       </div>
     <% } %>

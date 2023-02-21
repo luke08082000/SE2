@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const SubmissionForm = require('../models/submissionForm');
+const SubmissionForm = require('./submissionForm');
 
 const Submission = sequelize.define('submission', {
     id: {
@@ -12,6 +12,7 @@ const Submission = sequelize.define('submission', {
         primaryKey: true
     },
     description: Sequelize.STRING,
+    title: Sequelize.STRING,
     deadline: Sequelize.DATE,
     status: Sequelize.STRING,
     fileName: Sequelize.STRING,
