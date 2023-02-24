@@ -91,11 +91,6 @@ exports.postRegister = (req, res, next) => {
                     section: section
                 })
             }
-            if(user.role === "Faculty") {
-                UserFaculty.create({
-                    userId: user.id
-                })
-            }
             var message = {
                 from: 'capstone.requirements@gmail.com',
                 to: user.email,

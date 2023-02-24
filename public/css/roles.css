@@ -1,0 +1,9 @@
+.container .form-control {
+    display: flex;
+}
+
+.container .form-control button {
+    margin-block: 1rem;
+    margin-inline: 1rem;
+}
+

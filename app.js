@@ -9,11 +9,11 @@ const multer = require('multer');
 
 //MODELS
 const User = require('./models/user');
+const UserStudent = require('./models/userStudent');
+const UserFaculty = require('./models/userFaculty');
 const Submission = require('./models/submission');
 const SubmissionForm = require('./models/submissionForm');
 const Group = require('./models/group');
-const UserStudent = require('./models/userStudent');
-const UserFaculty = require('./models/userFaculty');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -83,17 +83,7 @@ app.use((req, res, next) => {
 // Submission.belongsTo(User, { foreignKey: 'userId' });
 
 SubmissionForm.hasMany(Submission, { foreignKey: 'submissionId' }); // ID nung submissionForm
-Submission.belongsTo(SubmissionForm, { foreignKey: 'submissionId' });
-
-//Student to group relationship
-User.belongsToMany(Group, {
-    through: UserStudent,
-    foreignKey: 'userId'
-});
-  Group.belongsToMany(User, {
-    through: UserStudent,
-    foreignKey: 'groupId'
-});
+Submission.belongsTo(SubmissionForm, { foreignKey: 'submissionId' }); // submissionFormId
 
 //User to student relationship
 User.hasOne(UserStudent, { foreignKey: 'userId', onDelete: 'CASCADE' });
@@ -102,8 +92,8 @@ UserStudent.belongsTo(User, { foreignKey: 'userId' });
 User.hasOne(UserFaculty, { foreignKey: 'userId', onDelete: 'CASCADE' });
 UserFaculty.belongsTo(User, { foreignKey: 'userId' });
 //Student to group relationship
-UserStudent.belongsTo(Group, { foreignKey: 'userId' });
-Group.hasMany(UserStudent, { foreignKey: 'groupId' });
+UserStudent.belongsTo(Group);
+Group.hasMany(UserStudent, { foreignKey: 'groupId'});
 //Submission to group relationship
 Submission.belongsTo(Group, { foreignKey: 'groupId' });
 Group.hasMany(Submission, { foreignKey: 'groupId' });

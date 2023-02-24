@@ -11,15 +11,12 @@ exports.getHome = (req, res) => {
     const firstName = req.session.user.firstName;
     const lastName = req.session.user.lastName;
     const email = req.session.user.email;
- 
-    UserStudent.findOne({ where: { userId: req.session.user.id } })
-    .then(student => {
-        res.render('home', {
-            role: role,
-            firstName: firstName,
-            lastName: lastName,
-            email: email
-        })
+    
+    res.render('home', {
+        role: role,
+        firstName: firstName,
+        lastName: lastName,
+        email: email
     })
 };
 
@@ -138,6 +135,50 @@ exports.postCreateForm = (req, res) => {
         .catch(err => console.log(err))
 }
 
+exports.getRole = (req, res) => {
+    const role = req.session.user.role;
+    res.render('faculty-activities/roles', {
+        role: role
+    });
+}
+
+exports.postRole = (req, res) => {
+    const roleChosen = req.body.role;
+    const userEmail = req.body.email;
+    const sectionChosen = req.body.section;
+    User.findOne({ where: { role: "Faculty", email: userEmail } })
+    .then(user => {
+        UserFaculty.findAll()
+        .then(userFaculties => {
+            let roleTaken = false;
+            userFaculties.forEach(userFaculty => {
+            if(roleChosen === 'course-facilitator' && userFaculty.role === 'course-facilitator' && userFaculty.section === sectionChosen) {
+                console.log('role is already taken by userFaculty: ' + userFaculty.userId)
+                roleTaken = true;
+            }
+            const possibleRoles = ['course-department-chair', 'course-coordinator', 'track-head', 'technical-adviser'];
+                if(userFaculty.role === roleChosen && possibleRoles.includes(roleChosen)) {
+                    console.log('role is already taken by: ' + user.email)
+                    roleTaken = true;
+                }
+            })
+            if (roleTaken) {
+            res.redirect('/home');
+            } else {
+            UserFaculty.create({ 
+                userId: user.id,
+                role: roleChosen,
+                section: roleChosen === 'course-facilitator' ? sectionChosen : 'all'
+            })
+            .then(result => {
+                console.log('new user-faculty created with role: ' + roleChosen)
+                res.redirect('/activities/roles');
+            })
+            }
+        })
+    })
+    .catch(err => console.log(err));
+}
 
 exports.getMonitor = (req, res) => {
     const role = req.session.user.role;
@@ -145,7 +186,7 @@ exports.getMonitor = (req, res) => {
     .then(student => {
         Group.findOne({ where: { id: student.groupId } })
         .then(group => {
-            Submission.findAll({ where: { groupId: group.id }}) // lagyan ng title ung submission model
+            Submission.findAll({ where: { groupId: group.id }}) 
             .then(submissions => {
                 res.render('student-activities/monitor', {
                     student: student,
@@ -192,8 +233,7 @@ exports.getGroup = (req, res) => {
     .then(student => {
         Group.findAll({
             include: [{
-                model: User,
-                through: UserStudent
+                model: UserStudent
             }]
         })
         .then(groups => {

@@ -18,6 +18,10 @@ router.get('/activities/monitor', isAuth, navController.getMonitor); // Student 
 
 router.get('/activities/approve-documents', isAuth, isFaculty, navController.getApproveDocuments);
 
+router.get('/activities/roles', isAuth, isFaculty, navController.getRole);
+
+router.post('/activities/roles', isAuth, isFaculty, navController.postRole);
+
 router.get('/activities/create-form', isAuth, isFaculty, navController.getCreateForm); // Faculty only
 
 router.post('/activities/create-form', isAuth, isFaculty, navController.postCreateForm); // Faculty only
