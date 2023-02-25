@@ -10,7 +10,8 @@ const Group = sequelize.define('group', {
         primaryKey: true
     },
     name: Sequelize.STRING,
-    section: Sequelize.STRING
+    section: Sequelize.STRING,
+    adviserId: Sequelize.INTEGER
 })
 
 module.exports = Group;

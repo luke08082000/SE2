@@ -97,6 +97,9 @@ Group.hasMany(UserStudent, { foreignKey: 'groupId'});
 //Submission to group relationship
 Submission.belongsTo(Group, { foreignKey: 'groupId' });
 Group.hasMany(Submission, { foreignKey: 'groupId' });
+//UserFaculty to group 
+UserFaculty.hasMany(Group, { foreignKey: 'adviserId' }); //adviserId is userfaculty id
+Group.belongsTo(UserFaculty, { foreignKey: 'adviserId' });
 
 
 //ROUTES

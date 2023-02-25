@@ -57,12 +57,19 @@
       
         <div class="card-grid">
             <% for (let i = 0; i < group.length; i++) { %>
-                <% if (role === 'Faculty' || (role === 'Student' && (hasGroup && group[i].id.toString() === user.groupId || hasGroup && group[i].id === user.groupId)) || !hasGroup && group[i].section === section) { %>
-                  <% console.log('it went through') %>
+                <% if (role === 'Faculty' || (role === 'Student' && (hasGroup && group[i].id == user.groupId)) || !hasGroup && group[i].section === section) { %>
                   <div class="card">
                     <h4><%= group[i].name %></h4>
                     <h6>Section: <span class="section"><%= group[i].section %></span></h6>
                     <h6>Members:</h6>
+
+                    <% if(role == "Faculty" && !group[i].adviserId) { %>
+                      <form action="/activities/roles" method="POST">
+                        <button value="technical-adviser" name="role">Become Technical Adviser</button>
+                        <input type="hidden" value="<%= group[i].id %>" name="groupId">
+                        <input type="hidden" value="<%= group[i].section %>" name="groupSection">
+                      </form>
+                    <% } %>
                     
                     <% if (!hasGroup && role === "Student") { %>
                       <form action="/group" method="POST">

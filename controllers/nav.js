@@ -146,6 +146,26 @@ exports.postRole = (req, res) => {
     const roleChosen = req.body.role;
     const userEmail = req.body.email;
     const sectionChosen = req.body.section;
+    const groupId = req.body.groupId;
+    const currentUser = req.session.user
+    if (roleChosen === 'technical-adviser') {
+        UserFaculty.findOne({ where: { userId: currentUser.id } })
+          .then(userFaculty => {
+            Group.findOne({ where: { id: groupId } })
+              .then(group => {
+                if (!group.adviserId) {
+                  group.update({ adviserId: userFaculty.id })
+                    .then(result => {
+                      res.redirect('/group');
+                    });
+                } else {
+                  console.log('The group already has a technical adviser')
+                  res.redirect('/group');
+                }
+              });
+          });
+          return; // to exit the function early
+      }
     User.findOne({ where: { role: "Faculty", email: userEmail } })
     .then(user => {
         UserFaculty.findAll()
@@ -156,7 +176,7 @@ exports.postRole = (req, res) => {
                 console.log('role is already taken by userFaculty: ' + userFaculty.userId)
                 roleTaken = true;
             }
-            const possibleRoles = ['course-department-chair', 'course-coordinator', 'track-head', 'technical-adviser'];
+                const possibleRoles = ['course-department-chair', 'course-coordinator', 'track-head', 'technical-adviser'];
                 if(userFaculty.role === roleChosen && possibleRoles.includes(roleChosen)) {
                     console.log('role is already taken by: ' + user.email)
                     roleTaken = true;
