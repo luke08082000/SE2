@@ -14,6 +14,7 @@ const UserFaculty = require('./models/userFaculty');
 const Submission = require('./models/submission');
 const SubmissionForm = require('./models/submissionForm');
 const Group = require('./models/group');
+const Status = require('./models/status');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -94,13 +95,18 @@ UserFaculty.belongsTo(User, { foreignKey: 'userId' });
 //Student to group relationship
 UserStudent.belongsTo(Group);
 Group.hasMany(UserStudent, { foreignKey: 'groupId'});
-//Submission to group relationship
-Submission.belongsTo(Group, { foreignKey: 'groupId' });
+//Submission to group relationship = one to many
 Group.hasMany(Submission, { foreignKey: 'groupId' });
-//UserFaculty to group 
+Submission.belongsTo(Group, { foreignKey: 'groupId' });
+//UserFaculty to group = one to many
 UserFaculty.hasMany(Group, { foreignKey: 'adviserId' }); //adviserId is userfaculty id
 Group.belongsTo(UserFaculty, { foreignKey: 'adviserId' });
-
+//Submission to Status = many to many
+Submission.hasMany(Status, { foreignKey: 'submissionId' });
+Status.belongsToMany(Submission, { through: 'SubmissionStatus' });
+//UserFaculty to Status = one to many
+UserFaculty.hasMany(Status, { foreignKey: 'userFacultyId' });
+Status.belongsTo(UserFaculty, { foreignKey: 'userFacultyId' });
 
 //ROUTES
 app.use(authRoutes);

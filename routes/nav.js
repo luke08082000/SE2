@@ -18,6 +18,8 @@ router.get('/activities/monitor', isAuth, navController.getMonitor); // Student 
 
 router.get('/activities/approve-documents', isAuth, isFaculty, navController.getApproveDocuments);
 
+router.post('/activities/approve-documents', isAuth, isFaculty, navController.postApproveDocuments);
+
 router.get('/activities/roles', isAuth, isFaculty, navController.getRole);
 
 router.post('/activities/roles', isAuth, isFaculty, navController.postRole);

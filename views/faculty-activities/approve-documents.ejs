@@ -43,12 +43,19 @@
               <div class="form-control">
                 <h4>Status: <%= forms[i].submissions[j].status %></h4>
               </div>
+              <div class="form-control">
+                <h4>GroupId: <%= forms[i].submissions[j].groupId %></h4>
+              </div>
               <div class="form-control" id="viewer-<%= j %>">
                 <iframe src="<%= forms[i].submissions[j].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
               </div>
               <div class="card-actions">
                 <% if(role === "Faculty") { %>
-                <button>Approve</button>
+                <form action="/activities/approve-documents" method="POST">
+                  <button value="approved" name="statusChosen">Approve</button>
+                  <button value="revise" name="statusChosen">Revise</button>
+                  <input type="hidden" value="<%= forms[i].submissions[j].id %>" name="submissionId">
+                </form>
                 <% } %>
                 <a onclick="toggleIframe(<%= i %>)">View</a>
               </div>

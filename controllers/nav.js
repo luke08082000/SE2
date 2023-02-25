@@ -5,6 +5,7 @@ const SubmissionForm = require('../models/submissionForm');
 const Group = require('../models/group');
 const UserStudent = require('../models/userStudent');
 const UserFaculty = require('../models/userFaculty');
+const Status = require('../models/status');
 
 exports.getHome = (req, res) => {
     const role = req.session.user.role;
@@ -99,6 +100,27 @@ exports.getApproveDocuments = (req, res) => {
             currentUser: currentUser,
             status: forms.status
         });
+    })
+    .catch(err => console.log(err))
+}
+
+exports.postApproveDocuments = (req, res) => {
+    const submissionId = req.body.submissionId;
+    UserFaculty.findOne({ where: { userId: req.session.user.id } })
+    .then(userFaculty => {
+        const role = userFaculty.role;
+        Status.findOne({ where: { userFacultyId: userFaculty.id, submissionId: submissionId }}) //You can only approve a document once
+        .then(status => {
+            if(status) {
+                console.log('You have already approved this document');
+                res.redirect('/activities/approve-documents');
+            } else {
+                const status = req.body.statusChosen;
+                console.log(submissionId + ' is the submission id');
+                Status.create({ userFacultyId: userFaculty.id, submissionId: submissionId, status: status })
+                res.redirect('/activities/approve-documents');
+            }
+        }) 
     })
     .catch(err => console.log(err))
 }
