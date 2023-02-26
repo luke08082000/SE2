@@ -106,10 +106,10 @@ exports.getApproveDocuments = (req, res) => {
 
 exports.postApproveDocuments = (req, res) => {
     const submissionId = req.body.submissionId;
-    UserFaculty.findOne({ where: { userId: req.session.user.id } })
+    UserFaculty.findOne({ where: { userId: req.session.user.id } })// palitan later to allow single users with multiple faculty roles
     .then(userFaculty => {
         const role = userFaculty.role;
-        Status.findOne({ where: { userFacultyId: userFaculty.id, submissionId: submissionId }}) //You can only approve a document once
+        Status.findOne({ where: { userFacultyId: userFaculty.id, submissionId: submissionId }}) //You can only approve a document once per role
         .then(status => {
             if(status) {
                 console.log('You have already approved this document');
@@ -121,6 +121,35 @@ exports.postApproveDocuments = (req, res) => {
                 res.redirect('/activities/approve-documents');
             }
         }) 
+    })
+    //UPDATE SUBMISSION STATUS TO 'forRevision' OR TO 'approved'
+    Status.findAll({ where: { submissionId: submissionId } })
+    .then(statuses => {
+        let approveNum = 0;
+        statuses.forEach(status => {
+            if(status.status == 'revise'){
+                Submission.findOne({ where: { id: submissionId }})
+                .then(submission => {
+                submission.update({ status: 'forRevision' })
+                console.log(submission.status + ' is the new status')
+                return;
+                })
+            }
+            if(status.status == 'approved') {
+                approveNum++
+                console.log(approveNum)
+                if (approveNum === 5){            
+                    Submission.findOne({ where: { id: submissionId }})
+                    .then(submission => {
+                        submission.update({ status: 'approved' })
+                        console.log(submission.status + ' is the new status')
+                    })
+                    console.log(approveNum + ' approved');
+                } else console.log(5 - approveNum + ' more need/s to approve');
+            }
+            
+        })
+        
     })
     .catch(err => console.log(err))
 }
