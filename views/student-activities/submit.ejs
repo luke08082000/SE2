@@ -36,11 +36,6 @@
                   <input type="file" class="form-control" name="file" id="file" accept=".pdf">
                 </div>
                 <% } %>
-                <% if (submissions.length > 0) { %>
-                  <div class="form-control" id="viewer-<%= i %>">
-                    <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
-                  </div>
-                <% } %>
                 <div class="card-actions">
                   <% if (role === "Student") { %>
                   <button class="btn" type="submit">Submit</button>

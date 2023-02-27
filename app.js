@@ -18,7 +18,8 @@ const Status = require('./models/status');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
-const navRoutes = require('./routes/nav');
+const facultyRoutes = require('./routes/faculty');
+const studentRoutes = require('./routes/student');
 
 const app = express();
 
@@ -110,7 +111,17 @@ Status.belongsTo(UserFaculty, { foreignKey: 'userFacultyId' });
 
 //ROUTES
 app.use(authRoutes);
-app.use(navRoutes);
+function handleRoutes(req, res, next) {
+    if (req.session.user.role === "Student") {
+        app.use('/student', studentRoutes);
+    }
+    if (req.session.user.role === "Faculty") {
+        app.use('/faculty', facultyRoutes);
+    }
+    next();
+}
+app.use(handleRoutes);
+
 
 
 sequelize

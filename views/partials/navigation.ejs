@@ -1,40 +1,42 @@
- <!-- <div class="sidebar">
-    <center>
-        <img src="/img/IICS_Logo.png" class="image" alt = "">
-    </center>
-    <a href = "/home"> <i class="fa-solid fa-house"></i><spam>Home</spam></a> 
-    <a href = "/activities"> <i class="fa-solid fa-pen"></i> <spam>Activities</spam> </a>
-    <a href = "/capstone-projects"> <i class="fa-solid fa-hammer"></i> <spam>Capstone projects</spam> </a>
-    <a href = "/group"> <i class="fa-solid fa-people-group"></i> <spam>Group</spam> </a>
-    <form action="/auth/logout" method="POST">
-        <a1 href = "/auth/logout"> <i class="fa-solid fa-right-from-bracket"></i> <button>Logout</button></a>
-    </form>
-</div>  -->
-
 <div class="sidebar">
   <center>
     <img src="/img/IICS_Logo.png" class="image" alt="">
   </center>
-  <a href="/home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <% if (role === "Faculty") { %>
+  <a href="/faculty/home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <% } %>
+  <% if (role === "Student") { %>
+  <a href="/student/home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <% } %>
   <div class="dropdown">
     <button class="dropdown-btn"><i class="fa-solid fa-pen"></i>Activities
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
         <% if (role === "Faculty") { %>
-          <a href="/activities/approve-documents">Approve documents</a>
-          <a href="/activities/create-form">Create Form</a>
-          <a href="/activities/roles">Assign Roles</a>
+          <a href="/faculty/activities/approve-documents">Approve documents</a>
+          <a href="/faculty/activities/create-form">Create Form</a>
+          <a href="/faculty/activities/roles">Assign Roles</a>
         <% } %>
         <% if (role === "Student") { %>
-          <a href="/activities/submit">Submit</a>
-          <a href="/activities/monitor">Monitor</a>
-          <a href="/activities/revise">Revise</a>
+          <a href="/student/activities/submit">Submit</a>
+          <a href="/student/activities/monitor">Monitor</a>
+          <a href="/student/activities/revise">Revise</a>
         <% } %>
       </div>
     </div>
-    <a href="/capstone-projects"><i class="fa-solid fa-hammer"></i><span>Capstone projects</span></a>
-    <a href="/group"><i class="fa-solid fa-people-group"></i><span>Group</span></a>
+    <% if (role === "Student") { %>
+    <a href="/student/project-milestones"><i class="fa-solid fa-hammer"></i><span>Project Milestones</span></a>
+    <% } %>
+    <% if (role === "Faculty") { %>
+      <a href="/faculty/capstone-projects"><i class="fa-solid fa-hammer"></i><span>Capstone Projects</span></a>
+    <% } %>
+    <% if (role === "Student") { %>
+    <a href="/student/group"><i class="fa-solid fa-people-group"></i><span>Group</span></a>
+    <% } %>
+    <% if (role === "Faculty") { %>
+    <a href="/faculty/group"><i class="fa-solid fa-people-group"></i><span>Group</span></a>
+    <% } %>
     <form action="/auth/logout" method="POST">
       <a1 href="/auth/logout"><i class="fa-solid fa-right-from-bracket"></i><button>Logout</button></a1>
     </form>

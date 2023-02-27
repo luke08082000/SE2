@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%- include ('partials/links.ejs') %>
+    <%- include ('../partials/links.ejs') %>
     <link rel="stylesheet" href="/css/form-submit.css">
     <title>Home</title>
 </head>
 <body>
-  <%- include ('partials/navigation.ejs') %>
-  <% if(role === "Student") { %>
+  <%- include ('../partials/navigation.ejs') %>
     <% if (submissions.length > 0) { %>
+      <% console.log(submissions.length) %>
       <div class="container">
         <% for (let i = 0; i < submissions.length; i++) { %>
                 <article class="card">
@@ -25,16 +25,12 @@
                     <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
                   </div>
                   <div class="card-actions">
-                    <% if(role === "Faculty") { %>
-                    <button>Approve</button>
-                    <% } %>
                     <a onclick="toggleIframe(<%= i %>)">View</a>
                   </div>
                 </article>
         <% } %>
       </div>
     <% } %>
-  <% } %>
   <script src="/js/main.js"></script>
   
 </body>

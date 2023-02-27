@@ -40,7 +40,13 @@ exports.postLogin = (req, res, next) => {
                 req.session.isLoggedIn = true;
                 return req.session.save(err => {
                     console.log(err)
-                    return res.redirect('/home');
+                    if(req.session.user.role === "Student") {
+                        return res.redirect('/student/home');
+                    }
+                    if(req.session.user.role === "Faculty") {
+                        return res.redirect('/faculty/home');
+                    }
+                    
                 })
             }
             res.redirect('/auth/login')

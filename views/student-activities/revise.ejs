@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/form-submit.css">
+    <%- include ('../partials/links.ejs') %>
+    <title>Home</title>
+</head>
+<body>
+  <%- include ('../partials/navigation.ejs') %>
+  <% if(role === "Student") { %>
+    <% if (submissions.length > 0) { %>
+      <% console.log(submissions.length) %>
+      <% console.log(student.groupId + " student group id") %>
+      <div class="container">
+        <% for (let i = 0; i < submissions.length; i++) { %>
+          <% console.log(submissions[i].title) %>
+                <article class="card">
+                  <div class="form-control card-header">
+                    <h1 class="form__title"><%= submissions[i].title %></h1>
+                  </div>
+                  <div class="form-control">
+                    <h4>Status: <%= submissions[i].status %></h4>
+                  </div>
+                  <div class="form-control" id="viewer-<%= i %>">
+                    <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
+                  </div>
+                  <div class="card-actions">
+                    <% if(role === "Faculty") { %>
+                    <button>Approve</button>
+                    <% } %>
+                    <a onclick="toggleIframe(<%= i %>)">View</a>
+                  </div>
+                </article>
+        <% } %>
+      </div>
+    <% } %>
+  <% } %>
+  <script src="./js/main.js"></script>
+  
+</body>
+</html>

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href = "/css/navigation.css">
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">  
-    <link rel="stylesheet" href="../css/form-submit.css">
+    <link rel="stylesheet" href="/css/form-submit.css">
     <title>Home</title>
 </head>
 <body>
@@ -51,7 +51,7 @@
               </div>
               <div class="card-actions">
                 <% if(role === "Faculty") { %>
-                <form action="/activities/approve-documents" method="POST">
+                <form action="/faculty/activities/approve-documents" method="POST">
                   <button value="approved" name="statusChosen">Approve</button>
                   <button value="revise" name="statusChosen">Revise</button>
                   <input type="hidden" value="<%= forms[i].submissions[j].id %>" name="submissionId">
