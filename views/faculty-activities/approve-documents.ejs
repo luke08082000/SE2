@@ -32,7 +32,7 @@
     <div class="container" id="form-container">
       <% for (let i = 0; i < forms.length; i++) { %>
         <% for (let j = 0; j < forms[i].submissions.length; j++) { %>
-          <% if (forms[i].submissions[j].status !== null) { %>
+          <% if (forms[i].submissions[j].status !== null && forms[i].submissions[j].status !== 'approved') { %>
             <article class="card section-<%= forms[i].section %>">
               <div class="form-control card-header">
                 <h1 class="form__title"><%= forms[i].title %></h1>

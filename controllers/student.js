@@ -75,7 +75,7 @@ exports.postSubmit = (req, res) => {
                     groupId: student.groupId,
                     title: title
                 })
-                res.redirect('/activities/monitor');
+                res.redirect('/student/activities/monitor');
             })
         })
         .catch(err => console.log(err))
@@ -121,6 +121,18 @@ exports.getRevise = (req, res) => {
     })
     .catch(err => console.log(err))
 };
+
+exports.postRevise = (req, res) => {
+    const filePath = req.file.path.substring(6) // to exclude public folder
+    const submissionId = req.body.submissionId;
+        Submission.findOne({ where: { id: submissionId } })
+        .then(submission => {
+            submission.update({ status: 'revised', filePath: filePath })
+            submission.save()
+            res.redirect('/student/activities/revise');
+        })
+        .catch(err => console.log(err));
+}
 
 exports.getProjectMilestones = (req, res) => {
     const role = req.session.user.role;

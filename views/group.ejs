@@ -18,7 +18,7 @@
           <% if (role === 'Faculty') { %>
             <div class="card card-faculty">
               <h4>Create Group</h4>
-              <form action="/group" method="POST">
+              <form action="/faculty/group" method="POST">
                 <div class="form-control">
                   <button>Add Group</button>
                 </div>
@@ -64,7 +64,7 @@
                     <h6>Members:</h6>
 
                     <% if(role == "Faculty" && !group[i].adviserId) { %>
-                      <form action="/activities/roles" method="POST">
+                      <form action="/faculty/activities/roles" method="POST">
                         <button value="technical-adviser" name="role">Become Technical Adviser</button>
                         <input type="hidden" value="<%= group[i].id %>" name="groupId">
                         <input type="hidden" value="<%= group[i].section %>" name="groupSection">
@@ -72,7 +72,7 @@
                     <% } %>
                     
                     <% if (!hasGroup && role === "Student") { %>
-                      <form action="/group" method="POST">
+                      <form action="/student/group" method="POST">
                         <button>Join Group</button>
                         <input type="hidden" value="<%= group[i].id %>" name="groupId">
                         <input type="hidden" value="<%= group[i].section %>" name="groupSection">
