@@ -17,8 +17,15 @@
     margin-bottom: 1rem;
     display: flex;
 }
+
 .container .card-actions {
-    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between; /* center buttons */
+    align-items: center;
+}
+
+.container .card-actions form {
+    display: flex;
 }
 
 .container button {
@@ -38,3 +45,4 @@
 iframe {
     display: none;
 }
+

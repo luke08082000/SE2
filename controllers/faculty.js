@@ -6,6 +6,7 @@ const Group = require('../models/group');
 const UserStudent = require('../models/userStudent');
 const UserFaculty = require('../models/userFaculty');
 const Status = require('../models/status');
+const Comment = require('../models/comment');
 
 exports.getHome = (req, res) => {
     const role = req.session.user.role;
@@ -52,12 +53,12 @@ exports.postApproveDocuments = (req, res) => {
         .then(status => {
             if(status) {
                 console.log('You have already approved this document');
-                res.redirect('/faculty/activities/approve-documents');
+                res.redirect(`/faculty/activities/view/${submissionId}`);
             } else {
                 const status = req.body.statusChosen;
                 console.log(submissionId + ' is the submission id');
                 Status.create({ userFacultyId: userFaculty.id, submissionId: submissionId, status: status })
-                res.redirect('/faculty/activities/approve-documents');
+                res.redirect(`/faculty/activities/view/${submissionId}`);
             }
         }) 
     })
@@ -93,6 +94,54 @@ exports.postApproveDocuments = (req, res) => {
     .catch(err => console.log(err))
 }
 
+exports.getView = (req, res) => {
+    const role = req.session.user.role;
+    Submission.findByPk(req.params.id)
+      .then(submission => {
+        Status.findAll({ where: { submissionId: req.params.id }})
+          .then(status => {
+            if (submission == null) {
+              return res.redirect('/home');
+            }
+            Comment.findAll({ where: { submissionId: req.params.id }})
+              .then(comments => {
+                return res.render('view', {
+                    submission: submission,
+                    status: status,
+                    comments: comments,
+                    role: role
+                  });
+              })
+            
+          })
+          .catch(error => {
+            console.log(error);
+            return res.status(500).send('Internal server error');
+          });
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send('Internal server error');
+      });
+  };
+  
+  
+exports.postComment = (req, res) => {
+    const comment = req.body.comment;
+    const submissionId = req.body.submissionId;
+    UserFaculty.findOne({ where: { userId: req.session.user.id } })
+    .then(faculty => {
+        Comment.create({
+            comment: comment,
+            submissionId: submissionId,
+            userFacultyId: faculty.id
+        })
+        res.redirect(`/faculty/activities/view/${submissionId}`);
+    })
+    .catch(e => console.log(e));
+}
+  
+  
 
 exports.getCreateForm = (req, res) => {
     const role = req.session.user.role;

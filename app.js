@@ -15,6 +15,7 @@ const Submission = require('./models/submission');
 const SubmissionForm = require('./models/submissionForm');
 const Group = require('./models/group');
 const Status = require('./models/status');
+const Comment = require('./models/comment');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -108,6 +109,9 @@ Status.belongsToMany(Submission, { through: 'SubmissionStatus' });
 //UserFaculty to Status = one to many
 UserFaculty.hasMany(Status, { foreignKey: 'userFacultyId' });
 Status.belongsTo(UserFaculty, { foreignKey: 'userFacultyId' });
+//UserFaculty to Comment = one to many
+UserFaculty.hasMany(Comment, { foreignKey: 'userFacultyId' });
+Comment.belongsTo(UserFaculty, { foreignKey: 'userFacultyId' });
 
 //ROUTES
 app.use(authRoutes);

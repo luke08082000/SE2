@@ -18,7 +18,7 @@ router.get('/activities/monitor', studentController.getMonitor);
 
 router.get('/activities/revise', studentController.getRevise);
 
-router.post('/activities/revise', studentController.postRevise); 
+router.post('/activities/revise', studentController.postRevise);
 
 router.get('/project-milestones', studentController.getProjectMilestones);
 

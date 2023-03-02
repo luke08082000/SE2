@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href = "/css/navigation.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"> 
+    <link rel="stylesheet" href="/css/view.css">
+    <title>View</title>
+</head>
+<body>
+    <%- include ('partials/navigation.ejs') %>
+    
+    <div class="container">
+        <h1><%= submission.title %></h1>
+        <div class="container-top">
+            <div class="pdf-viewer">
+                <iframe src="<%= submission.filePath %>" frameborder="0" width="100%" height="500px"></iframe>
+            </div>
+            <div class="status-log">
+                <h3>Status Log</h3>
+                <% if (status.length > 0) { %>
+                    <% status.forEach(status => { %>
+                    <h4><%= status.status %></h4>
+                    <% }) %>
+                <% } %>
+                <div class="buttons">
+                    <form action="/faculty/activities/approve-documents" method="POST">
+                        <button value="approved" name="statusChosen">Approve</button>
+                        <button value="revise" name="statusChosen">Revise</button>
+                        <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                      </form>
+                </div>
+            </div>
+        </div>
+        <div class="container-bottom">
+            <div class="comment-section">
+                <h2>Comments</h2>
+                <form action="/faculty/activities/post/comment" method="POST">
+                  <textarea name="comment" required placeholder="Write a comment"></textarea>
+                  <button type="submit">Submit</button>
+                  <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                </form>
+                <div class="comments">
+                <% comments.forEach(comment => { %>
+                  <div class="comment">
+                    <h3>John Doe</h3>
+                    <p><%= comment.comment %></p>
+                    <span class="timestamp">2 hours ago</span>
+                  </div>
+                <% }) %>
+                </div>
+              </div>              
+        </div>
+        
+    </div>
+</body>
+</html>

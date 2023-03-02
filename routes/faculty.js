@@ -24,6 +24,10 @@ router.get('/activities/create-form', facultyController.getCreateForm);
 
 router.post('/activities/create-form', facultyController.postCreateForm); 
 
+router.get('/activities/view/:id', facultyController.getView);
+
+router.post('/activities/post/comment', facultyController.postComment);
+
 router.get('/capstone-projects', facultyController.getCapstoneProjects);
 
 router.get('/group', facultyController.getGroup);
