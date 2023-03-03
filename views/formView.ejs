@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href = "/css/navigation.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"> 
+    <link rel="stylesheet" href="/css/view.css">
+    <title>View</title>
+</head>
+<body>
+    <%- include ('partials/navigation.ejs') %>
+    
+    <div class="container">
+        <div class="top">
+            <a href="/student/activities/submit">Go Back</a>
+            <h1><%= form.title %></h1>
+            <h3>Deadline: </h3>
+            <h5><%= form.deadline.toLocaleDateString() %></h3>
+        </div>
+        <div class="body">
+            <p><%= form.description %></p>
+            <form action="/student/activities/submit" method="POST" enctype="multipart/form-data">
+                <div class="form-control">
+                    <label for="file">PDF file</label>
+                    <input type="file" class="form-control" name="file" id="file" accept=".pdf">
+                  </div>
+                <button class="btn" type="submit">Submit</button>
+              </form>
+        </div>
+    </div>
+</body>
+</html>

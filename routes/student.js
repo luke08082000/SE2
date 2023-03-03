@@ -14,9 +14,15 @@ router.get('/activities/submit', studentController.getSubmit);
 
 router.post('/activities/submit', studentController.postSubmit);
 
+router.get('/activities/form/view/:id', studentController.getFormView);
+
 router.get('/activities/monitor', studentController.getMonitor); 
 
+router.get('/activities/monitor/view/:id', studentController.getMonitorView); 
+
 router.get('/activities/revise', studentController.getRevise);
+
+router.get('/activities/revise/view/:id', studentController.getMonitorView);
 
 router.post('/activities/revise', studentController.postRevise);
 

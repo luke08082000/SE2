@@ -12,38 +12,27 @@
   <%- include ('../partials/navigation.ejs') %>
   <% if(role === "Student") { %>
     <% if (submissions.length > 0) { %>
-      <% console.log(submissions.length) %>
-      <% console.log(student.groupId + " student group id") %>
       <div class="container">
         <% for (let i = 0; i < submissions.length; i++) { %>
-              <form action="/student/activities/revise" method="POST" enctype="multipart/form-data">
-                <article class="card">
-                  <div class="form-control card-header">
-                    <h1 class="form__title"><%= submissions[i].title %></h1>
-                  </div>
-                  <div class="form-control">
-                    <h4>Status: <%= submissions[i].status %></h4>
-                  </div>
-                  <div class="form-control">
-                    <label for="file">PDF file</label>
-                    <input type="file" class="form-control" name="file" id="file" accept=".pdf">
-                  </div>
-                  <div class="form-control" id="viewer-<%= i %>">
-                    <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
-                  </div>
-                  <div class="card-actions">
-                    <button type="submit">Submit Revision</button>
-                    <input type="hidden" value="<%= submissions[i].id %>" name="submissionId">
-                    <a onclick="toggleIframe(<%= i %>)">View</a>
-                  </div>
-                </article>
+          <article class="card">
+            <div class="form-control card-header">
+              <h1 class="form__title"><%= submissions[i].title %></h1>
+            </div>
+            <div class="form-control">
+              <h4>Status: <%= submissions[i].status %></h4>
+            </div>
+            <div class="card-actions">
+              <form action="/student/activities/revise/view/<%= submissions[i].id %>" method="GET">
+                <button type="submit">View</button>
+                <input type="hidden" value="<%= submissions[i].id %>" name="submissionId">
               </form>
+            </div>
+          </article>
                 
         <% } %>
       </div>
     <% } %>
   <% } %>
-  <script src="./js/main.js"></script>
   
 </body>
 </html>

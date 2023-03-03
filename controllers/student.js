@@ -1,11 +1,11 @@
 const User = require('../models/user');
-
 const Submission = require('../models/submission');
 const SubmissionForm = require('../models/submissionForm');
 const Group = require('../models/group');
 const UserStudent = require('../models/userStudent');
 const UserFaculty = require('../models/userFaculty');
 const Status = require('../models/status');
+const Comment = require('../models/comment');
 
 exports.getHome = (req, res) => {
     const role = req.session.user.role;
@@ -68,18 +68,33 @@ exports.postSubmit = (req, res) => {
                 Submission.create ({ 
                     fileName: fileName,
                     filePath: filePath,
-                    status: 'Pending',
+                    status: 'pending',
                     submittedBy: email,
                     userId: student.userId,
                     submissionId: formId,
                     groupId: student.groupId,
-                    title: title
+                    title: title,
+                    version: 1
                 })
                 res.redirect('/student/activities/monitor');
             })
         })
         .catch(err => console.log(err))
         }
+}
+
+exports.getFormView = (req, res) => {
+    const role = req.session.user.role;
+    const formId = req.params.id;
+    console.log(formId);
+    SubmissionForm.findByPk(formId)
+      .then(form => {
+        res.render('formView', {
+            role: role,
+            form: form
+        })
+      })
+
 }
 
 exports.getMonitor = (req, res) => {
@@ -101,6 +116,49 @@ exports.getMonitor = (req, res) => {
     })
     .catch(err => console.log(err))
 };
+
+exports.getMonitorView = (req, res) => {
+    const role = req.session.user.role;
+    const submissionId = req.params.id;
+    console.log(submissionId);
+    Submission.findByPk(submissionId)
+      .then(submission => {
+        if (!submission) {
+            return res.redirect('/student/activities/monitor')
+        }
+        Status.findAll({ where: { submissionId: submission.id } })
+          .then(statuses => {
+            const statusPromises = statuses.map(status => {
+              return UserFaculty.findOne({ where: { id: status.userFacultyId }, include:  User })
+            });
+  
+            Comment.findAll({ where: { submissionId: submission.id }})
+              .then(comments => {
+                const commentPromises = comments.map(comment => {
+                  return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
+                })
+  
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises)])
+                  .then(([usersApprove, usersComment]) => {
+                    //console.log(JSON.stringify(usersApprove, null, 2));
+                    //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
+                    return res.render('view', {
+                      submission: submission,
+                      status: statuses,
+                      comments: comments,
+                      usersApprove: usersApprove,
+                      usersComment: usersComment,
+                      role: role
+                    });
+                  })
+                  .catch(e => console.log(e));
+              })
+              .catch(e => console.log(e));
+          })
+          .catch(e => console.log(e));
+      })
+      .catch(e => console.log(e));
+}
 
 exports.getRevise = (req, res) => {
     const role = req.session.user.role;
@@ -124,11 +182,19 @@ exports.getRevise = (req, res) => {
 
 exports.postRevise = (req, res) => {
     const filePath = req.file.path.substring(6) // to exclude public folder
+    const fileName = req.file.filename;
     const submissionId = req.body.submissionId;
         Submission.findOne({ where: { id: submissionId } })
         .then(submission => {
-            submission.update({ status: 'revised', filePath: filePath })
-            submission.save()
+            submission.update({ 
+                status: 'revised', 
+                filePath: filePath,
+                fileName: fileName,
+                version: submission.version + 1
+            })
+            return submission.save()
+        })
+        .then(result => {
             res.redirect('/student/activities/revise');
         })
         .catch(err => console.log(err));

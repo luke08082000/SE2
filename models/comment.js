@@ -13,7 +13,8 @@ const Comment = sequelize.define('comment', {
         type: Sequelize.STRING(1000)
     },
     submissionId: Sequelize.INTEGER,
-    userFacultyId: Sequelize.INTEGER
+    userFacultyId: Sequelize.INTEGER,
+    forVersion: Sequelize.INTEGER
 })
 
 module.exports = Comment;

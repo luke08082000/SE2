@@ -22,30 +22,25 @@
           <% if (forms[i].section === section && !submissions.find(submission => submission.submissionId === forms[i].id && submission.groupId === student.groupId)) { %>
             <% console.log('dumaan dito') %>
             <% console.log(forms[i].section) %>
-            <form action="/activities/submit" method="POST" enctype="multipart/form-data">
-              <article class="card">
-                <div class="form-control card-header">
-                  <h1 class="form__title"><%= forms[i].title %></h1>
-                </div>
-                <div class="form-control">
-                  <p>Deadline: <%= forms[i].deadline.toLocaleDateString("en-US", {year: 'numeric', month: '2-digit', day: '2-digit'}) %></p>
-                </div>
-                <% if (role === "Student") { %>
-                <div class="form-control">
-                  <label for="file">PDF file</label>
-                  <input type="file" class="form-control" name="file" id="file" accept=".pdf">
-                </div>
+            <article class="card">
+              <div class="form-control card-header">
+                <h1 class="form__title"><%= forms[i].title %></h1>
+              </div>
+              <div class="form-control">
+                <p>Deadline: <%= forms[i].deadline.toLocaleDateString("en-US", {year: 'numeric', month: '2-digit', day: '2-digit'}) %></p>
+              </div>
+              <% if (role === "Student") { %>
+                
                 <% } %>
                 <div class="card-actions">
-                  <% if (role === "Student") { %>
-                  <button class="btn" type="submit">Submit</button>
-                  <% } %>
+                  <form action="/student/activities/form/view/<%= forms[i].id %>" method="GET">
+                    <button class="btn" type="submit">View</button>
+                  </form>
                 </div>
                 <input type="hidden" value="<%= forms[i].id %>" name="formId">
                 <input type="hidden" value="<%= forms[i].status %>" name="formStatus">
                 <input type="hidden" value="<%= forms[i].title %>" name="formTitle">
               </article>
-            </form>
           <% } %>
         <% } %>
       </div>

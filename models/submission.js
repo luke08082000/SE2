@@ -18,7 +18,8 @@ const Submission = sequelize.define('submission', {
     fileName: Sequelize.STRING,
     filePath: Sequelize.STRING,
     submittedBy: Sequelize.STRING,
-    groupId: Sequelize.INTEGER
+    groupId: Sequelize.INTEGER,
+    version: Sequelize.INTEGER
 })
 
 module.exports = Submission;

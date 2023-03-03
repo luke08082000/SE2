@@ -143,12 +143,14 @@ exports.getView = (req, res) => {
 exports.postComment = (req, res) => {
     const comment = req.body.comment;
     const submissionId = req.body.submissionId;
+    const submissionVersion = req.body.submissionVersion;
     UserFaculty.findOne({ where: { userId: req.session.user.id } })
     .then(faculty => {
         Comment.create({
             comment: comment,
             submissionId: submissionId,
-            userFacultyId: faculty.id
+            userFacultyId: faculty.id,
+            forVersion: submissionVersion
         })
         res.redirect(`/faculty/activities/view/${submissionId}`);
     })

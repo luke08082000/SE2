@@ -28,17 +28,15 @@
                     <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
                   </div>
                   <div class="card-actions">
-                    <% if(role === "Faculty") { %>
-                    <button>Approve</button>
-                    <% } %>
-                    <a onclick="toggleIframe(<%= i %>)">View</a>
+                    <form action="/student/activities/monitor/view/<%= submissions[i].id %>" method="GET">
+                      <button class="btn" type="submit">View</button>
+                    </form>
                   </div>
                 </article>
         <% } %>
       </div>
     <% } %>
   <% } %>
-  <script src="./js/main.js"></script>
   
 </body>
 </html>

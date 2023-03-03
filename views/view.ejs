@@ -15,6 +15,7 @@
     
     <div class="container">
         <h1><%= submission.title %></h1>
+        <p>Version <%= submission.version %></p>
         <div class="container-top">
             <div class="pdf-viewer">
                 <iframe src="<%= submission.filePath %>" frameborder="0" width="100%" height="500px"></iframe>
@@ -34,11 +35,23 @@
                 <% } %>
               </div>
               <div class="buttons">
-                <form action="/faculty/activities/approve-documents" method="POST">
-                  <button value="approved" name="statusChosen">Approve</button>
-                  <button value="revise" name="statusChosen">Revise</button>
-                  <input type="hidden" value="<%= submission.id %>" name="submissionId">
-                </form>
+                <% if (role == 'Faculty') { %>
+                  <form action="/faculty/activities/approve-documents" method="POST">
+                    <button value="approved" name="statusChosen">Approve</button>
+                    <button value="revise" name="statusChosen">Revise</button>
+                    <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                  </form>
+                <% } %>
+                <% if (role == 'Student' && submission.status == 'forRevision') { %>
+                  <form action="/student/activities/revise" method="POST" enctype="multipart/form-data">
+                  <div class="form-control">
+                    <label for="file">Upload PDF file</label>
+                    <input type="file" class="form-control" name="file" id="file" accept=".pdf">
+                  </div>
+                    <button type="submit">Submit Revision</button>
+                    <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                  </form>
+                <% } %>
               </div>
             </div>
             
@@ -46,18 +59,22 @@
         <div class="container-bottom">
             <div class="comment-section">
               <h2>Comments</h2>
-              <form action="/faculty/activities/post/comment" method="POST">
-                <textarea name="comment" required placeholder="Write a comment"></textarea>
-                <button type="submit">Submit</button>
-                <input type="hidden" value="<%= submission.id %>" name="submissionId">
-                <input type="hidden" value="<%= currentUser.id %>" name="currentUserId">
-              </form>
+              <% if (role == 'Faculty') { %>
+                <form action="/faculty/activities/post/comment" method="POST">
+                  <textarea name="comment" required placeholder="Write a comment"></textarea>
+                  <button type="submit">Submit</button>
+                  <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                  <input type="hidden" value="<%= submission.version %>" name="submissionVersion">
+                  <input type="hidden" value="<%= currentUser.id %>" name="currentUserId">
+                </form>
+              <% } %>
               <div class="comments">
                 <% if (comments.length > 0) { %>
                   <% comments.forEach((comment, index) => { %>
                     <div class="comment">
                       <% const userComment = usersComment[index]; %>
                       <% if (userComment) { %>
+                        <p>For version: <%= comment.forVersion %></p>
                         <h3><%= userComment.user.firstName + ' ' + userComment.user.lastName %></h3>
                       <% } %>
                       <p><%= comment.comment %></p>
