@@ -96,34 +96,48 @@ exports.postApproveDocuments = (req, res) => {
 
 exports.getView = (req, res) => {
     const role = req.session.user.role;
+    const currentUser = req.session.user;
     Submission.findByPk(req.params.id)
       .then(submission => {
-        Status.findAll({ where: { submissionId: req.params.id }})
-          .then(status => {
-            if (submission == null) {
-              return res.redirect('/home');
-            }
-            Comment.findAll({ where: { submissionId: req.params.id }})
+        if (!submission) {
+            return res.redirect('/faculty/home')
+        }
+        Status.findAll({ where: { submissionId: submission.id } })
+          .then(statuses => {
+            const statusPromises = statuses.map(status => {
+              return UserFaculty.findOne({ where: { id: status.userFacultyId }, include:  User })
+            });
+  
+            Comment.findAll({ where: { submissionId: submission.id }})
               .then(comments => {
-                return res.render('view', {
-                    submission: submission,
-                    status: status,
-                    comments: comments,
-                    role: role
-                  });
+                const commentPromises = comments.map(comment => {
+                  return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
+                })
+  
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises)])
+                  .then(([usersApprove, usersComment]) => {
+                    //console.log(JSON.stringify(usersApprove, null, 2));
+                    //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
+                    return res.render('view', {
+                      submission: submission,
+                      status: statuses,
+                      comments: comments,
+                      usersApprove: usersApprove,
+                      usersComment: usersComment,
+                      role: role,
+                      currentUser: currentUser
+                    });
+                  })
+                  .catch(e => console.log(e));
               })
-            
+              .catch(e => console.log(e));
           })
-          .catch(error => {
-            console.log(error);
-            return res.status(500).send('Internal server error');
-          });
+          .catch(e => console.log(e));
       })
-      .catch(error => {
-        console.log(error);
-        return res.status(500).send('Internal server error');
-      });
+      .catch(e => console.log(e));
   };
+  
+  
   
   
 exports.postComment = (req, res) => {

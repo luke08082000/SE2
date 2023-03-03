@@ -21,6 +21,12 @@
   width: 30%;
   padding-inline: 20px;
   border-style: dashed;
+  display: flex;
+  justify-content: space-around;
+}
+
+.status, .names {
+  padding-top: 20px;
 }
 
 .container-top .status-log .buttons {

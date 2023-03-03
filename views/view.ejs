@@ -20,40 +20,62 @@
                 <iframe src="<%= submission.filePath %>" frameborder="0" width="100%" height="500px"></iframe>
             </div>
             <div class="status-log">
-                <h3>Status Log</h3>
+              <h3>Status Log</h3>
+              <div class="log">
                 <% if (status.length > 0) { %>
-                    <% status.forEach(status => { %>
-                    <h4><%= status.status %></h4>
-                    <% }) %>
+                  <% status.forEach((status, index) => { %>
+                    <div class="status-entry">
+                      <h4><%= status.status %></h4>
+                      <h4>By: <%= usersApprove[index].user.firstName + ' ' + usersApprove[index].user.lastName %> as <%= usersApprove[index].role %></h4>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <p>No status updates yet.</p>
                 <% } %>
-                <div class="buttons">
-                    <form action="/faculty/activities/approve-documents" method="POST">
-                        <button value="approved" name="statusChosen">Approve</button>
-                        <button value="revise" name="statusChosen">Revise</button>
-                        <input type="hidden" value="<%= submission.id %>" name="submissionId">
-                      </form>
-                </div>
+              </div>
+              <div class="buttons">
+                <form action="/faculty/activities/approve-documents" method="POST">
+                  <button value="approved" name="statusChosen">Approve</button>
+                  <button value="revise" name="statusChosen">Revise</button>
+                  <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                </form>
+              </div>
             </div>
+            
         </div>
         <div class="container-bottom">
             <div class="comment-section">
-                <h2>Comments</h2>
-                <form action="/faculty/activities/post/comment" method="POST">
-                  <textarea name="comment" required placeholder="Write a comment"></textarea>
-                  <button type="submit">Submit</button>
-                  <input type="hidden" value="<%= submission.id %>" name="submissionId">
-                </form>
-                <div class="comments">
-                <% comments.forEach(comment => { %>
-                  <div class="comment">
-                    <h3>John Doe</h3>
-                    <p><%= comment.comment %></p>
-                    <span class="timestamp">2 hours ago</span>
-                  </div>
-                <% }) %>
-                </div>
-              </div>              
-        </div>
+              <h2>Comments</h2>
+              <form action="/faculty/activities/post/comment" method="POST">
+                <textarea name="comment" required placeholder="Write a comment"></textarea>
+                <button type="submit">Submit</button>
+                <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                <input type="hidden" value="<%= currentUser.id %>" name="currentUserId">
+              </form>
+              <div class="comments">
+                <% if (comments.length > 0) { %>
+                  <% comments.forEach((comment, index) => { %>
+                    <div class="comment">
+                      <% const userComment = usersComment[index]; %>
+                      <% if (userComment) { %>
+                        <h3><%= userComment.user.firstName + ' ' + userComment.user.lastName %></h3>
+                      <% } %>
+                      <p><%= comment.comment %></p>
+                      <span class="timestamp">
+                        <%= new Date(comment.createdAt).toLocaleDateString() %>
+                        <%= new Date(comment.createdAt).toLocaleTimeString() %>
+                      </span>
+                    </div>
+                  <% }) %>
+                  <% } else { %>
+                    <p>No comments yet.</p>
+                  <% } %>
+                
+              </div>
+            </div>              
+          </div>
+          
+          
         
     </div>
 </body>
