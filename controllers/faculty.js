@@ -192,14 +192,33 @@ exports.postCreateForm = (req, res) => {
 
 exports.getRole = (req, res) => {
     const role = req.session.user.role;
-    res.render('faculty-activities/roles', {
-        role: role
-    });
+
+    UserFaculty.findAll()
+      .then(faculties => {
+        const facultyMembers = faculties.map(faculty => {
+            return User.findByPk(faculty.userId);
+        })
+        Promise.all(facultyMembers)
+        .then(members => {
+              User.findAll({ where: { role: 'Faculty' } })
+                .then(faculty => {
+                    res.render('faculty-activities/roles', {
+                        role: role,
+                        userFaculty: faculties,
+                        facultyMembers: members,
+                        faculty: faculty
+                    });
+                })
+              
+          })
+      })
+    
 }
 
 exports.postRole = (req, res) => {
     const roleChosen = req.body.role;
     const userEmail = req.body.email;
+    const userId = req.body.userId;
     const sectionChosen = req.body.section;
     const groupId = req.body.groupId;
     const currentUser = req.session.user
@@ -221,7 +240,7 @@ exports.postRole = (req, res) => {
           });
           return; // to exit the function early
       }
-    User.findOne({ where: { role: "Faculty", email: userEmail } })
+    User.findOne({ where: { role: "Faculty", id: userId } })
     .then(user => {
         UserFaculty.findAll()
         .then(userFaculties => {
@@ -271,25 +290,74 @@ exports.getCapstoneProjects = (req, res) => {
 exports.getGroup = (req, res) => {
     const role = req.session.user.role;
     UserStudent.findOne({ where: { userId: req.session.user.id } })
-    .then(student => {
-        Group.findAll({
-            include: [{
-                model: UserStudent
-            }]
+      .then(student => {
+        return Group.findAll({
+          include: {
+            model: UserStudent
+          }
         })
-        .then(groups => {
-            res.render('group', {
-                groupId: role !== "Student" ? '' : student.groupId,
-                hasGroup: role !== "Student" ? '' : student.groupId,
-                section: role !== "Student" ? '' : student.section,
-                user: student,
-                group: groups,
-                role: role
+          .then(groups => {
+            const techAdvPromises = groups.map(group => {
+              return UserFaculty.findByPk(group.adviserId)
+                .then(faculty => {
+                  if (faculty) {
+                    return User.findByPk(faculty.userId)
+                      .then(user => {
+                        return user.firstName + ' ' + user.lastName
+                      })
+                  }
+                })
+            })
+  
+            const members = groups.map(group => {
+              return group.dataValues['user-students'];
+            })
+  
+            const memberNamePromises = [];
+            members.forEach(memberList => {
+              memberList.forEach(member => {
+                memberNamePromises.push(User.findByPk(member.userId));
+              });
             });
-        })
-    })
-    .catch(err => console.log(err));
-}
+  
+            // Wait for all promises to resolve
+            Promise.all([...techAdvPromises, ...memberNamePromises])
+              .then(results => {
+                // Split results into techAdvNames and memberNames
+                const techAdvNames = results.slice(0, groups.length);
+                const memberNames = results.slice(groups.length);
+  
+                // Map techAdvNames to their respective groups
+                groups.forEach((group, i) => {
+                  group.adviserName = techAdvNames[i];
+                });
+  
+                // Map memberNames to their respective members
+                let index = 0;
+                members.forEach(memberList => {
+                  memberList.forEach(member => {
+                    member.name = memberNames[index].firstName + ' ' + memberNames[index].lastName;
+                    index++;
+                  });
+                });
+  
+                res.render('group', {
+                  groupId: role !== "Student" ? '' : student.groupId,
+                  hasGroup: role !== "Student" ? '' : student.groupId,
+                  section: role !== "Student" ? '' : student.section,
+                  user: student,
+                  group: groups,
+                  members: members,
+                  techAdv: techAdvNames,
+                  role: role
+                });
+              });
+          })
+      })
+      .catch(err => console.log(err));
+  }
+  
+
 
 
 exports.postGroup = (req, res) => {

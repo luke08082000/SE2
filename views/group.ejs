@@ -61,7 +61,24 @@
                   <div class="card">
                     <h4><%= group[i].name %></h4>
                     <h6>Section: <span class="section"><%= group[i].section %></span></h6>
+                    <h6>Technical Adviser:</h6>
+                    <% if (techAdv[i]) { %>
+                      <p><%= techAdv[i] %></p>
+                    <% } else { %>
+                      <p>No technical adviser assigned.</p>
+                    <% } %>
+                    
                     <h6>Members:</h6>
+                    <% if (members[i].length) { %>
+                      <ul>
+                      <% members[i].forEach(member => { %>
+                          <li><%= member.name %></li>
+                      <% }); %>
+                      </ul>
+                  <% } else { %>
+                      <p>No members yet.</p>
+                  <% } %>
+
 
                     <% if(role == "Faculty" && !group[i].adviserId) { %>
                       <form action="/faculty/activities/roles" method="POST">

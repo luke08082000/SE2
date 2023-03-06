@@ -1,9 +1,17 @@
-.container .form-control {
+.container {
     display: flex;
 }
+
+
 
 .container .form-control button {
     margin-block: 1rem;
     margin-inline: 1rem;
+}
+.faculty-list {
+    display: flex;
+}
+.roles, .members {
+    width: 20rem;
 }
 
