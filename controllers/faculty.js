@@ -46,7 +46,8 @@ exports.getApproveDocuments = (req, res) => {
 
 exports.postApproveDocuments = (req, res) => {
     const submissionId = req.body.submissionId;
-    UserFaculty.findOne({ where: { userId: req.session.user.id } })// palitan later to allow single users with multiple faculty roles
+    const roleChosen = req.body.roleChosen;
+    UserFaculty.findOne({ where: { userId: req.session.user.id, role: roleChosen } })// palitan later to allow single users with multiple faculty roles
     .then(userFaculty => {
         const role = userFaculty.role;
         Status.findOne({ where: { userFacultyId: userFaculty.id, submissionId: submissionId }}) //You can only approve a document once per role
@@ -102,6 +103,8 @@ exports.getView = (req, res) => {
         if (!submission) {
             return res.redirect('/faculty/home')
         }
+        const subGrpPromise = Group.findByPk(submission.groupId);
+        
         Status.findAll({ where: { submissionId: submission.id } })
           .then(statuses => {
             const statusPromises = statuses.map(status => {
@@ -113,20 +116,43 @@ exports.getView = (req, res) => {
                 const commentPromises = comments.map(comment => {
                   return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
                 })
-  
-                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises)])
-                  .then(([usersApprove, usersComment]) => {
-                    //console.log(JSON.stringify(usersApprove, null, 2));
-                    //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
-                    return res.render('view', {
-                      submission: submission,
-                      status: statuses,
-                      comments: comments,
-                      usersApprove: usersApprove,
-                      usersComment: usersComment,
-                      role: role,
-                      currentUser: currentUser
-                    });
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), subGrpPromise])
+                  .then(([usersApprove, usersComment, subGrp]) => {
+
+                    UserFaculty.findAll({ where: { userId: req.session.user.id }})
+                      .then(faculty => {
+                        const facultyId = faculty.map(user => {
+                          return user.id
+                        })
+                        const rolesTaken = faculty.map(user => {
+                          return user.role
+                        })
+                        const courseFaci = faculty
+                          .filter(user => user.role === 'course-facilitator')
+                          .map(user => user.section.toUpperCase())
+                          .join(','); // concatenate the array elements with a comma delimiter
+                        
+                        const techAdvGroup = faculty
+                          .filter(user => user.role === 'technical-adviser')
+                          .map(user => user.id)
+                        console.log(techAdvGroup);
+                        console.log(subGrp.adviserId);
+
+                            return res.render('view', {
+                              submission: submission,
+                              status: statuses,
+                              comments: comments,
+                              usersApprove: usersApprove,
+                              usersComment: usersComment,
+                              role: role,
+                              rolesTaken: rolesTaken,
+                              subGrp: subGrp,
+                              section: courseFaci,
+                              facultyId: facultyId,
+                              currentUser: currentUser
+                            });
+                      })
+                    
                   })
                   .catch(e => console.log(e));
               })
@@ -223,23 +249,16 @@ exports.postRole = (req, res) => {
     const groupId = req.body.groupId;
     const currentUser = req.session.user
     if (roleChosen === 'technical-adviser') {
-        UserFaculty.findOne({ where: { userId: currentUser.id } })
-          .then(userFaculty => {
-            Group.findOne({ where: { id: groupId } })
-              .then(group => {
-                if (!group.adviserId) {
-                  group.update({ adviserId: userFaculty.id })
-                    .then(result => {
-                      res.redirect('/faculty/group');
-                    });
-                } else {
-                  console.log('The group already has a technical adviser')
-                  res.redirect('/faculty/group');
-                }
-              });
-          });
-          return; // to exit the function early
-      }
+      UserFaculty.create({ userId: currentUser.id, role: 'technical-adviser', section: 'all' }, { returning: true })
+        .then(createdFaculty => { 
+          Group.findByPk(groupId)
+            .then(group => {
+              group.update({ adviserId: createdFaculty.id }) 
+              res.redirect('/faculty/group')
+            })
+        })
+    }
+    
     User.findOne({ where: { role: "Faculty", id: userId } })
     .then(user => {
         UserFaculty.findAll()
@@ -288,74 +307,61 @@ exports.getCapstoneProjects = (req, res) => {
 };
 
 exports.getGroup = (req, res) => {
-    const role = req.session.user.role;
-    UserStudent.findOne({ where: { userId: req.session.user.id } })
-      .then(student => {
-        return Group.findAll({
-          include: {
-            model: UserStudent
-          }
-        })
-          .then(groups => {
-            const techAdvPromises = groups.map(group => {
-              return UserFaculty.findByPk(group.adviserId)
-                .then(faculty => {
-                  if (faculty) {
-                    return User.findByPk(faculty.userId)
+  const role = req.session.user.role;
+  UserStudent.findOne({ where: { userId: req.session.user.id } })
+    .then(student => {
+      return Group.findAll()
+      
+        .then(groups => {
+          const techAdvPromises = groups.map(group => {
+            return UserFaculty.findByPk(group.adviserId)
+              .then(faculty => {
+                if (faculty) {
+                  return User.findByPk(faculty.userId)
+                    .then(user => {
+                      return user.firstName + ' ' + user.lastName
+                    })
+                }
+              })
+          })
+          const groupMembers = groups.map(group => {
+            return UserStudent.findAll({ where: { groupId: group.id }})
+              .then(students => {
+                if (students.length) {
+                  const memberNames = students.map(student => {
+                    return User.findByPk(student.userId)
                       .then(user => {
                         return user.firstName + ' ' + user.lastName
                       })
-                  }
-                })
-            })
-  
-            const members = groups.map(group => {
-              return group.dataValues['user-students'];
-            })
-  
-            const memberNamePromises = [];
-            members.forEach(memberList => {
-              memberList.forEach(member => {
-                memberNamePromises.push(User.findByPk(member.userId));
+                  });
+                  return Promise.all(memberNames);
+                }
+              })
+          });
+          
+          
+          // Wait for all promises to resolve
+          Promise.all([...techAdvPromises, ...groupMembers])
+            .then(results => {
+              // Split results into techAdvNames and groupMembers
+              const techAdvNames = results.slice(0, groups.length);
+              const groupMembers = results.slice(groups.length);
+
+              res.render('group', {
+                groupId: role !== "Student" ? '' : student.groupId,
+                hasGroup: role !== "Student" ? '' : student.groupId,
+                section: role !== "Student" ? '' : student.section,
+                user: student,
+                group: groups,
+                members: groupMembers,
+                techAdv: techAdvNames,
+                role: role
               });
             });
-  
-            // Wait for all promises to resolve
-            Promise.all([...techAdvPromises, ...memberNamePromises])
-              .then(results => {
-                // Split results into techAdvNames and memberNames
-                const techAdvNames = results.slice(0, groups.length);
-                const memberNames = results.slice(groups.length);
-  
-                // Map techAdvNames to their respective groups
-                groups.forEach((group, i) => {
-                  group.adviserName = techAdvNames[i];
-                });
-  
-                // Map memberNames to their respective members
-                let index = 0;
-                members.forEach(memberList => {
-                  memberList.forEach(member => {
-                    member.name = memberNames[index].firstName + ' ' + memberNames[index].lastName;
-                    index++;
-                  });
-                });
-  
-                res.render('group', {
-                  groupId: role !== "Student" ? '' : student.groupId,
-                  hasGroup: role !== "Student" ? '' : student.groupId,
-                  section: role !== "Student" ? '' : student.section,
-                  user: student,
-                  group: groups,
-                  members: members,
-                  techAdv: techAdvNames,
-                  role: role
-                });
-              });
-          })
-      })
-      .catch(err => console.log(err));
-  }
+        })
+    })
+    .catch(err => console.log(err));
+}
   
 
 

@@ -67,18 +67,16 @@
                     <% } else { %>
                       <p>No technical adviser assigned.</p>
                     <% } %>
-                    
                     <h6>Members:</h6>
-                    <% if (members[i].length) { %>
+                    <% if (members[i] && members[i].length) { %>
                       <ul>
                       <% members[i].forEach(member => { %>
-                          <li><%= member.name %></li>
+                          <li><%= member %></li>
                       <% }); %>
                       </ul>
-                  <% } else { %>
+                    <% } else { %>
                       <p>No members yet.</p>
-                  <% } %>
-
+                    <% } %>
 
                     <% if(role == "Faculty" && !group[i].adviserId) { %>
                       <form action="/faculty/activities/roles" method="POST">

@@ -37,6 +37,22 @@
               <div class="buttons">
                 <% if (role == 'Faculty') { %>
                   <form action="/faculty/activities/approve-documents" method="POST">
+                    <label for="roleChosen">Pick role: </label>
+                      <select name="roleChosen" id="roleChosen">
+                        <% if(rolesTaken) { %>
+                          <% rolesTaken.forEach((role, i) => { %>
+                            <% if (role !== 'course-facilitator' && role !== 'technical-adviser' ) { %>
+                              <option value="<%= role %>"><%= role %></option>
+                            <% } %>
+                            <% if (role == 'course-facilitator' && subGrp.section == section ) { %>
+                              <option value="<%= role %>"><%= role %></option>
+                            <% } %>
+                            <% if (role == 'technical-adviser' && subGrp.adviserId == facultyId[i] ) { %>
+                              <option value="<%= role %>"><%= role %></option>
+                            <% } %>
+                          <% }) %>
+                        <% } %>
+                      </select>
                     <button value="approved" name="statusChosen">Approve</button>
                     <button value="revise" name="statusChosen">Revise</button>
                     <input type="hidden" value="<%= submission.id %>" name="submissionId">
