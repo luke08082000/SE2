@@ -16,6 +16,7 @@ const SubmissionForm = require('./models/submissionForm');
 const Group = require('./models/group');
 const Status = require('./models/status');
 const Comment = require('./models/comment');
+const Batch = require('./models/batch');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -84,6 +85,21 @@ app.use((req, res, next) => {
 
 // User.hasMany(Submission, { foreignKey: 'userId' });
 // Submission.belongsTo(User, { foreignKey: 'userId' });
+
+Batch.hasMany(UserFaculty, { foreignKey: 'batchId'});
+UserFaculty.belongsTo(Batch, { foreignKey: 'batchId'});
+
+Batch.hasMany(UserStudent, { foreignKey: 'batchId'});
+UserStudent.belongsTo(Batch, { foreignKey: 'batchId'});
+
+Batch.hasMany(Group, { foreignKey: 'batchId'});
+Group.belongsTo(Batch, { foreignKey: 'batchId'});
+
+Batch.hasMany(Submission, { foreignKey: 'batchId'});
+Submission.belongsTo(Batch, { foreignKey: 'batchId'});
+
+Batch.hasMany(SubmissionForm, { foreignKey: 'batchId' });
+SubmissionForm.belongsTo(Batch, { foreignKey: 'batchId'});
 
 SubmissionForm.hasMany(Submission, { foreignKey: 'submissionId' }); // ID nung submissionForm
 Submission.belongsTo(SubmissionForm, { foreignKey: 'submissionId' }); // submissionFormId

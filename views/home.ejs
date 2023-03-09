@@ -12,6 +12,25 @@
     <%- include ('partials/navigation.ejs') %>
 
     <div class="container">
+      <% if(role == "Faculty" && isBatchActive == false) { %>
+        <div class="card">
+          <h4>Create Batch:</h4>
+          <form action="/faculty/home" method="POST">
+            <input type="text" name="name">
+            <button type="submit" name="button" value="start">Start</button>
+          </form>
+        </div>
+      <% } %>
+      
+      <% if(role == "Faculty" && isBatchActive == true) { %>
+        <div class="card">
+          <form action="/faculty/home" method="POST">
+            <h4>Current Batch:</h4>
+            <p><%= batchName %></p>
+            <button type="submit" name="button" value="stop">Stop</button>
+          </form>
+        </div>
+      <% } %>
         <div class="card">
           <h4>First Name:</h4>
           <p><%= firstName %></p>

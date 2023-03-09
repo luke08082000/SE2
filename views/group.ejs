@@ -58,8 +58,24 @@
         <div class="card-grid">
             <% for (let i = 0; i < group.length; i++) { %>
                 <% if (role === 'Faculty' || (role === 'Student' && (hasGroup && group[i].id == user.groupId)) || !hasGroup && group[i].section === section) { %>
+                  <% if(group[i].batchId == activeBatchId ) { %>
                   <div class="card">
                     <h4><%= group[i].name %></h4>
+                    <% if(role == 'Student') { %>
+                      <% if(!group[i].capstoneTitle) { %>
+                        <form action="/student/group/capstone/title" method="POST">
+                          <input type="text" placeholder="Capstone Project Title" id="title" name="title"><br>
+                          <input type="hidden" value="<%= group[i].id %>" name="groupId">
+                          <button type="submit">OK</button>
+                        </form>
+                      <% } %>
+                    <% } %>
+                      <% if (group[i].capstoneTitle) { %>
+                        <h4><%= group[i].capstoneTitle %></h4>
+                        <button id="edit">Edit</button>
+                      <% } else { %>
+                        <p>No Capstone Project Title yet</p>
+                      <% } %>
                     <h6>Section: <span class="section"><%= group[i].section %></span></h6>
                     <h6>Technical Adviser:</h6>
                     <% if (techAdv[i]) { %>
@@ -94,6 +110,7 @@
                       </form>
                     <% } %>
                   </div>
+                  <% } %>
                 <% } %>
               <% } %>
         </div>
@@ -114,6 +131,7 @@
             }
         });
         }
+
     </script>
 
 </body>

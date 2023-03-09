@@ -6,6 +6,9 @@ const UserStudent = require('../models/userStudent');
 const UserFaculty = require('../models/userFaculty');
 const Status = require('../models/status');
 const Comment = require('../models/comment');
+const Batch = require('../models/batch');
+
+const batchPromise = Batch.findOne({ where: { isActive: true }})
 
 exports.getHome = (req, res) => {
     const role = req.session.user.role;
@@ -22,6 +25,7 @@ exports.getHome = (req, res) => {
 };
 
 exports.getSubmit = (req, res) => { // should only output forms that the group have not yet submitted to
+  const BatchPromise = Batch.findOne({ where: { isActive: true }}); 
     const role = req.session.user.role;
     const user = req.session.user;
     const section = req.session.user.section;
@@ -30,23 +34,27 @@ exports.getSubmit = (req, res) => { // should only output forms that the group h
         SubmissionForm.findAll({ where: { section: student.section } }) // find all forms for the given section
         .then(forms => {
             if (!forms) {
-                res.redirect('/home');
+                res.redirect('/student/home');
             }
             const formIds = forms.map(form => form.id);
             Submission.findAll({ where: { submissionId: formIds } }) // find all submissions for the given forms
             .then(submissions => {
                 let submitted = false;
                 console.log(submitted + " is submitted")
+
+              BatchPromise.then(activeBatch => {
                 res.render('student-activities/submit', {
-                    submitted: submitted,
-                    submissions: submissions,
-                    student: student,
-                    user: user,
-                    forms: forms,
-                    role: role,
-                    section: student.section,
-                    status: forms.status
-                });
+                  submitted: submitted,
+                  submissions: submissions,
+                  student: student,
+                  user: user,
+                  forms: forms,
+                  role: role,
+                  section: student.section,
+                  status: forms.status,
+                  activeBatchId: activeBatch ? activeBatch.id : 0
+              });
+              })
             })
             
         })
@@ -61,7 +69,9 @@ exports.postSubmit = (req, res) => {
         const formId = req.body.formId;
         const title = req.body.formTitle;
         const email = req.session.user.email;
-        UserStudent.findOne({ where : { userId: req.session.user.id }})
+
+        batchPromise.then(activeBatch => {
+          UserStudent.findOne({ where : { userId: req.session.user.id }})
         .then(student => {
             SubmissionForm.findByPk(formId)
             .then(submission => {
@@ -74,30 +84,46 @@ exports.postSubmit = (req, res) => {
                     submissionId: formId,
                     groupId: student.groupId,
                     title: title,
-                    version: 1
+                    version: 1,
+                    batchId: activeBatch.id
                 })
                 res.redirect('/student/activities/monitor');
             })
         })
         .catch(err => console.log(err))
+        })
+        
         }
 }
 
 exports.getFormView = (req, res) => {
     const role = req.session.user.role;
     const formId = req.params.id;
+    const user = req.session.user;
     console.log(formId);
     SubmissionForm.findByPk(formId)
       .then(form => {
-        res.render('formView', {
-            role: role,
-            form: form
+        UserStudent.findOne({ where: { userId: user.id } })
+        .then(student => {
+        SubmissionForm.findAll({ where: { section: student.section } }) // find all forms for the given section
+        .then(forms => {
+            if (!forms) {
+                res.redirect('/student/home');
+            } else {
+              res.render('formView', {
+                  role: role,
+                  form: form,
+                  forms: forms
+              })
+            }
+          })
         })
       })
 
 }
 
 exports.getMonitor = (req, res) => {
+  const BatchPromise = Batch.findOne({ where : { isActive: true }});
     const role = req.session.user.role;
     UserStudent.findOne({ where: { userId: req.session.user.id } })
     .then(student => {
@@ -105,12 +131,18 @@ exports.getMonitor = (req, res) => {
         .then(group => {
             Submission.findAll({ where: { groupId: group.id }}) 
             .then(submissions => {
+
+              BatchPromise.then(activeBatch => {
                 res.render('student-activities/monitor', {
-                    student: student,
-                    submissions: submissions,
-                    role: role,
-                    status: submissions.status,
-                });
+                  student: student,
+                  submissions: submissions,
+                  role: role,
+                  status: submissions.status,
+                  capstoneTitle: group.capstoneTitle,
+                  activeBatchId: activeBatch ? activeBatch.id : 0
+              });
+              })
+                
             })
         })
     })
@@ -126,6 +158,8 @@ exports.getMonitorView = (req, res) => {
         if (!submission) {
             return res.redirect('/student/activities/monitor')
         }
+        const groupPromise = Group.findByPk(submission.groupId);
+
         Status.findAll({ where: { submissionId: submission.id } })
           .then(statuses => {
             const statusPromises = statuses.map(status => {
@@ -138,17 +172,19 @@ exports.getMonitorView = (req, res) => {
                   return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
                 })
   
-                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises)])
-                  .then(([usersApprove, usersComment]) => {
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), groupPromise])
+                  .then(([usersApprove, usersComment, group]) => {
                     //console.log(JSON.stringify(usersApprove, null, 2));
                     //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
+                    console.log(group.capstoneTitle)
                     return res.render('view', {
                       submission: submission,
                       status: statuses,
                       comments: comments,
                       usersApprove: usersApprove,
                       usersComment: usersComment,
-                      role: role
+                      role: role,
+                      group: group
                     });
                   })
                   .catch(e => console.log(e));
@@ -195,7 +231,7 @@ exports.postRevise = (req, res) => {
             return submission.save()
         })
         .then(result => {
-            res.redirect('/student/activities/revise');
+            res.redirect('/student/activities/monitor');
         })
         .catch(err => console.log(err));
 }
@@ -225,6 +261,7 @@ exports.getProjectMilestones = (req, res) => {
 };
 
 exports.getGroup = (req, res) => {
+  const BatchPromise = Batch.findOne({ where : { isActive: true }});
   const role = req.session.user.role;
   UserStudent.findOne({ where: { userId: req.session.user.id } })
     .then(student => {
@@ -265,6 +302,7 @@ exports.getGroup = (req, res) => {
               const techAdvNames = results.slice(0, groups.length);
               const groupMembers = results.slice(groups.length);
 
+            BatchPromise.then(activeBatch => {
               res.render('group', {
                 groupId: role !== "Student" ? '' : student.groupId,
                 hasGroup: role !== "Student" ? '' : student.groupId,
@@ -273,8 +311,11 @@ exports.getGroup = (req, res) => {
                 group: groups,
                 members: groupMembers,
                 techAdv: techAdvNames,
-                role: role
+                role: role,
+                activeBatchId: activeBatch ? activeBatch.id : 0
               });
+            })
+              
             });
         })
     })
@@ -299,4 +340,16 @@ exports.postGroup = (req, res) => {
     .catch(err => console.log(err))
 }
 
-
+exports.postTitle = (req, res) => {
+  const title = req.body.title;
+  const groupId = req.body.groupId;
+  Group.findByPk(groupId)
+    .then(group => {
+      group.update({ capstoneTitle: title})
+      return group.save()
+    })
+    .then(result => {
+      res.redirect('/student/group');
+    })
+    .catch(e => console.log(e));
+}

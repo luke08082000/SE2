@@ -26,6 +26,8 @@
                 <div class="form-control">
                     <label for="file">PDF file</label>
                     <input type="file" class="form-control" name="file" id="file" accept=".pdf">
+                        <input type="hidden" value="<%= form.title %>" name="formTitle">
+                        <input type="hidden" value="<%= form.id %>" name="formId">
                   </div>
                 <button class="btn" type="submit">Submit</button>
               </form>

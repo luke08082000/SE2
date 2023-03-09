@@ -15,17 +15,21 @@
       <% console.log(submissions.length) %>
       <% console.log(student.groupId + " student group id") %>
       <div class="container">
+        <h1>Monitor Submissions</h1>
         <% for (let i = 0; i < submissions.length; i++) { %>
-          <% console.log(submissions[i].title) %>
+          <% if(submissions[i].batchId == activeBatchId) { %>
                 <article class="card">
                   <div class="form-control card-header">
                     <h1 class="form__title"><%= submissions[i].title %></h1>
                   </div>
                   <div class="form-control">
-                    <h4>Status: <%= submissions[i].status %></h4>
+                    <h4><%= capstoneTitle %></h4>
                   </div>
-                  <div class="form-control" id="viewer-<%= i %>">
-                    <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
+                  <div class="form-control">
+                    <h4><%= submissions[i].status %></h4>
+                  </div>
+                  <div class="form-control">
+                    <h4><%= submissions[i].updatedAt.toLocaleDateString() %></h4>
                   </div>
                   <div class="card-actions">
                     <form action="/student/activities/monitor/view/<%= submissions[i].id %>" method="GET">
@@ -33,6 +37,7 @@
                     </form>
                   </div>
                 </article>
+            <% } %>
         <% } %>
       </div>
     <% } %>

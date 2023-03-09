@@ -14,20 +14,25 @@
     <%- include ('partials/navigation.ejs') %>
     
     <div class="container">
-        <h1><%= submission.title %></h1>
+      <% if(role == "Faculty") { %>
+      <h1><%= subGrp.capstoneTitle %></h1>
+      <% } %>
+      <% if(role == "Student") { %>
+        <h1><%= group.capstoneTitle %></h1>
+        <% } %>
+        <h4><%= submission.title %></h4>
         <p>Version <%= submission.version %></p>
         <div class="container-top">
             <div class="pdf-viewer">
                 <iframe src="<%= submission.filePath %>" frameborder="0" width="100%" height="500px"></iframe>
             </div>
             <div class="status-log">
-              <h3>Status Log</h3>
+              <h3>Approval Log</h3>
               <div class="log">
                 <% if (status.length > 0) { %>
                   <% status.forEach((status, index) => { %>
                     <div class="status-entry">
-                      <h4><%= status.status %></h4>
-                      <h4>By: <%= usersApprove[index].user.firstName + ' ' + usersApprove[index].user.lastName %> as <%= usersApprove[index].role %></h4>
+                      <h4>Approved by: <%= usersApprove[index].user.firstName + ' ' + usersApprove[index].user.lastName %> as <%= usersApprove[index].role %></h4>
                     </div>
                   <% }) %>
                 <% } else { %>
@@ -54,17 +59,16 @@
                         <% } %>
                       </select>
                     <button value="approved" name="statusChosen">Approve</button>
-                    <button value="revise" name="statusChosen">Revise</button>
+                    <!-- <button value="revise" name="statusChosen">Revise</button> -->
                     <input type="hidden" value="<%= submission.id %>" name="submissionId">
                   </form>
                 <% } %>
-                <% if (role == 'Student' && submission.status == 'forRevision') { %>
+                <% if (role == 'Student' && submission.status !== 'approved') { %>
                   <form action="/student/activities/revise" method="POST" enctype="multipart/form-data">
                   <div class="form-control">
-                    <label for="file">Upload PDF file</label>
                     <input type="file" class="form-control" name="file" id="file" accept=".pdf">
                   </div>
-                    <button type="submit">Submit Revision</button>
+                    <button type="submit">Upload Revision</button>
                     <input type="hidden" value="<%= submission.id %>" name="submissionId">
                   </form>
                 <% } %>

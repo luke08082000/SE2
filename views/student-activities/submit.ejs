@@ -20,8 +20,7 @@
         </div>
         <% for (let i = 0; i < forms.length; i++) { %>
           <% if (forms[i].section === section && !submissions.find(submission => submission.submissionId === forms[i].id && submission.groupId === student.groupId)) { %>
-            <% console.log('dumaan dito') %>
-            <% console.log(forms[i].section) %>
+            <% if(forms[i].batchId == activeBatchId) { %>
             <article class="card">
               <div class="form-control card-header">
                 <h1 class="form__title"><%= forms[i].title %></h1>
@@ -41,6 +40,7 @@
                 <input type="hidden" value="<%= forms[i].status %>" name="formStatus">
                 <input type="hidden" value="<%= forms[i].title %>" name="formTitle">
               </article>
+              <% } %>
           <% } %>
         <% } %>
       </div>

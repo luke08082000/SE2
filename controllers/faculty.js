@@ -7,41 +7,83 @@ const UserStudent = require('../models/userStudent');
 const UserFaculty = require('../models/userFaculty');
 const Status = require('../models/status');
 const Comment = require('../models/comment');
+const Batch = require('../models/batch');
+
+
 
 exports.getHome = (req, res) => {
+    const BatchPromise = Batch.findOne({ where: { isActive: true }});
     const role = req.session.user.role;
     const firstName = req.session.user.firstName;
     const lastName = req.session.user.lastName;
     const email = req.session.user.email;
     
-    res.render('home', {
+    BatchPromise.then(activeBatch => {
+      res.render('home', {
         role: role,
         firstName: firstName,
         lastName: lastName,
-        email: email
+        email: email,
+        batchName: activeBatch ? activeBatch.name : 'No active batch',
+        isBatchActive: activeBatch && activeBatch.isActive ? true : false
+
+      })
     })
+    
+    
 };
 
+exports.postBatch = (req, res) => {
+  const name = req.body.name;
+  const button = req.body.button;
+
+  if(button == 'start') {
+    Batch.create({ name: name, isActive: true })
+    .then(batch => {
+      console.log('new batch created')
+      res.redirect('/faculty/home')
+    })
+    .catch(e => console.log(e))
+  }
+  if(button == 'stop') {
+    Batch.findOne({ where: { isActive: true }}).then(activeBatch => {
+      activeBatch.update({ isActive: false })
+        .then(stoppedBatch => {
+          res.redirect('/faculty/home')
+        })
+    })
+    .catch(e => console.log(e))
+  }
+  
+}
+
 exports.getApproveDocuments = (req, res) => {
+    const BatchPromise = Batch.findOne({ where: { isActive: true }}); 
     const role = req.session.user.role;
     const userGroup = req.session.user.groupId;
     const currentUser = req.session.user;
-    SubmissionForm.findAll({
-        include: [{
-            model: Submission,
-            as: 'submissions'
-        }]
-    })
-    .then(forms => {
+    const groupId = req.body.groupId
+
+  BatchPromise.then(activeBatch => {
+    Submission.findAll()
+    .then(submissions => {
+      const groupsPromises = submissions.map(submission => {
+        return Group.findByPk(submission.groupId)
+      })
+      Promise.all(groupsPromises).then(groups => {
         res.render('faculty-activities/approve-documents', {
-            forms: forms,
-            userGroup: userGroup,
-            role: role,
-            currentUser: currentUser,
-            status: forms.status
-        });
+          submissions: submissions,
+          userGroup: userGroup,
+          role: role,
+          currentUser: currentUser,
+          groups: groups,
+          activeBatchId: activeBatch ? activeBatch.id : 0
+      });
+      })
     })
     .catch(err => console.log(err))
+  })
+    
 }
 
 exports.postApproveDocuments = (req, res) => {
@@ -59,40 +101,80 @@ exports.postApproveDocuments = (req, res) => {
                 const status = req.body.statusChosen;
                 console.log(submissionId + ' is the submission id');
                 Status.create({ userFacultyId: userFaculty.id, submissionId: submissionId, status: status })
-                res.redirect(`/faculty/activities/view/${submissionId}`);
+                  .then(() => {
+                    //UPDATE SUBMISSION STATUS TO 'forRevision' OR TO 'approved'
+                    Status.findAll({ where: { submissionId: submissionId } })
+                      .then(statuses => {
+                        let statusNum = 0;
+                        let hasRevise = false;
+                        statuses.forEach(status => {
+                          if (status.status == 'revise') {
+                            hasRevise = true;
+                          }
+                          if (status) {
+                            statusNum++
+                          }
+                        }) 
+                        console.log(statusNum + ' sdfsfdf')
+                        if (statusNum === 5 && !hasRevise) {
+                          Submission.findOne({ where: { id: submissionId }})
+                            .then(submission => {
+                              submission.update({ status: 'approved' })
+                              console.log(submission.status + ' is the new status')
+                            })
+                          console.log('All 5 statuses are approved');
+                        } else if (statusNum === 5 && hasRevise) {
+                          Submission.findOne({ where: { id: submissionId }})
+                            .then(submission => {
+                              submission.update({ status: 'forRevision' })
+                              console.log(submission.status + ' is the new status')
+                            })
+                          console.log('At least one of the 5 statuses is revise');
+                        } else {
+                          console.log(5 - statusNum + ' more need/s to approve');
+                        }
+                      })
+                      .catch(err => console.log(err))
+                    res.redirect(`/faculty/activities/view/${submissionId}`);
+                  })
+
             }
-        }) 
+        })
     })
     //UPDATE SUBMISSION STATUS TO 'forRevision' OR TO 'approved'
     Status.findAll({ where: { submissionId: submissionId } })
-    .then(statuses => {
-        let approveNum = 0;
-        statuses.forEach(status => {
-            if(status.status == 'revise'){
-                Submission.findOne({ where: { id: submissionId }})
-                .then(submission => {
-                submission.update({ status: 'forRevision' })
-                console.log(submission.status + ' is the new status')
-                return;
-                })
-            }
-            if(status.status == 'approved') {
-                approveNum++
-                console.log(approveNum)
-                if (approveNum === 5){            
-                    Submission.findOne({ where: { id: submissionId }})
-                    .then(submission => {
-                        submission.update({ status: 'approved' })
-                        console.log(submission.status + ' is the new status')
-                    })
-                    console.log(approveNum + ' approved');
-                } else console.log(5 - approveNum + ' more need/s to approve');
-            }
-            
+  .then(statuses => {
+    let statusNum = 0;
+    let hasRevise = false;
+    statuses.forEach(status => {
+      if (status.status == 'revise') {
+        hasRevise = true;
+      }
+      if (status) {
+        statusNum++
+      }
+    }) 
+    console.log(statusNum + ' sdfsfdf')
+    if (statusNum === 5 && !hasRevise) {
+      Submission.findOne({ where: { id: submissionId }})
+        .then(submission => {
+          submission.update({ status: 'approved' })
+          console.log(submission.status + ' is the new status')
         })
-        
-    })
-    .catch(err => console.log(err))
+      console.log('All 5 statuses are approved');
+    } else if (statusNum === 5 && hasRevise) {
+      Submission.findOne({ where: { id: submissionId }})
+        .then(submission => {
+          submission.update({ status: 'forRevision' })
+          console.log(submission.status + ' is the new status')
+        })
+      console.log('At least one of the 5 statuses is revise');
+    } else {
+      console.log(5 - statusNum + ' more need/s to approve');
+    }
+  })
+  .catch(err => console.log(err))
+
 }
 
 exports.getView = (req, res) => {
@@ -193,13 +275,15 @@ exports.getCreateForm = (req, res) => {
 }
 
 exports.postCreateForm = (req, res) => {
+    const BatchPromise = Batch.findOne({ where: { isActive: true }});
     const title = req.body.title;
     const description = req.body.description;
     const deadline = req.body.deadline;
     const email = req.session.email;
     const section = req.body.section;
     const role = req.session.user.role;
-    UserFaculty.findOne({ where: { userId: req.session.user.id } })
+    BatchPromise.then(activeBatch => {
+      UserFaculty.findOne({ where: { userId: req.session.user.id } })
         .then(user => {
             return SubmissionForm.create({
                 title: title,
@@ -207,16 +291,20 @@ exports.postCreateForm = (req, res) => {
                 deadline: deadline,
                 createdBy: email,
                 section: section,
-                userId: user.id
+                userId: user.id,
+                batchId: activeBatch.id
             })
         })
         .then(result => {
             res.redirect('/faculty/activities/approve-documents');
         })
         .catch(err => console.log(err))
+    })
+    
 }
 
 exports.getRole = (req, res) => {
+  const BatchPromise = Batch.findOne({ where: { isActive: true }});
     const role = req.session.user.role;
 
     UserFaculty.findAll()
@@ -228,12 +316,16 @@ exports.getRole = (req, res) => {
         .then(members => {
               User.findAll({ where: { role: 'Faculty' } })
                 .then(faculty => {
+                  BatchPromise.then(activeBatch => {
                     res.render('faculty-activities/roles', {
                         role: role,
                         userFaculty: faculties,
                         facultyMembers: members,
-                        faculty: faculty
+                        faculty: faculty,
+                        activeBatchId: activeBatch ? activeBatch.id : 0
                     });
+                  })
+                    
                 })
               
           })
@@ -242,14 +334,18 @@ exports.getRole = (req, res) => {
 }
 
 exports.postRole = (req, res) => {
+  const BatchPromise = Batch.findOne({ where: { isActive: true }});
     const roleChosen = req.body.role;
     const userEmail = req.body.email;
     const userId = req.body.userId;
     const sectionChosen = req.body.section;
     const groupId = req.body.groupId;
     const currentUser = req.session.user
+
+
+  BatchPromise.then(activeBatch => {
     if (roleChosen === 'technical-adviser') {
-      UserFaculty.create({ userId: currentUser.id, role: 'technical-adviser', section: 'all' }, { returning: true })
+      UserFaculty.create({ userId: currentUser.id, role: 'technical-adviser', section: 'all', batchId: activeBatch.id }, { returning: true })
         .then(createdFaculty => { 
           Group.findByPk(groupId)
             .then(group => {
@@ -258,7 +354,9 @@ exports.postRole = (req, res) => {
             })
         })
     }
+  })
     
+  BatchPromise.then(activeBatch => {
     User.findOne({ where: { role: "Faculty", id: userId } })
     .then(user => {
         UserFaculty.findAll()
@@ -281,7 +379,8 @@ exports.postRole = (req, res) => {
             UserFaculty.create({ 
                 userId: user.id,
                 role: roleChosen,
-                section: roleChosen === 'course-facilitator' ? sectionChosen : 'all'
+                section: roleChosen === 'course-facilitator' ? sectionChosen : 'all',
+                batchId: activeBatch.id
             })
             .then(result => {
                 console.log('new user-faculty created with role: ' + roleChosen)
@@ -291,6 +390,8 @@ exports.postRole = (req, res) => {
         })
     })
     .catch(err => console.log(err));
+  })
+  .catch(err => console.log(err));
 }
 
 exports.getCapstoneProjects = (req, res) => {
@@ -308,10 +409,10 @@ exports.getCapstoneProjects = (req, res) => {
 
 exports.getGroup = (req, res) => {
   const role = req.session.user.role;
+  const BatchPromise = Batch.findOne({ where : { isActive: true }});
   UserStudent.findOne({ where: { userId: req.session.user.id } })
     .then(student => {
       return Group.findAll()
-      
         .then(groups => {
           const techAdvPromises = groups.map(group => {
             return UserFaculty.findByPk(group.adviserId)
@@ -346,38 +447,44 @@ exports.getGroup = (req, res) => {
               // Split results into techAdvNames and groupMembers
               const techAdvNames = results.slice(0, groups.length);
               const groupMembers = results.slice(groups.length);
-
-              res.render('group', {
-                groupId: role !== "Student" ? '' : student.groupId,
-                hasGroup: role !== "Student" ? '' : student.groupId,
-                section: role !== "Student" ? '' : student.section,
-                user: student,
-                group: groups,
-                members: groupMembers,
-                techAdv: techAdvNames,
-                role: role
+              BatchPromise.then(activeBatch => {
+                res.render('group', {
+                  groupId: role !== "Student" ? '' : student.groupId,
+                  hasGroup: role !== "Student" ? '' : student.groupId,
+                  section: role !== "Student" ? '' : student.section,
+                  user: student,
+                  group: groups,
+                  members: groupMembers,
+                  techAdv: techAdvNames,
+                  role: role,
+                  activeBatchId: activeBatch ? activeBatch.id : 0
+                });
               });
-            });
-        })
+          })
+      })
+      .catch(err => console.log(err));
     })
-    .catch(err => console.log(err));
+              
 }
   
-
-
-
 exports.postGroup = (req, res) => {
+  const BatchPromise = Batch.findOne({ where: { isActive: true }});
         const section = req.body.section;
         const name = req.body.name;
-        Group.create({
+
+        BatchPromise.then(activeBatch => {
+          Group.create({
             section: section,
-            name: name
+            name: name,
+            batchId: activeBatch.id
         })
         .then(group => {
             console.log('new group created');
             res.redirect('/faculty/group');
         })
         .catch(err => console.log(err))
+        })
+        
 }
 
 

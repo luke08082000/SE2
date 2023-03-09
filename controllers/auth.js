@@ -3,6 +3,9 @@ const User = require('../models/user');
 const UserStudent = require('../models/userStudent');
 const UserFaculty = require('../models/userFaculty');
 const nodemailer = require('nodemailer');
+const Batch = require('../models/batch');
+
+const batchPromise = Batch.findOne({ where: { isActive: true }})
 
 const crypto = require('crypto');
 
@@ -70,7 +73,9 @@ exports.postRegister = (req, res, next) => {
     const confirmPassword = req.body.confirmPassword;
     const role = req.body.role;
     const section = req.body.section;
-    User.findOne({ where: { email: email } })
+
+    batchPromise.then(activeBatch => {
+        User.findOne({ where: { email: email } })
     .then(userDoc => {
         if(userDoc) {
             return res.redirect('/')
@@ -94,7 +99,8 @@ exports.postRegister = (req, res, next) => {
             if(user.role === "Student") {
                 UserStudent.create({
                     userId: user.id,
-                    section: section
+                    section: section,
+                    batchId: activeBatch.id
                 })
             }
             var message = {
@@ -114,6 +120,8 @@ exports.postRegister = (req, res, next) => {
         })
     })
     .catch(err => console.log(err))
+    })
+    
 };
 
 exports.getVerify = (req, res, next) => {

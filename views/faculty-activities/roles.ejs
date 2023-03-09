@@ -19,13 +19,15 @@
                 <h4>Faculty Members with roles:</h4>
                 <% if(facultyMembers.length > 0) { %>
                     <% facultyMembers.forEach((member, i) => { %>
+                        <% if(userFaculty[i].batchId == activeBatchId) { %>
                         <% if (userFaculty[i].role == 'course-facilitator') { %>
                             <p><%= userFaculty[i].role + ' ' + userFaculty[i].section %></p>
                             <% } else { %>
                                 <p><%= userFaculty[i].role %></p>
                             <% } %>
-                        <p><%= member.firstName + ' ' + member.lastName %></p>
+                                <p><%= member.firstName + ' ' + member.lastName %></p>
                                 <br>
+                            <% } %>
                         <% }) %>
                 <% } %>
             </div>

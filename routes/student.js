@@ -32,5 +32,7 @@ router.get('/group', studentController.getGroup);
 
 router.post('/group', studentController.postGroup);
 
+router.post('/group/capstone/title', studentController.postTitle);
+
 
 module.exports = router;

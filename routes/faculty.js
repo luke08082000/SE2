@@ -12,6 +12,8 @@ router.use(isAuth, isFaculty);
 
 router.get('/home', facultyController.getHome);
 
+router.post('/home', facultyController.postBatch);
+
 router.get('/activities/approve-documents', facultyController.getApproveDocuments);
 
 router.post('/activities/approve-documents', facultyController.postApproveDocuments);

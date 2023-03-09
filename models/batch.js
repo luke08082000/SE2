@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const Group = sequelize.define('group', {
+const Batch = sequelize.define('batch', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -10,9 +10,7 @@ const Group = sequelize.define('group', {
         primaryKey: true
     },
     name: Sequelize.STRING,
-    capstoneTitle: Sequelize.STRING(500),
-    section: Sequelize.STRING,
-    adviserId: Sequelize.INTEGER
+    isActive: Sequelize.BOOLEAN
 })
 
-module.exports = Group;
+module.exports = Batch;

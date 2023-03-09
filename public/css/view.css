@@ -21,8 +21,7 @@
   width: 30%;
   padding-inline: 20px;
   border-style: dashed;
-  display: flex;
-  justify-content: space-around;
+
 }
 
 .status, .names {
