@@ -10,28 +10,39 @@
 </head>
 <body>
   <%- include ('../partials/navigation.ejs') %>
-    <% if (submissions.length > 0) { %>
-      <% console.log(submissions.length) %>
-      <div class="container">
-        <% for (let i = 0; i < submissions.length; i++) { %>
-                <article class="card">
-                  <div class="form-control card-header">
-                    <h1 class="form__title"><%= submissions[i].title %></h1>
-                  </div>
-                  <div class="form-control">
-                    <h4>Status: <%= submissions[i].status %></h4>
-                  </div>
-                  <div class="form-control" id="viewer-<%= i %>">
-                    <iframe src="<%= submissions[i].filePath %>" frameborder="0" width="70%" height="500px"></iframe>
-                  </div>
-                  <div class="card-actions">
-                    <a onclick="toggleIframe(<%= i %>)">View</a>
-                  </div>
-                </article>
-        <% } %>
+  <% if(groups.length > 0) { %>
+    <div class="container">
+      <h1>Archive</h1>
+      <% groups.forEach((group, i) => { %>
+        <article class="card">
+          <div class="form-control card-header">
+            <h1 class="form__title"><%= group.capstoneTitle %></h1>
+          </div>
+          <div class="form-control">
+            <p>Group name: </p>
+            <h4><%= group.name %></h4>
+          </div>
+          <div class="form-control">
+            <p>Adviser: </p>
+            <h4><%= adviser[i] && adviser[i].firstName + ' ' + adviser[i].lastName %></h4>
+          </div>
+          <div class="form-control">
+            <p>Section: </p>
+            <h4><%= group.section %></h4>
+          </div>
+          <div class="form-control">
+            <p>Batch: </p>
+            <h4><%= batch[i].name %></h4>
+          </div>
+          <div class="card-actions">
+            <form action="/faculty/archive/view/<%= group.id %>" method="GET">
+              <button type="submit">View</button>
+            </form>
+          </div>
+        </article>
+        <% }) %>
       </div>
     <% } %>
-  <script src="/js/main.js"></script>
   
 </body>
 </html>

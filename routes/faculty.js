@@ -28,6 +28,8 @@ router.post('/activities/create-form', facultyController.postCreateForm);
 
 router.get('/activities/view/:id', facultyController.getView);
 
+router.get('/archive/view/:id', facultyController.getArchiveView);
+
 router.post('/activities/post/comment', facultyController.postComment);
 
 router.get('/capstone-projects', facultyController.getCapstoneProjects);

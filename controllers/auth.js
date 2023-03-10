@@ -5,7 +5,7 @@ const UserFaculty = require('../models/userFaculty');
 const nodemailer = require('nodemailer');
 const Batch = require('../models/batch');
 
-const batchPromise = Batch.findOne({ where: { isActive: true }})
+
 
 const crypto = require('crypto');
 
@@ -66,6 +66,7 @@ exports.getRegister = (req, res, next) => {
   
 
 exports.postRegister = (req, res, next) => {
+    const BatchPromise = Batch.findOne({ where: { isActive: true }})
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const email = req.body.email;
@@ -74,7 +75,7 @@ exports.postRegister = (req, res, next) => {
     const role = req.body.role;
     const section = req.body.section;
 
-    batchPromise.then(activeBatch => {
+    BatchPromise.then(activeBatch => {
         User.findOne({ where: { email: email } })
     .then(userDoc => {
         if(userDoc) {

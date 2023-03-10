@@ -180,6 +180,7 @@ exports.postApproveDocuments = (req, res) => {
 exports.getView = (req, res) => {
     const role = req.session.user.role;
     const currentUser = req.session.user;
+    const BatchPromise = Batch.findOne({ where: { isActive: true }}); 
     Submission.findByPk(req.params.id)
       .then(submission => {
         if (!submission) {
@@ -209,6 +210,9 @@ exports.getView = (req, res) => {
                         const rolesTaken = faculty.map(user => {
                           return user.role
                         })
+                        const facultyBatchId = faculty.map(user => {
+                          return user.batchId
+                        })
                         const courseFaci = faculty
                           .filter(user => user.role === 'course-facilitator')
                           .map(user => user.section.toUpperCase())
@@ -217,10 +221,10 @@ exports.getView = (req, res) => {
                         const techAdvGroup = faculty
                           .filter(user => user.role === 'technical-adviser')
                           .map(user => user.id)
-                        console.log(techAdvGroup);
-                        console.log(subGrp.adviserId);
-
-                            return res.render('view', {
+                        console.log(facultyBatchId);
+                        
+                        BatchPromise.then(activeBatch => {
+                          return res.render('view', {
                               submission: submission,
                               status: statuses,
                               comments: comments,
@@ -231,8 +235,12 @@ exports.getView = (req, res) => {
                               subGrp: subGrp,
                               section: courseFaci,
                               facultyId: facultyId,
-                              currentUser: currentUser
+                              currentUser: currentUser,
+                              facultyBatchId: facultyBatchId,
+                              activeBatchId: activeBatch ? activeBatch.id : 0
                             });
+                        })
+                            
                       })
                     
                   })
@@ -396,16 +404,57 @@ exports.postRole = (req, res) => {
 
 exports.getCapstoneProjects = (req, res) => {
     const role = req.session.user.role;
-        Submission.findAll({ where: { status: 'approved' }})
-        .then(submissions => {
+        Group.findAll().then(groups => {
+          const groupBatchPromise = groups.map(group => { //map batch for every group
+            return Batch.findByPk(group.batchId)
+          })
+          const groupAdviserPromise = groups.map(group => {
+             return UserFaculty.findByPk(group.adviserId).then(adviser => {
+              return User.findByPk(adviser.userId);
+                    })
+          })
+          Promise.all([Promise.all(groupBatchPromise), Promise.all(groupAdviserPromise)]).then(([groupBatch, groupAdviser]) => {
             res.render('faculty-activities/capstone-projects', {
                 role: role,
-                submissions: submissions,
-                status: submissions.status
+                groups: groups,
+                batch: groupBatch,
+                adviser: groupAdviser
             })
+          })
         })
         .catch(err => console.log(err))
 };
+
+exports.getArchiveView = (req, res) => {
+  const role = req.session.user.role;
+  const groupId = req.params.id;
+
+  Group.findByPk(groupId).then(group => {
+   UserStudent.findAll({ where: { groupId: group.id } }).then(members => {
+      const membersPromise = members.map(member => { //returns user info for every member
+        return User.findByPk(member.userId)
+      })
+      UserFaculty.findByPk(group.adviserId).then(adviser => { //returns info for adviser
+        const adviserPromise = User.findByPk(adviser.userId);
+        const submissionsPromise = Submission.findAll({ where: { groupId: group.id }});// returns all submissions from group
+
+          Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
+            res.render('faculty-activities/archiveView', {
+            role: role,
+            group: group,
+            members: members,
+            adviser: adviser,
+            submissions: submissions
+            })
+          })
+          .catch(e => console.log(e))
+        })
+        .catch(e => console.log(e))
+    })
+    .catch(e => console.log(e))
+  })
+  .catch(e => console.log(e))
+}
 
 exports.getGroup = (req, res) => {
   const role = req.session.user.role;

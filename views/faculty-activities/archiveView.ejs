@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href = "/css/navigation.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"> 
+    <link rel="stylesheet" href="/css/view.css">
+    <link rel="stylesheet" href="/css/form-submit.css">
+    <title>View</title>
+</head>
+<body>
+    <%- include ('../partials/navigation.ejs') %>
+    <% if(group) { %>
+    <div class="container">
+        <h1><%= group.capstoneTitle %></h1>
+        <div class="container-top">
+            <div class="members">
+            <h4>Members</h4>
+                <% if(members.length > 0) { %>
+                    <% members.forEach(member => { %>
+                    <ul><%= member.firstName + ' ' + member.lastName %></ul>
+                    <% }) %>
+                <% } %>
+            </div>
+            <div class="adviser">
+                <h4>Adviser</h4>
+                <% if(adviser) { %>
+                    <ul><%= adviser.firstName + ' ' + adviser.lastName %></ul>
+                <% } %>
+            </div>
+        </div>
+        <div class="container-main">
+            <h4>Documents</h4>
+            <% if(submissions.length > 0) { %>
+                <% submissions.forEach(submission => { %>
+                <div class="card">
+                    <div class="form-control">
+                       <h2><%= submission.title %></h2> 
+                    </div>
+                    <div class="form-control">
+                      <h2><%= submission.status %></h2>  
+                    </div>
+                    <form action="/faculty/activities/view/<%= submission.id %>" method="GET">
+                      <button type="submit">View</button>  
+                    </form>
+                    
+                </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+    <% } %>
+
+</body>

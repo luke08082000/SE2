@@ -46,14 +46,16 @@
                       <select name="roleChosen" id="roleChosen">
                         <% if(rolesTaken) { %>
                           <% rolesTaken.forEach((role, i) => { %>
-                            <% if (role !== 'course-facilitator' && role !== 'technical-adviser' ) { %>
-                              <option value="<%= role %>"><%= role %></option>
-                            <% } %>
-                            <% if (role == 'course-facilitator' && subGrp.section == section ) { %>
-                              <option value="<%= role %>"><%= role %></option>
-                            <% } %>
-                            <% if (role == 'technical-adviser' && subGrp.adviserId == facultyId[i] ) { %>
-                              <option value="<%= role %>"><%= role %></option>
+                            <% if(facultyBatchId[i] == activeBatchId) { %>
+                              <% if (role !== 'course-facilitator' && role !== 'technical-adviser' ) { %>
+                                <option value="<%= role %>"><%= role %></option>
+                              <% } %>
+                              <% if (role == 'course-facilitator' && subGrp.section == section ) { %>
+                                <option value="<%= role %>"><%= role %></option>
+                              <% } %>
+                              <% if (role == 'technical-adviser' && subGrp.adviserId == facultyId[i] ) { %>
+                                <option value="<%= role %>"><%= role %></option>
+                              <% } %>
                             <% } %>
                           <% }) %>
                         <% } %>
