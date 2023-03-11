@@ -21,10 +21,21 @@
         <h1><%= group.capstoneTitle %></h1>
         <% } %>
         <h4><%= submission.title %></h4>
-        <p>Version <%= submission.version %></p>
+        <% if(role == 'Faculty') { %>
+          <% revisions.forEach((version, index) => { %>
+            <a href="/faculty/activities/view/<%= version.id %>">Version <%= version.version %></a>
+          <% }) %>
+        <% } %>
+        <% if(role == 'Student') { %>
+          <% revisions.forEach((version, index) => { %>
+            <a href="/student/activities/monitor/view/<%= version.id %>">Version <%= version.version %></a>
+          <% }) %>
+        <% } %>
+        
         <div class="container-top">
             <div class="pdf-viewer">
-                <iframe src="<%= submission.filePath %>" frameborder="0" width="100%" height="500px"></iframe>
+                <iframe id="pdf-iframe" src="<%= submission.filePath %>" frameborder="0" width="100%" height="500px"></iframe>
+                <% console.log(submission.filePath) %>
             </div>
             <div class="status-log">
               <h3>Approval Log</h3>
@@ -72,6 +83,10 @@
                   </div>
                     <button type="submit">Upload Revision</button>
                     <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                    <input type="hidden" value="<%= submission.submissionId %>" name="submissionFormId">
+                    <input type="hidden" value="<%= submission.groupId %>" name="submissionGroupId">
+                    <input type="hidden" value="<%= submission.title %>" name="submissionTitle">
+                    <input type="hidden" value="<%= submission.batchId %>" name="submissionBatchId">
                   </form>
                 <% } %>
               </div>
@@ -113,9 +128,8 @@
               </div>
             </div>              
           </div>
-          
-          
-        
     </div>
+    
+   
 </body>
 </html>

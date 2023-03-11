@@ -158,6 +158,7 @@ exports.getMonitorView = (req, res) => {
         if (!submission) {
             return res.redirect('/student/activities/monitor')
         }
+        const revisionPromises = Submission.findAll({ where: { submissionId: submission.submissionId, groupId: submission.groupId, batchId: submission.batchId }});
         const groupPromise = Group.findByPk(submission.groupId);
 
         Status.findAll({ where: { submissionId: submission.id } })
@@ -172,11 +173,11 @@ exports.getMonitorView = (req, res) => {
                   return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
                 })
   
-                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), groupPromise])
-                  .then(([usersApprove, usersComment, group]) => {
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), revisionPromises, groupPromise])
+                  .then(([usersApprove, usersComment, revisions, group]) => {
                     //console.log(JSON.stringify(usersApprove, null, 2));
                     //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
-                    console.log(group.capstoneTitle)
+                    console.log(revisions[1].title)
                     return res.render('view', {
                       submission: submission,
                       status: statuses,
@@ -184,6 +185,7 @@ exports.getMonitorView = (req, res) => {
                       usersApprove: usersApprove,
                       usersComment: usersComment,
                       role: role,
+                      revisions: revisions,
                       group: group
                     });
                   })
@@ -219,21 +221,46 @@ exports.getRevise = (req, res) => {
 exports.postRevise = (req, res) => {
     const filePath = req.file.path.substring(6) // to exclude public folder
     const fileName = req.file.filename;
-    const submissionId = req.body.submissionId;
-        Submission.findOne({ where: { id: submissionId } })
-        .then(submission => {
-            submission.update({ 
-                status: 'revised', 
-                filePath: filePath,
-                fileName: fileName,
-                version: submission.version + 1
-            })
-            return submission.save()
+    const submissionFormId = req.body.submissionFormId;
+    const submissionGroupId = req.body.submissionGroupId;
+    const submissionTitle = req.body.submissionTitle;
+    const submissionBatchId = req.body.submissionBatchId;
+        Submission.findAll({ where: { submissionId: submissionFormId, groupId: submissionGroupId } })
+        .then(submissions => {
+      // Find the submission with the highest version number
+          const highestVersionSubmission = submissions.reduce((highest, current) => {
+            if (current.version > highest.version) {
+              return current;
+            } else {
+              return highest;
+            }
+          });
+      // Create a new submission with the same properties as the highest version submission, except with version incremented by 1
+      return Submission.create({
+        submittedBy: req.session.user.email,
+        title: submissionTitle,
+        submissionId: submissionFormId,
+        groupId: submissionGroupId,
+        status: 'revised',
+        filePath: filePath,
+        fileName: fileName,
+        version: highestVersionSubmission.version + 1,
+        batchId: submissionBatchId
+      });
+    
+  })
+  .then(newSubmission => {
+      return Submission.findOne({ where: { submissionId: newSubmission.submissionId, groupId: newSubmission.groupId, batchId: newSubmission.batchId, version: 1 }})
+        .then(oldSubmission => {
+          oldSubmission.update({
+            status: 'revised'
+          })
         })
-        .then(result => {
-            res.redirect('/student/activities/monitor');
-        })
-        .catch(err => console.log(err));
+        .then(result => res.redirect('/student/activities/monitor'));
+  })
+  .catch(error => {
+    console.log(error)
+  });
 }
 
 

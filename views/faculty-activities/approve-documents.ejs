@@ -32,7 +32,7 @@
     <div class="container" id="form-container">
       <% for (let i = 0; i < submissions.length; i++) { %>
           <% if (submissions[i].status !== null && submissions[i].status !== 'approved') { %>
-            <% if(submissions[i].batchId == activeBatchId) { %>
+            <% if(submissions[i].batchId == activeBatchId && submissions[i].version == 1) { %>
             <article class="card section">
               <div class="form-control card-header">
                 <h1 class="form__title"><%= submissions[i].title %></h1>

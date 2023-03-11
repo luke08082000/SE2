@@ -17,7 +17,7 @@
       <div class="container">
         <h1>Monitor Submissions</h1>
         <% for (let i = 0; i < submissions.length; i++) { %>
-          <% if(submissions[i].batchId == activeBatchId) { %>
+          <% if(submissions[i].batchId == activeBatchId && submissions[i].version == 1) { %>
                 <article class="card">
                   <div class="form-control card-header">
                     <h1 class="form__title"><%= submissions[i].title %></h1>

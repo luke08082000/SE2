@@ -101,9 +101,11 @@
                         <input type="hidden" value="<%= group[i].section %>" name="groupSection">
                       </form>
                     <% } %>
+                    <% if(role == 'Faculty') { %>
                     <form action="/faculty/archive/view/<%= group[i].id %>" method="GET">
                       <button type="submit">View</button>
                     </form>
+                    <% } %>
                     <% if (!hasGroup && role === "Student") { %>
                       <form action="/student/group" method="POST">
                         <button>Join Group</button>

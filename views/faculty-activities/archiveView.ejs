@@ -36,18 +36,19 @@
             <h4>Documents</h4>
             <% if(submissions.length > 0) { %>
                 <% submissions.forEach(submission => { %>
-                <div class="card">
-                    <div class="form-control">
-                       <h2><%= submission.title %></h2> 
+                    <% if(submission.version == 1) { %>
+                    <div class="card">
+                        <div class="form-control">
+                        <h2><%= submission.title %></h2> 
+                        </div>
+                        <div class="form-control">
+                        <h2><%= submission.status %></h2>  
+                        </div>
+                        <form action="/faculty/activities/view/<%= submission.id %>" method="GET">
+                        <button type="submit">View</button>  
+                        </form>
                     </div>
-                    <div class="form-control">
-                      <h2><%= submission.status %></h2>  
-                    </div>
-                    <form action="/faculty/activities/view/<%= submission.id %>" method="GET">
-                      <button type="submit">View</button>  
-                    </form>
-                    
-                </div>
+                    <% } %>
                 <% }) %>
             <% } %>
         </div>

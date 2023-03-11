@@ -186,6 +186,7 @@ exports.getView = (req, res) => {
         if (!submission) {
             return res.redirect('/faculty/home')
         }
+        const revisionPromises = Submission.findAll({ where: { submissionId: submission.submissionId, groupId: submission.groupId, batchId: submission.batchId }});
         const subGrpPromise = Group.findByPk(submission.groupId);
         
         Status.findAll({ where: { submissionId: submission.id } })
@@ -199,9 +200,15 @@ exports.getView = (req, res) => {
                 const commentPromises = comments.map(comment => {
                   return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
                 })
-                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), subGrpPromise])
-                  .then(([usersApprove, usersComment, subGrp]) => {
-
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), revisionPromises, subGrpPromise])
+                  .then(([usersApprove, usersComment, revisions, subGrp]) => {
+                    const highestVersionSubmission = revisions.reduce((highest, current) => {
+                      if (current.version > highest.version) {
+                        return current;
+                      } else {
+                        return highest;
+                      }
+                    })
                     UserFaculty.findAll({ where: { userId: req.session.user.id }})
                       .then(faculty => {
                         const facultyId = faculty.map(user => {
@@ -237,7 +244,9 @@ exports.getView = (req, res) => {
                               facultyId: facultyId,
                               currentUser: currentUser,
                               facultyBatchId: facultyBatchId,
-                              activeBatchId: activeBatch ? activeBatch.id : 0
+                              activeBatchId: activeBatch ? activeBatch.id : 0,
+                              revisions: revisions,
+                              currentVersion: highestVersionSubmission
                             });
                         })
                             
