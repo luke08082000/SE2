@@ -27,8 +27,8 @@ const User = sequelize.define('user', {
     },
     role: {
         type: Sequelize.ENUM,
-        values: ['Student', 'Faculty', 'admin'],
-        defaultValue: 'Student'
+        values: ['student', 'faculty', 'admin'],
+        defaultValue: 'student'
     },
     emailVerified: {
         type: Sequelize.ENUM,

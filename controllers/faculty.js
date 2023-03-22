@@ -36,11 +36,15 @@ exports.getHome = (req, res) => {
 exports.postBatch = (req, res) => {
   const name = req.body.name;
   const button = req.body.button;
+  const adminPromise = UserFaculty.findOne({ where: { role: 'course-department-chair' }});
 
   if(button == 'start') {
     Batch.create({ name: name, isActive: true })
     .then(batch => {
       console.log('new batch created')
+      Promise.all([adminPromise]).then(admin => { //updates admin's batchId 
+        admin[0].update({ batchId: batch.id })
+      })
       res.redirect('/faculty/home')
     })
     .catch(e => console.log(e))

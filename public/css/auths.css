@@ -3,56 +3,71 @@ body {
   box-sizing: 0;
 }
 
-header{ 
-    background: #FCBF15;
-    padding: 20px;
-    width: 100%;
-    height: 150px;
-    display: block;
-    }
+.container.center {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
 
+.form-control {
+  height: 5rem;
+}
 
-  .grayline{ 
-    background: #C1C1C1;
-    width: 35%;
-    height:5px;
-    margin: auto;
-    }
-  
-    .box {
-      position: absolute;
-      top: 44%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-    }
-    .box1 {
-      position: absolute;
-      margin-top:15px;
-    }
+.form-control h4 {
+  margin-block: 5px;
+}
 
-    input{
-    position: relative;
-    display: inline-block;
-    font-size:20px;
-    box-sizing: border-box;
-    }
-  input[type = "text"], input[type = "password"]{
-    background: #fffdfd;
-    width:500px;
-    height:50px;
-    border-radius: 25px 25px 25px 25px;
-    outline: none;
-    border-color: #dbdbdb;
-  }
-  h5{
-    margin-right: 52%;
-  }
-  .button {
-    background-color: #3164F4;
-    border: none;
-    color: white;
-    width:500px;
-    height:50px;
-    text-align: center;
-    border-radius: 25px 25px 25px 25px;
-  }
+.header { 
+  background: #FCBF15;
+  padding: 20px;
+  height: 150px;
+  display: flex;
+}
+
+.grayline{ 
+  background: #C1C1C1;
+  width: 35%;
+  height:5px;
+  margin: 0 auto;
+  margin-bottom: 1.2rem;
+}
+
+input, select {
+  font-size:20px;
+  box-sizing: border-box;
+  background: #fffdfd;
+  width:500px;
+  height:2.5rem;
+  border-radius: 5px 5px 5px 5px;
+}
+
+.loginPass {
+  margin-bottom: -1.5rem;
+}
+
+.form-button {
+  margin-block: 1.5rem;
+}
+
+button {
+  background-color: #3164F4;
+  border: none;
+  color: white;
+  width:150px;
+  height:40px;
+  text-align: center;
+  border-radius: 10px 10px 10px 10px;
+}
+
+.form-links {
+  margin-block: 0.5rem;
+}
+
+#iics-logo {
+  width: 130px;
+  margin: 0px 0px 0.5rem 0.5rem;
+}
+
+#ust-logo {
+  margin-right: auto;
+}

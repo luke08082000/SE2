@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include ('partials/links.ejs') %>
+    <link rel="stylesheet" href="/css/update-account.css">
+    <title>Home</title>
+</head>
+<body>
+    <%- include ('partials/navigation.ejs') %>
+
+    <div class="container">
+        <form action="/auth/change-email" method="POST">
+            <div class="card">
+            <h4>Update Email</h4>
+            <div class="card-items">
+                <label for="newEmail">Enter New Email</label>
+                <input type="email" name="newEmail">
+            </div>
+            <div class="card-items">
+                    <button type="submit">Update Email</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

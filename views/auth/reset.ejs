@@ -1,26 +1,33 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Login Page</title>
-    <link rel="stylesheet" type="text/css" href="/css/auth.css">
-  </head>
-  <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/forgot-password.css">
+    <link rel="stylesheet" href = "/css/auths.css">
+    <title>Home</title>
+</head>
+<body>
+    <header>
+            <div class = "header">
+        <img style="float: right; margin: 0px 30px 10px 20px;" src="/img/IICS_Logo.png" id="iics-logo"/>
+        <img style="float: left; margin: 20px 20px 20px 20px;" src="/img/ust_logo_name.png" id="ust-logo"/>
+      </header>
     <div class="container">
-      <form action="/login" method="post">
-        <h1>Login</h1>
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" class="form-control" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-      <ul>
-        <li><a href="/register">Register</a></li>
-      </ul>
+        <form action="/auth/reset-password" method="POST">
+            <div class="card">
+            <h4>Forgot Password</h4>
+                <div class="card-items">
+                    <label for="password">Enter new password</label>
+                    <input type="password" name="password">
+                </div>
+                <div class="card-items">
+                    <button type="submit">Reset Password</button>
+                    <input type="hidden" value="<%= token %>" name="userToken">
+                </div>
+            </div>  
+        </form>
     </div>
-  </body>
+</body>
 </html>

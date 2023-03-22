@@ -59,6 +59,14 @@ exports.postLogin = (req, res, next) => {
     .catch(err => console.log(err))
 };
 
+exports.getFacultyRegister = (req, res) => {
+    res.render('auth/faculty-register');
+}
+
+exports.getStudentRegister = (req, res) => {
+    res.render('auth/student-register');
+}
+
 exports.getRegister = (req, res, next) => {
     res.render('auth/register')
 };
@@ -74,12 +82,16 @@ exports.postRegister = (req, res, next) => {
     const confirmPassword = req.body.confirmPassword;
     const role = req.body.role;
     const section = req.body.section;
-
+    console.log(role);
     BatchPromise.then(activeBatch => {
         User.findOne({ where: { email: email } })
-    .then(userDoc => {
+        .then(userDoc => {
         if(userDoc) {
             return res.redirect('/')
+        }
+        if(confirmPassword !== password) {
+            console.log('password do not match');
+            return res.redirect('/auth/register')
         }
         return bcrypt
         .hash(password, 12)
@@ -92,12 +104,11 @@ exports.postRegister = (req, res, next) => {
                 password: hashedPassword,
                 emailVerified: 'unverified',
                 token: token
-            })
-            return user.save();
+        })
+        return user.save();
         })
         .then(user => {
-            console.log(user.role)
-            if(user.role === "Student") {
+            if(user.role === "student") {
                 UserStudent.create({
                     userId: user.id,
                     section: section,
@@ -131,9 +142,9 @@ exports.getVerify = (req, res, next) => {
     .then(user => {
         if(user) {
             user.update({
-                emailVerified: true
+                emailVerified: 'verified'
             })
-            res.send('Email verified!');
+            res.send('Email verified! You can close this tab now.');
         } else {
             res.send('Token not found!');
         }
@@ -147,3 +158,129 @@ exports.postLogout = (req, res, next) => {
         res.redirect('/auth/login')
     })
 };
+
+exports.getChangePassword = (req, res) => {
+    const role = req.session.user.role;
+
+    res.render('change-password', {
+        role: role
+    })
+}
+
+exports.postChangePassword = (req, res) => {
+    const oldPass = req.body.oldPassword;
+    const newPass = req.body.newPassword;
+    const userId = req.session.user.id;
+
+    User.findByPk(userId).then(user => {
+        bcrypt
+        .compare(oldPass, user.password)
+        .then (doMatch => {
+            if (doMatch) {
+                bcrypt
+                    .hash(newPass, 12)
+                    .then(hashedPassword => {
+                        user.update({ password: hashedPassword })
+                        return user.save()
+                })
+            } else {
+                console.log('Incorrect Password!')
+            }
+            console.log('password successfully changed!')
+            res.redirect('/auth/change-password')
+        })
+        .catch(e => console.log(e))
+    })
+    .catch(e => console.log(e))
+}
+
+exports.getChangeEmail = (req, res) => {
+    const role = req.session.user.role;
+
+    res.render('change-email', {
+        role: role
+    })
+}
+
+exports.postChangeEmail = (req, res, next) => {
+    const newEmail = req.body.newEmail;
+    const userId = req.session.user.id;
+
+    User.findByPk(userId).then(user => {
+        user.update({ token: token })
+        return user.save()
+    })
+    .then(user => {
+        var message = {
+        from: 'capstone.requirements@gmail.com',
+        to: newEmail,
+        subject: 'Update Email Verification',
+        text: 'Click the link to verify your new email: http://localhost:3000/auth/verify?token='+ user.token 
+    }
+    transporter.sendMail(message, (error, info) => {
+        if(error) {
+            console.log('Send mail error: ' + error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    })
+        user.update({ email: newEmail })
+        user.save();
+        res.redirect('/auth/change-email')
+    })
+
+}
+
+exports.getForgotPassword = (req, res) => {
+    res.render('auth/forgot-password');
+}
+
+exports.postForgotPassword = (req, res) => {
+    const email = req.body.email;
+
+    User.findOne({ where: { email: email }}).then(user => {
+        if(!user) {
+            console.log('Email not registered')
+            return res.redirect('/auth/forgot-password')
+        } 
+        var message = {
+            from: 'capstone.requirements@gmail.com',
+            to: email,
+            subject: 'Password Recovery',
+            html: `
+                <p>You requested a password reset</p>
+                <p>Click this <a href="http://localhost:3000/auth/reset-password/${user.token}">link</a> to set a new password</p>
+            `
+        }
+        transporter.sendMail(message, (error, info) => {
+            if(error) {
+                console.log('Send mail error: ' + error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        })
+            res.redirect('/auth/forgot-password')
+    })
+}
+
+exports.getResetPassword = (req, res) => {
+    const token = req.params.token;
+
+    res.render('auth/reset', {
+        token: token
+    });
+}
+
+exports.postResetPassword = (req, res) => {
+    const userToken = req.body.userToken;
+    const password = req.body.password;
+
+    User.findOne({ where: { token: userToken }}).then(user => {
+        bcrypt.hash(password, 12).then(hashedPassword => {
+            user.update({ password: hashedPassword })
+            return user.save();
+        })
+    })
+    res.redirect('/auth/login')
+    .catch(e => console.log(e))
+}

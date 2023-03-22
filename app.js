@@ -132,14 +132,16 @@ Comment.belongsTo(UserFaculty, { foreignKey: 'userFacultyId' });
 //ROUTES
 app.use(authRoutes);
 function handleRoutes(req, res, next) {
-    if (req.session.user.role === "Student") {
+    if (typeof req.session !== 'undefined' && typeof req.session.user !== 'undefined' && req.session.user.role === "Student") {
         app.use('/student', studentRoutes);
     }
-    if (req.session.user.role === "Faculty") {
+    if (typeof req.session !== 'undefined' && typeof req.session.user !== 'undefined' && req.session.user.role === "Faculty") {
         app.use('/faculty', facultyRoutes);
     }
     next();
 }
+
+
 app.use(handleRoutes);
 
 
