@@ -14,12 +14,14 @@
     <%- include ('partials/navigation.ejs') %>
     
     <div class="container">
-      <% if(role == "Faculty") { %>
-      <h1><%= subGrp.capstoneTitle %></h1>
-      <% } %>
-      <% if(role == "Student") { %>
-        <h1><%= group.capstoneTitle %></h1>
-        <% } %>
+      <div class="header">
+        <% if(role == "Faculty") { %>
+          <h1><%= subGrp.capstoneTitle %></h1>
+          <% } %>
+          <% if(role == "Student") { %>
+            <h1><%= group.capstoneTitle %></h1>
+            <% } %>
+          </div>
         <h4><%= submission.title %></h4>
         <% if(role == 'Faculty') { %>
           <% revisions.forEach((version, index) => { %>

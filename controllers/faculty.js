@@ -423,8 +423,10 @@ exports.getCapstoneProjects = (req, res) => {
           })
           const groupAdviserPromise = groups.map(group => {
              return UserFaculty.findByPk(group.adviserId).then(adviser => {
-              return User.findByPk(adviser.userId);
-                    })
+              if(adviser){
+                return User.findByPk(adviser.userId);
+              }
+              })
           })
           Promise.all([Promise.all(groupBatchPromise), Promise.all(groupAdviserPromise)]).then(([groupBatch, groupAdviser]) => {
             res.render('faculty-activities/capstone-projects', {
@@ -472,6 +474,7 @@ exports.getArchiveView = (req, res) => {
 exports.getGroup = (req, res) => {
   const role = req.session.user.role;
   const BatchPromise = Batch.findOne({ where : { isActive: true }});
+  const facultyRolePromise = UserFaculty.findOne({ where: { userId: req.session.user.id }})
   UserStudent.findOne({ where: { userId: req.session.user.id } })
     .then(student => {
       return Group.findAll()
@@ -510,7 +513,8 @@ exports.getGroup = (req, res) => {
               const techAdvNames = results.slice(0, groups.length);
               const groupMembers = results.slice(groups.length);
               BatchPromise.then(activeBatch => {
-                res.render('group', {
+                facultyRolePromise.then(faculty => {
+                  res.render('group', {
                   groupId: role !== "Student" ? '' : student.groupId,
                   hasGroup: role !== "Student" ? '' : student.groupId,
                   section: role !== "Student" ? '' : student.section,
@@ -518,9 +522,12 @@ exports.getGroup = (req, res) => {
                   group: groups,
                   members: groupMembers,
                   techAdv: techAdvNames,
+                  faculty: faculty,
                   role: role,
                   activeBatchId: activeBatch ? activeBatch.id : 0
                 });
+                })
+                
               });
           })
       })

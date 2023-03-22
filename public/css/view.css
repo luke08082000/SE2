@@ -2,6 +2,11 @@ body {
   overflow-x: hidden;
 }
 
+.header {
+  border-bottom: 2px solid grey;
+  width: 78rem;
+  margin-bottom: 1.5rem;
+}
 
 .container {
     margin: 0 auto;
@@ -9,11 +14,17 @@ body {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px #ccc;
 }
 
 .container-top {
     display: flex;
+    padding-bottom: 1.5rem;
+    width: 78rem;
+    border-bottom: 2px solid black;
+}
+
+.container-top .members {
+  margin-right: 3rem;
 }
 
 .container-top .pdf-viewer {

@@ -14,7 +14,10 @@
   <%- include ('../partials/navigation.ejs') %>
 
   <div class="container">
-    <h2>Filter Submissions</h2>
+    <div class="header">
+      <h1>Documents</h1>
+    </div>
+    <!-- <h2>Filter Submissions</h2>
     <div class="form-group">
       <label for="section">Section:</label>
       <select name="section" id="section">
@@ -26,10 +29,11 @@
       </select>
     </div>
     <button type="button" onclick="filterForms()">Filter</button>
-  </div>
+  </div> -->
   
 
     <div class="container" id="form-container">
+
       <% for (let i = 0; i < submissions.length; i++) { %>
           <% if (submissions[i].status !== null && submissions[i].status !== 'approved') { %>
             <% if(submissions[i].batchId == activeBatchId && submissions[i].version == 1) { %>

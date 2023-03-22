@@ -12,9 +12,11 @@
     <%- include ('partials/navigation.ejs') %>
 
     <div class="container">
+        <div class="header">
+            <h1>Update Email</h1>
+        </div>
         <form action="/auth/change-email" method="POST">
             <div class="card">
-            <h4>Update Email</h4>
             <div class="card-items">
                 <label for="newEmail">Enter New Email</label>
                 <input type="email" name="newEmail">

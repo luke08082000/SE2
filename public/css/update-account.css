@@ -5,6 +5,14 @@
     max-width: 30%;
   }
   
+  .header {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    border-bottom: 2px solid grey;
+    width: 78rem;
+    margin-bottom: 1.5rem;
+  }
+
   .card {
     background-color: #ffffff;
     border-radius: 10px;

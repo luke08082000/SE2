@@ -14,24 +14,24 @@
 <body>
   
     <div class="container">
+      <div class="header">
+        <h1>Group</h1>
+      </div>
         <div class="top-container">
           <% if (role === 'Faculty') { %>
             <div class="card card-faculty">
               <h4>Create Group</h4>
               <form action="/faculty/group" method="POST">
                 <div class="form-control">
-                  <button>Add Group</button>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Group Name" required>
+                  <select name="section" id="section">
+                    <option value="isa">IS A</option>
+                    <option value="isb">IS B</option>
+                    <option value="isc">IS C</option>
+                  </select>
                 </div>
                 <div class="form-control">
-                  <label for="name">Group Name:</label>
-                  <input type="text" class="form-control" id="name" name="name" required>
-                  <select name="section" id="section">
-                    <option value="3ISA">3ISA</option>
-                    <option value="3ISB">3ISB</option>
-                    <option value="4ISA">4ISA</option>
-                    <option value="4ISB">4ISB</option>
-                    <option value="n/a">N/A</option>
-                  </select>
+                  <button>Add Group</button>
                 </div>
               </form>
             </div>

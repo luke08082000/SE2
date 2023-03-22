@@ -15,20 +15,22 @@
     <%- include ('../partials/navigation.ejs') %>
     <% if(group) { %>
     <div class="container">
-        <h1><%= group.capstoneTitle %></h1>
+        <div class="header">
+            <h1><%= group.capstoneTitle %></h1>
+        </div>
         <div class="container-top">
             <div class="members">
             <h4>Members</h4>
                 <% if(members.length > 0) { %>
                     <% members.forEach(member => { %>
-                    <ul><%= member.firstName + ' ' + member.lastName %></ul>
+                    <p><%= member.firstName + ' ' + member.lastName %></p>
                     <% }) %>
                 <% } %>
             </div>
             <div class="adviser">
                 <h4>Adviser</h4>
                 <% if(adviser) { %>
-                    <ul><%= adviser.firstName + ' ' + adviser.lastName %></ul>
+                    <p><%= adviser.firstName + ' ' + adviser.lastName %></p>
                 <% } %>
             </div>
         </div>

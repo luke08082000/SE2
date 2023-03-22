@@ -1,8 +1,6 @@
-.container {
+.body {
     display: flex;
 }
-
-
 
 .container .form-control button {
     margin-block: 1rem;

@@ -1,20 +1,27 @@
+body {
+    overflow-x: hidden;
+}
+
 .container {
     width: 90%;
     margin: 0 auto;
     margin-inline: 250px 100px;
-    background-color: #fff;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #ccc;
 }
 
+.header {
+    border-bottom: 2px solid grey;
+    width: 78rem;
+    margin-bottom: 1.5rem;
+  }
+
 .container .card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 87%;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
     margin-bottom: 1rem;
+    width: 87%;
     display: flex;
     align-items: center;
 }

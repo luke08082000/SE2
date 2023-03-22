@@ -12,7 +12,9 @@
   <%- include ('../partials/navigation.ejs') %>
   <% if(groups.length > 0) { %>
     <div class="container">
-      <h1>Archive</h1>
+      <div class="header">
+        <h1>Archive</h1>
+      </div>
       <% groups.forEach((group, i) => { %>
         <article class="card">
           <div class="form-control card-header">
@@ -28,7 +30,7 @@
           </div>
           <div class="form-control">
             <p>Section: </p>
-            <h4><%= group.section %></h4>
+            <h4><%= group.section.toUpperCase() %></h4>
           </div>
           <div class="form-control">
             <p>Batch: </p>

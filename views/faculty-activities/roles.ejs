@@ -13,58 +13,63 @@
 </head>
 <body>
   <%- include ('../partials/navigation.ejs') %>
-
-<div class="container">
-            <div class="roles">
-                <h4>Faculty Members with roles:</h4>
-                <% if(facultyMembers.length > 0) { %>
-                    <% facultyMembers.forEach((member, i) => { %>
-                        <% if(userFaculty[i].batchId == activeBatchId) { %>
-                        <% if (userFaculty[i].role == 'course-facilitator') { %>
-                            <p><%= userFaculty[i].role + ' ' + userFaculty[i].section %></p>
-                            <% } else { %>
-                                <p><%= userFaculty[i].role %></p>
-                            <% } %>
-                                <p><%= member.firstName + ' ' + member.lastName %></p>
-                                <br>
-                            <% } %>
-                        <% }) %>
-                <% } %>
-            </div>
-            <div class="members">
-                <h4>All Faculty Members</h4>
-                <% if(faculty.length > 0) { %>
-                    <% faculty.forEach(member => { %>
-                        <p>ID: <%= member.id %></p>
+  <div class="container">
+    <div class="header">
+        <h1>Faculty Roles</h1>
+    </div>
+    <div class="body">
+        <div class="roles">
+        <h4>Faculty Members with roles:</h4>
+        <% if(facultyMembers.length > 0) { %>
+            <% facultyMembers.forEach((member, i) => { %>
+                <% if(userFaculty[i].batchId == activeBatchId) { %>
+                <% if (userFaculty[i].role == 'course-facilitator') { %>
+                    <p><%= userFaculty[i].role + ' ' + userFaculty[i].section %></p>
+                    <% } else { %>
+                        <p><%= userFaculty[i].role %></p>
+                    <% } %>
                         <p><%= member.firstName + ' ' + member.lastName %></p>
                         <br>
-                    <% }) %>
-                <% } %>
+                    <% } %>
+                <% }) %>
+        <% } %>
+    </div>
+    <div class="members">
+        <h4>All Faculty Members</h4>
+        <% if(faculty.length > 0) { %>
+            <% faculty.forEach(member => { %>
+                <p>ID: <%= member.id %></p>
+                <p><%= member.firstName + ' ' + member.lastName %></p>
+                <br>
+            <% }) %>
+        <% } %>
+    </div>
+    <div class="assign">
+        <form action="/faculty/activities/roles" method="POST">
+            <div class="form-control">
+                <h4>Course Coordinator</h4>
+                <input type="text" name="userId">
+                <button value="course-coordinator" name="role" type="submit">Assign Role</button>
             </div>
-            <div class="assign">
-                <form action="/faculty/activities/roles" method="POST">
-                    <div class="form-control">
-                        <h4>Course Coordinator</h4>
-                        <input type="text" name="userId">
-                        <button value="course-coordinator" name="role" type="submit">Assign Role</button>
-                    </div>
-                    <div class="form-control">
-                        <h4>Course Facilitator</h4>
-                        <input type="text" name="userId">
-                        <label for="section">Section: </label>
-                        <select name="section" id="section">
-                          <option value="3isa">3ISA</option>
-                          <option value="3isb">3ISB</option>
-                        </select>
-                        <button value="course-facilitator" name="role" type="submit">Assign Role</button>
-                    </div>
-                    <div class="form-control">
-                        <h4>Track Head</h4>
-                        <input type="text" name="userId">
-                        <button value="track-head" name="role" type="submit">Assign Role</button>
-                    </div>
-                </form>
+            <div class="form-control">
+                <h4>Course Facilitator</h4>
+                <input type="text" name="userId">
+                <label for="section">Section: </label>
+                <select name="section" id="section">
+                  <option value="3isa">3ISA</option>
+                  <option value="3isb">3ISB</option>
+                </select>
+                <button value="course-facilitator" name="role" type="submit">Assign Role</button>
             </div>
+            <div class="form-control">
+                <h4>Track Head</h4>
+                <input type="text" name="userId">
+                <button value="track-head" name="role" type="submit">Assign Role</button>
+            </div>
+        </form>
+    </div>
+    </div>
+    
 
 
 </div>
