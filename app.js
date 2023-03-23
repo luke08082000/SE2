@@ -22,6 +22,7 @@ const Batch = require('./models/batch');
 const authRoutes = require('./routes/auth');
 const facultyRoutes = require('./routes/faculty');
 const studentRoutes = require('./routes/student');
+const commonRoutes = require('./routes/common');
 
 const app = express();
 
@@ -140,10 +141,8 @@ function handleRoutes(req, res, next) {
     }
     next();
 }
-
-
 app.use(handleRoutes);
-
+app.use(commonRoutes);
 
 
 sequelize

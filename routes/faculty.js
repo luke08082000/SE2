@@ -28,6 +28,8 @@ router.get('/activities/create-form', facultyController.getCreateForm);
 
 router.post('/activities/create-form', facultyController.postCreateForm); 
 
+router.get('/activities/form-view', facultyController.getFormView);
+
 router.get('/activities/view/:id', facultyController.getView);
 
 router.get('/archive/view/:id', facultyController.getArchiveView);

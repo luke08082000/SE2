@@ -1,3 +1,7 @@
+body {
+    overflow-x: hidden;
+}
+
 .container {
     width: 90%;
     margin: 0 auto;
@@ -8,9 +12,17 @@
     box-shadow: 0 0 10px #ccc;
 }
 
+.header {
+  margin-left: 0.75rem;
+  margin-top: 1rem;
+  border-bottom: 2px solid grey;
+  width: 78rem;
+  margin-bottom: 1.5rem;
+}
+
 .container form {
     width: 50%;
-    margin-left: 7rem;
+    margin-left: 2rem;
 }
 
 .form-control {
@@ -21,6 +33,44 @@
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.form-list {
+  margin-left: 0.75rem;
+  margin-top: 1rem;
+  border-top: 2px solid grey;
+  width: 78rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-control-2 {
+    width: 77rem;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-control-2 .s {
+    width: 100%;
+    margin: 0;
+}
+
+.form-control-2 button {
+    background-color: #0070f3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.1rem 1rem;
+    cursor: pointer;
+   
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
+
 .container .btn {
     width: 30%;
     padding-block: 1rem;

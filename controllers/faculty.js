@@ -290,8 +290,19 @@ exports.postComment = (req, res) => {
 
 exports.getCreateForm = (req, res) => {
     const role = req.session.user.role;
-    res.render('faculty-activities/create-form', {
-        role: role
+
+    UserFaculty.findOne({ where: { userId: req.session.user.id, role: 'course-facilitator' }}).then(faculty => {
+      if(faculty) {
+        SubmissionForm.findAll({ where: { section: faculty.section }}).then(forms => {
+          res.render('faculty-activities/create-form', {
+          section: faculty.section,
+          role: role,
+          forms: forms ? forms : 0
+          })
+        })
+      } else {
+        res.redirect('/404');
+      }
     })
 }
 
@@ -317,16 +328,29 @@ exports.postCreateForm = (req, res) => {
             })
         })
         .then(result => {
-            res.redirect('/faculty/activities/approve-documents');
+            res.redirect('/faculty/activities/create-form');
         })
         .catch(err => console.log(err))
     })
-    
+}
+
+exports.getFormView = (req, res) => {
+  const role = req.session.user.role;
+  const formId = req.query.formId;
+  console.log(formId)
+  SubmissionForm.findByPk(formId).then(form => {
+    console.log(formId + ' fdsfhsdhf')
+    res.render('formView', { 
+      role : role,
+      form: form
+    });
+  })
 }
 
 exports.getRole = (req, res) => {
   const BatchPromise = Batch.findOne({ where: { isActive: true }});
-    const role = req.session.user.role;
+  const isAdmin = UserFaculty.findOne({ where: { userId: req.session.user.id, role: 'course-department-chair' } });
+  const role = req.session.user.role;
 
     UserFaculty.findAll()
       .then(faculties => {
@@ -338,13 +362,20 @@ exports.getRole = (req, res) => {
               User.findAll({ where: { role: 'Faculty' } })
                 .then(faculty => {
                   BatchPromise.then(activeBatch => {
-                    res.render('faculty-activities/roles', {
+                    isAdmin.then(admin => {         // check if admin if not redirect to 404 page
+                      if(admin) {
+                        res.render('faculty-activities/roles', {
                         role: role,
                         userFaculty: faculties,
                         facultyMembers: members,
                         faculty: faculty,
                         activeBatchId: activeBatch ? activeBatch.id : 0
-                    });
+                        })
+                      } else {
+                        res.redirect('/404');
+                      }
+                    })
+
                   })
                     
                 })
