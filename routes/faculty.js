@@ -22,6 +22,8 @@ router.get('/activities/roles', facultyController.getRole);
 
 router.post('/activities/roles', facultyController.postRole);
 
+router.post('/activities/remove', facultyController.postRemove);
+
 router.get('/activities/create-form', facultyController.getCreateForm); 
 
 router.post('/activities/create-form', facultyController.postCreateForm); 

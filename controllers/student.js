@@ -177,7 +177,6 @@ exports.getMonitorView = (req, res) => {
                   .then(([usersApprove, usersComment, revisions, group]) => {
                     //console.log(JSON.stringify(usersApprove, null, 2));
                     //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
-                    console.log(revisions[1].title)
                     return res.render('view', {
                       submission: submission,
                       status: statuses,

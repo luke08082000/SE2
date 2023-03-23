@@ -108,7 +108,8 @@ exports.postRegister = (req, res, next) => {
         return user.save();
         })
         .then(user => {
-            if(user.role === "student") {
+            console.log(user.role + ' this is the role')
+            if(user.role == "student") {
                 UserStudent.create({
                     userId: user.id,
                     section: section,

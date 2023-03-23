@@ -415,6 +415,17 @@ exports.postRole = (req, res) => {
   .catch(err => console.log(err));
 }
 
+exports.postRemove = (req, res) => {
+  const facultyId = req.body.facultyId;
+    UserFaculty.findByPk(facultyId).then(faculty => {
+      faculty.destroy();
+    })
+    .then(result => {
+      res.redirect('/faculty/activities/roles')
+    })
+    .catch(e => console.log(e))
+}
+
 exports.getCapstoneProjects = (req, res) => {
     const role = req.session.user.role;
         Group.findAll().then(groups => {
@@ -474,7 +485,7 @@ exports.getArchiveView = (req, res) => {
 exports.getGroup = (req, res) => {
   const role = req.session.user.role;
   const BatchPromise = Batch.findOne({ where : { isActive: true }});
-  const facultyRolePromise = UserFaculty.findOne({ where: { userId: req.session.user.id }})
+  const CourseFaci = UserFaculty.findOne({ where: { userId: req.session.user.id, role: 'course-facilitator'}});
   UserStudent.findOne({ where: { userId: req.session.user.id } })
     .then(student => {
       return Group.findAll()
@@ -513,7 +524,7 @@ exports.getGroup = (req, res) => {
               const techAdvNames = results.slice(0, groups.length);
               const groupMembers = results.slice(groups.length);
               BatchPromise.then(activeBatch => {
-                facultyRolePromise.then(faculty => {
+                CourseFaci.then(faculty => {
                   res.render('group', {
                   groupId: role !== "Student" ? '' : student.groupId,
                   hasGroup: role !== "Student" ? '' : student.groupId,
@@ -522,7 +533,7 @@ exports.getGroup = (req, res) => {
                   group: groups,
                   members: groupMembers,
                   techAdv: techAdvNames,
-                  faculty: faculty,
+                  faculty: faculty ? faculty : null,
                   role: role,
                   activeBatchId: activeBatch ? activeBatch.id : 0
                 });

@@ -18,20 +18,16 @@
         <h1>Group</h1>
       </div>
         <div class="top-container">
-          <% if (role === 'Faculty') { %>
+          <% if (role === 'Faculty' && faculty) { %>
             <div class="card card-faculty">
-              <h4>Create Group</h4>
+              <h4>Create Group for <%= faculty.section.toUpperCase() %></h4>
               <form action="/faculty/group" method="POST">
                 <div class="form-control">
                   <input type="text" class="form-control" id="name" name="name" placeholder="Group Name" required>
-                  <select name="section" id="section">
-                    <option value="isa">IS A</option>
-                    <option value="isb">IS B</option>
-                    <option value="isc">IS C</option>
-                  </select>
                 </div>
                 <div class="form-control">
                   <button>Add Group</button>
+                  <input type="hidden" value="<%= faculty.section %>" name="section">
                 </div>
               </form>
             </div>
@@ -43,10 +39,8 @@
                     <label for="section">Filter by Section:</label>
                     <select id="sectionFilter" name="sectionFilter">
                         <option value="">All Sections</option>
-                        <option value="3ISA">3ISA</option>
-                        <option value="3ISB">3ISB</option>
-                        <option value="4ISA">4ISA</option>
-                        <option value="4ISB">4ISB</option>
+                        <option value="isa">IS A</option>
+                        <option value="isb">IS B</option>
                     </select>
                     <button type="button" onclick="filterGroups()">Filter</button>
                     </form>
@@ -72,11 +66,13 @@
                     <% } %>
                       <% if (group[i].capstoneTitle) { %>
                         <h4><%= group[i].capstoneTitle %></h4>
-                        <button id="edit">Edit</button>
+                        <% if(role == 'Student') { %>
+                          <button id="edit">Edit</button>
+                        <% } %>
                       <% } else { %>
                         <p>No Capstone Project Title yet</p>
                       <% } %>
-                    <h6>Section: <span class="section"><%= group[i].section %></span></h6>
+                    <h6>Section: <span class="section"><%= group[i].section.toUpperCase() %></span></h6>
                     <h6>Technical Adviser:</h6>
                     <% if (techAdv[i]) { %>
                       <p><%= techAdv[i] %></p>

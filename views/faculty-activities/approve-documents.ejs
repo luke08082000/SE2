@@ -32,7 +32,7 @@
   </div> -->
   
 
-    <div class="container" id="form-container">
+    <div id="form-container">
 
       <% for (let i = 0; i < submissions.length; i++) { %>
           <% if (submissions[i].status !== null && submissions[i].status !== 'approved') { %>
@@ -45,7 +45,7 @@
                 <h4><%= groups[i].capstoneTitle %></h4>
               </div>
               <div class="form-control">
-                <h4><%= groups[i].section %></h4>
+                <h4><%= groups[i].section.toUpperCase() %></h4>
               </div>
               <div class="form-control">
                 <h4>Status: <%= submissions[i].status %></h4>
