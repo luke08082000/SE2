@@ -160,6 +160,7 @@ exports.getMonitorView = (req, res) => {
         }
         const revisionPromises = Submission.findAll({ where: { submissionId: submission.submissionId, groupId: submission.groupId, batchId: submission.batchId }});
         const groupPromise = Group.findByPk(submission.groupId);
+        const formPromise = SubmissionForm.findByPk(submission.submissionId);
 
         Status.findAll({ where: { submissionId: submission.id } })
           .then(statuses => {
@@ -173,12 +174,13 @@ exports.getMonitorView = (req, res) => {
                   return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
                 })
   
-                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), revisionPromises, groupPromise])
-                  .then(([usersApprove, usersComment, revisions, group]) => {
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), revisionPromises, groupPromise, formPromise])
+                  .then(([usersApprove, usersComment, revisions, group, form]) => {
                     //console.log(JSON.stringify(usersApprove, null, 2));
                     //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
                     return res.render('view', {
                       submission: submission,
+                      form: form,
                       status: statuses,
                       comments: comments,
                       usersApprove: usersApprove,

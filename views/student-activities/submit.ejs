@@ -25,11 +25,7 @@
               <div class="form-control card-header">
                 <h1 class="form__title"><%= forms[i].title %></h1>
               </div>
-              <div class="form-control">
-                <p>Deadline: <%= forms[i].deadline.toLocaleDateString("en-US", {year: 'numeric', month: '2-digit', day: '2-digit'}) %></p>
-              </div>
               <% if (role === "Student") { %>
-                
                 <% } %>
                 <div class="card-actions">
                   <form action="/student/activities/form/view/<%= forms[i].id %>" method="GET">

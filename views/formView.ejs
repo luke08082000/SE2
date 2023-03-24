@@ -18,9 +18,9 @@
             <% if(role == 'Student') { %>
                 <a href="/student/activities/submit">Go Back</a>
             <% } %>
-            <h1><%= form.title %></h1>
-            <h3>Deadline: </h3>
-            <h5><%= form.deadline.toLocaleDateString() %></h3>
+            <div class="header">
+                <h1><%= form.title %></h1>
+            </div>
         </div>
         <div class="body">
             <h4>Description</h4>

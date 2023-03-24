@@ -40,6 +40,7 @@
                 <iframe id="pdf-iframe" src="<%= submission.filePath %>" frameborder="0" width="100%" height="500px"></iframe>
                 <% console.log(submission.filePath) %>
             </div>
+            <% if(form.needsApproval) { %>
             <div class="status-log">
               <h3>Approval Log</h3>
               <div class="log">
@@ -94,6 +95,7 @@
                 <% } %>
               </div>
             </div>
+          <% } %>
             
         </div>
         <div class="container-bottom">

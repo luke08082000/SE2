@@ -190,8 +190,10 @@ exports.getView = (req, res) => {
         if (!submission) {
             return res.redirect('/faculty/home')
         }
+        // all revisions of submissions
         const revisionPromises = Submission.findAll({ where: { submissionId: submission.submissionId, groupId: submission.groupId, batchId: submission.batchId }});
-        const subGrpPromise = Group.findByPk(submission.groupId);
+        const subGrpPromise = Group.findByPk(submission.groupId); // Group referenced in submission
+        const formPromise = SubmissionForm.findByPk(submission.submissionId); // Form referenced in submission
         
         Status.findAll({ where: { submissionId: submission.id } })
           .then(statuses => {
@@ -204,8 +206,8 @@ exports.getView = (req, res) => {
                 const commentPromises = comments.map(comment => {
                   return UserFaculty.findOne({ where: { id: comment.userFacultyId }, include:  User })
                 })
-                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), revisionPromises, subGrpPromise])
-                  .then(([usersApprove, usersComment, revisions, subGrp]) => {
+                Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), revisionPromises, subGrpPromise, formPromise])
+                  .then(([usersApprove, usersComment, revisions, subGrp, form]) => {
                     const highestVersionSubmission = revisions.reduce((highest, current) => {
                       if (current.version > highest.version) {
                         return current;
@@ -237,6 +239,7 @@ exports.getView = (req, res) => {
                         BatchPromise.then(activeBatch => {
                           return res.render('view', {
                               submission: submission,
+                              form: form,
                               status: statuses,
                               comments: comments,
                               usersApprove: usersApprove,
@@ -313,7 +316,7 @@ exports.postCreateForm = (req, res) => {
     const deadline = req.body.deadline;
     const email = req.session.email;
     const section = req.body.section;
-    const role = req.session.user.role;
+    const needsApproval = Boolean(req.body.needsApproval) // if box is unchecked = undefined -> will be converted to false
     BatchPromise.then(activeBatch => {
       UserFaculty.findOne({ where: { userId: req.session.user.id } })
         .then(user => {
@@ -324,7 +327,8 @@ exports.postCreateForm = (req, res) => {
                 createdBy: email,
                 section: section,
                 userId: user.id,
-                batchId: activeBatch.id
+                batchId: activeBatch.id,
+                needsApproval: needsApproval
             })
         })
         .then(result => {

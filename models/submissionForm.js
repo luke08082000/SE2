@@ -13,7 +13,8 @@ const SubmissionForm = sequelize.define('submission-form', {
     section: Sequelize.STRING,
     deadline: Sequelize.DATE,
     description: Sequelize.STRING(1000),
-    createdBy: Sequelize.STRING
+    createdBy: Sequelize.STRING,
+    needsApproval: Sequelize.BOOLEAN
 })
 
 module.exports = SubmissionForm;
