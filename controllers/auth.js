@@ -112,8 +112,7 @@ exports.postRegister = (req, res, next) => {
             if(user.role == "student") {
                 UserStudent.create({
                     userId: user.id,
-                    section: section,
-                    batchId: activeBatch.id
+                    section: section
                 })
             }
             var message = {

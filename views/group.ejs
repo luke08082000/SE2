@@ -56,7 +56,7 @@
                   <div class="card">
                     <h4><%= group[i].name %></h4>
                     <% if(role == 'Student') { %>
-                      <% if(!group[i].capstoneTitle) { %>
+                      <% if(!group[i].capstoneTitle && user.groupId == group[i].id) { %>
                         <form action="/student/group/capstone/title" method="POST">
                           <input type="text" placeholder="Capstone Project Title" id="title" name="title"><br>
                           <input type="hidden" value="<%= group[i].id %>" name="groupId">
@@ -67,7 +67,6 @@
                       <% if (group[i].capstoneTitle) { %>
                         <h4><%= group[i].capstoneTitle %></h4>
                         <% if(role == 'Student') { %>
-                          <button id="edit">Edit</button>
                         <% } %>
                       <% } else { %>
                         <p>No Capstone Project Title yet</p>

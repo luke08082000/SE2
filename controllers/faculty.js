@@ -352,8 +352,7 @@ exports.getFormView = (req, res) => {
 }
 
 exports.getRole = (req, res) => {
-  const BatchPromise = Batch.findOne({ where: { isActive: true }});
-  const isAdmin = UserFaculty.findOne({ where: { userId: req.session.user.id, role: 'course-department-chair' } });
+  // const isAdmin = UserFaculty.findOne({ where: { userId: req.session.user.id, role: 'course-department-chair' } });
   const role = req.session.user.role;
 
     UserFaculty.findAll()
@@ -365,22 +364,18 @@ exports.getRole = (req, res) => {
         .then(members => {
               User.findAll({ where: { role: 'Faculty' } })
                 .then(faculty => {
-                  BatchPromise.then(activeBatch => {
-                    isAdmin.then(admin => {         // check if admin if not redirect to 404 page
-                      if(admin) {
+                    // isAdmin.then(admin => {         // check if admin if not redirect to 404 page
+                    //   if(admin) {
                         res.render('faculty-activities/roles', {
                         role: role,
                         userFaculty: faculties,
                         facultyMembers: members,
-                        faculty: faculty,
-                        activeBatchId: activeBatch ? activeBatch.id : 0
+                        faculty: faculty
                         })
-                      } else {
-                        res.redirect('/404');
-                      }
-                    })
-
-                  })
+                      // } else {
+                      //   res.redirect('/404');
+                      // }
+                    // })
                     
                 })
               
@@ -399,9 +394,8 @@ exports.postRole = (req, res) => {
     const currentUser = req.session.user
 
 
-  BatchPromise.then(activeBatch => {
     if (roleChosen === 'technical-adviser') {
-      UserFaculty.create({ userId: currentUser.id, role: 'technical-adviser', section: 'all', batchId: activeBatch.id }, { returning: true })
+      UserFaculty.create({ userId: currentUser.id, role: 'technical-adviser', section: 'all'}, { returning: true })
         .then(createdFaculty => { 
           Group.findByPk(groupId)
             .then(group => {
@@ -410,9 +404,7 @@ exports.postRole = (req, res) => {
             })
         })
     }
-  })
     
-  BatchPromise.then(activeBatch => {
     User.findOne({ where: { role: "Faculty", id: userId } })
     .then(user => {
         UserFaculty.findAll()
@@ -435,8 +427,7 @@ exports.postRole = (req, res) => {
             UserFaculty.create({ 
                 userId: user.id,
                 role: roleChosen,
-                section: roleChosen === 'course-facilitator' ? sectionChosen : 'all',
-                batchId: activeBatch.id
+                section: roleChosen === 'course-facilitator' ? sectionChosen : 'all'
             })
             .then(result => {
                 console.log('new user-faculty created with role: ' + roleChosen)
@@ -446,8 +437,6 @@ exports.postRole = (req, res) => {
         })
     })
     .catch(err => console.log(err));
-  })
-  .catch(err => console.log(err));
 }
 
 exports.postRemove = (req, res) => {
@@ -496,7 +485,7 @@ exports.getArchiveView = (req, res) => {
         return User.findByPk(member.userId)
       })
       UserFaculty.findByPk(group.adviserId).then(adviser => { //returns info for adviser
-        const adviserPromise = User.findByPk(adviser.userId);
+        const adviserPromise = adviser?.userId ? User.findByPk(adviser.userId) : Promise.resolve(null);
         const submissionsPromise = Submission.findAll({ where: { groupId: group.id }});// returns all submissions from group
 
           Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
@@ -504,7 +493,7 @@ exports.getArchiveView = (req, res) => {
             role: role,
             group: group,
             members: members,
-            adviser: adviser,
+            adviser: adviser ?? 'No adviser yet',
             submissions: submissions
             })
           })

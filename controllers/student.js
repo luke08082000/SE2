@@ -129,10 +129,15 @@ exports.getMonitor = (req, res) => {
     .then(student => {
         Group.findOne({ where: { id: student.groupId } })
         .then(group => {
+          if(!group) {
+            return res.redirect('/404')
+          }
             Submission.findAll({ where: { groupId: group.id }}) 
             .then(submissions => {
-
-              BatchPromise.then(activeBatch => {
+              if(!submissions) {
+                return res.redirect('/404')
+              }
+                BatchPromise.then(activeBatch => {
                 res.render('student-activities/monitor', {
                   student: student,
                   submissions: submissions,
@@ -142,7 +147,6 @@ exports.getMonitor = (req, res) => {
                   activeBatchId: activeBatch ? activeBatch.id : 0
               });
               })
-                
             })
         })
     })
@@ -290,11 +294,11 @@ exports.getProjectMilestones = (req, res) => {
 
 exports.getGroup = (req, res) => {
   const BatchPromise = Batch.findOne({ where : { isActive: true }});
+  const studentPromise = UserStudent.findByPk(req.session.user.id);
   const role = req.session.user.role;
   UserStudent.findOne({ where: { userId: req.session.user.id } })
     .then(student => {
       return Group.findAll()
-      
         .then(groups => {
           const techAdvPromises = groups.map(group => {
             return UserFaculty.findByPk(group.adviserId)
@@ -322,7 +326,7 @@ exports.getGroup = (req, res) => {
               })
           });
           
-          
+
           // Wait for all promises to resolve
           Promise.all([...techAdvPromises, ...groupMembers])
             .then(results => {
@@ -330,12 +334,14 @@ exports.getGroup = (req, res) => {
               const techAdvNames = results.slice(0, groups.length);
               const groupMembers = results.slice(groups.length);
 
-            BatchPromise.then(activeBatch => {
+            studentPromise.then(studentUser => {
+              BatchPromise.then(activeBatch => {
               res.render('group', {
                 groupId: role !== "Student" ? '' : student.groupId,
                 hasGroup: role !== "Student" ? '' : student.groupId,
                 section: role !== "Student" ? '' : student.section,
                 user: student,
+                student: studentUser,
                 group: groups,
                 members: groupMembers,
                 techAdv: techAdvNames,
@@ -343,6 +349,8 @@ exports.getGroup = (req, res) => {
                 activeBatchId: activeBatch ? activeBatch.id : 0
               });
             })
+            })
+            
               
             });
         })

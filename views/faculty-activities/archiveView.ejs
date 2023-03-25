@@ -31,7 +31,11 @@
                 <h4>Adviser</h4>
                 <% if(adviser) { %>
                     <p><%= adviser.firstName + ' ' + adviser.lastName %></p>
-                <% } %>
+                  <% } else { %>
+                    <p>No Adviser Yet</p>
+                  <% } %>
+                  
+                  
             </div>
         </div>
         <div class="container-main">
