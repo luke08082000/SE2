@@ -6,6 +6,7 @@ const mysql = require('mysql2/promise');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const multer = require('multer');
+const flash = require('connect-flash');
 
 //MODELS
 const User = require('./models/user');
@@ -72,6 +73,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
 }));
+
+app.use(flash());
 
 app.use((req, res, next) => {
     console.log(req.session.isLoggedIn)

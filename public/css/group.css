@@ -26,6 +26,17 @@
   width: 100%;
 }
 
+.card-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-group .group-columns {
+  max-width: 10rem;
+}
+
 .card-faculty {
   flex-basis: 45%;
 }
@@ -38,12 +49,6 @@
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 1rem;
-}
-
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  grid-gap: 0.5rem;
 }
 
 .form-control {
@@ -96,3 +101,4 @@ ul {
 .section {
   font-weight: 600;
 }
+

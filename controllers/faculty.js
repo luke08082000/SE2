@@ -158,7 +158,6 @@ exports.postApproveDocuments = (req, res) => {
         statusNum++
       }
     }) 
-    console.log(statusNum + ' sdfsfdf')
     if (statusNum === 5 && !hasRevise) {
       Submission.findOne({ where: { id: submissionId }})
         .then(submission => {
@@ -228,7 +227,7 @@ exports.getView = (req, res) => {
                         })
                         const courseFaci = faculty
                           .filter(user => user.role === 'course-facilitator')
-                          .map(user => user.section.toUpperCase())
+                          .map(user => user.section)
                           .join(','); // concatenate the array elements with a comma delimiter
                         
                         const techAdvGroup = faculty
@@ -489,7 +488,7 @@ exports.getArchiveView = (req, res) => {
         const submissionsPromise = Submission.findAll({ where: { groupId: group.id }});// returns all submissions from group
 
           Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
-            res.render('faculty-activities/archiveView', {
+            res.render('archiveView', {
             role: role,
             group: group,
             members: members,

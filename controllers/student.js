@@ -62,8 +62,7 @@ exports.getSubmit = (req, res) => { // should only output forms that the group h
 };
   
 exports.postSubmit = (req, res) => {
-    const role = req.session.user.role;
-    if (role === "Student") {
+        const role = req.session.user.role;
         const filePath = req.file.path.substring(6) // to exclude public folder
         const fileName = req.file.filename;
         const formId = req.body.formId;
@@ -92,8 +91,6 @@ exports.postSubmit = (req, res) => {
         })
         .catch(err => console.log(err))
         })
-        
-        }
 }
 
 exports.getFormView = (req, res) => {
@@ -201,6 +198,37 @@ exports.getMonitorView = (req, res) => {
           .catch(e => console.log(e));
       })
       .catch(e => console.log(e));
+}
+
+exports.getArchiveView = (req, res) => {
+  const role = req.session.user.role;
+  const groupId = req.params.id;
+
+  Group.findByPk(groupId).then(group => {
+   UserStudent.findAll({ where: { groupId: group.id } }).then(members => {
+      const membersPromise = members.map(member => { //returns user info for every member
+        return User.findByPk(member.userId)
+      })
+      UserFaculty.findByPk(group.adviserId).then(adviser => { //returns info for adviser
+        const adviserPromise = adviser?.userId ? User.findByPk(adviser.userId) : Promise.resolve(null);
+        const submissionsPromise = Submission.findAll({ where: { groupId: group.id }});// returns all submissions from group
+
+          Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
+            res.render('archiveView', {
+            role: role,
+            group: group,
+            members: members,
+            adviser: adviser ?? 'No adviser yet',
+            submissions: submissions
+            })
+          })
+          .catch(e => console.log(e))
+        })
+        .catch(e => console.log(e))
+    })
+    .catch(e => console.log(e))
+  })
+  .catch(e => console.log(e))
 }
 
 exports.getRevise = (req, res) => {

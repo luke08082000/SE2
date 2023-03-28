@@ -30,6 +30,8 @@ router.get('/project-milestones', studentController.getProjectMilestones);
 
 router.get('/group', studentController.getGroup);
 
+router.get('/group/view/:id', studentController.getArchiveView);
+
 router.post('/group', studentController.postGroup);
 
 router.post('/group/capstone/title', studentController.postTitle);

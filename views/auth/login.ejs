@@ -15,6 +15,9 @@
     </div>
     <div class="container center">
       <div class="grayline"></div>
+      <% if(errorMessage) { %>
+      <center><div><%= errorMessage %></div></center>
+      <% } %>
       <form action="/auth/login" method="POST">
         <div class="form-control">
           <h4>Email Address</h4>

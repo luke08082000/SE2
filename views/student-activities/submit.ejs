@@ -15,7 +15,7 @@
     <% if (forms.length > 0) { %>
       <% console.log(forms.length) %>
       <div class="container">
-        <div class="page-title-container">
+        <div class="header">
           <h1>Submit Documents</h1>
         </div>
         <% for (let i = 0; i < forms.length; i++) { %>
@@ -28,7 +28,7 @@
                 <% } %>
                 <div class="card-actions">
                   <form action="/student/activities/form/view/<%= forms[i].id %>" method="GET">
-                    <button class="btn" type="submit">View</button>
+                    <button class="btn" type="submit">Open</button>
                   </form>
                 </div>
                 <input type="hidden" value="<%= forms[i].id %>" name="formId">

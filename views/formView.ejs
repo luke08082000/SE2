@@ -16,27 +16,27 @@
     <div class="container">
         <div class="top">
             <% if(role == 'Student') { %>
-                <a href="/student/activities/submit">Go Back</a>
+                <a href="/student/activities/submit">Go back</a>
             <% } %>
             <div class="header">
                 <h1><%= form.title %></h1>
             </div>
         </div>
-        <div class="body">
+        <div class="body description">
             <h4>Description</h4>
+        </div>
             <p><%= form.description %></p>
             <% if(role == 'Student') { %>
             <form action="/student/activities/submit" method="POST" enctype="multipart/form-data">
-                <div class="form-control">
-                    <label for="file">PDF file</label>
+                <div class="form-control upload-file">
+                    <p>Upload your file</p>
                     <input type="file" class="form-control" name="file" id="file" accept=".pdf">
-                        <input type="hidden" value="<%= form.title %>" name="formTitle">
-                        <input type="hidden" value="<%= form.id %>" name="formId">
+                    <input type="hidden" value="<%= form.title %>" name="formTitle">
+                    <input type="hidden" value="<%= form.id %>" name="formId">
+                    <button class="btn" type="submit">Submit</button>
                   </div>
-                <button class="btn" type="submit">Submit</button>
               </form>
             <% } %>
-        </div>
     </div>
 </body>
 </html>

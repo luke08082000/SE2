@@ -4,7 +4,7 @@ const UserStudent = require('../models/userStudent');
 const UserFaculty = require('../models/userFaculty');
 const nodemailer = require('nodemailer');
 const Batch = require('../models/batch');
-
+const { validationResult } = require('express-validator/check');
 
 
 const crypto = require('crypto');
@@ -23,7 +23,9 @@ const transporter = nodemailer.createTransport({
 })
 
 exports.getLogin = (req, res, next) => {
-    res.render('auth/login')
+    res.render('auth/login', {
+        errorMessage: req.flash('error')
+    })
 };
 
 
@@ -33,11 +35,20 @@ exports.postLogin = (req, res, next) => {
     User.findOne({ where: { email: email }})
     .then(user => {
         if (!user) {
-            return res.redirect('/auth/login')
+            req.flash('error', 'Invalid email or password.');
+            return res.render('auth/login', {
+                errorMessage: req.flash('error')
+            })
         }
         bcrypt
         .compare(password, user.password)
         .then (doMatch => {
+            if(!doMatch) {
+                req.flash('error', 'Invalid email or password.');
+                return res.render('auth/login', {
+                    errorMessage: req.flash('error')
+                })
+            }
             if (doMatch) {
                 req.session.user = user;
                 req.session.isLoggedIn = true;
@@ -60,21 +71,18 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.getFacultyRegister = (req, res) => {
-    res.render('auth/faculty-register');
+    res.render('auth/faculty-register', {
+        errorMessage: req.flash('error')
+    });
 }
 
 exports.getStudentRegister = (req, res) => {
-    res.render('auth/student-register');
+    res.render('auth/student-register', {
+        errorMessage: req.flash('error')
+    });
 }
 
-exports.getRegister = (req, res, next) => {
-    res.render('auth/register')
-};
-
-  
-
 exports.postRegister = (req, res, next) => {
-    const BatchPromise = Batch.findOne({ where: { isActive: true }})
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const email = req.body.email;
@@ -82,16 +90,37 @@ exports.postRegister = (req, res, next) => {
     const confirmPassword = req.body.confirmPassword;
     const role = req.body.role;
     const section = req.body.section;
-    console.log(role);
-    BatchPromise.then(activeBatch => {
-        User.findOne({ where: { email: email } })
+
+    console.log('this is the role: ' + role);
+    User.findOne({ where: { email: email } })
         .then(userDoc => {
         if(userDoc) {
-            return res.redirect('/')
+            req.flash('error', 'Email already exists.')
+            if (role == 'faculty') {
+                return res.render('auth/faculty-register', {
+                    errorMessage: req.flash('error')
+                })
+            }
+            if (role == 'student') {
+                return res.render('auth/student-register', {
+                    errorMessage: req.flash('error')
+                })
+            }
+            
         }
-        if(confirmPassword !== password) {
-            console.log('password do not match');
-            return res.redirect('/auth/register')
+        console.log(password);
+        if(password !== confirmPassword) {
+            req.flash('error', 'Passwords do not match.')
+            if (role == 'faculty') {
+                return res.render('auth/faculty-register', {
+                    errorMessage: req.flash('error')
+                })
+            }
+            if (role == 'student') {
+                return res.render('auth/student-register', {
+                    errorMessage: req.flash('error')
+                })
+            }
         }
         return bcrypt
         .hash(password, 12)
@@ -132,7 +161,6 @@ exports.postRegister = (req, res, next) => {
         })
     })
     .catch(err => console.log(err))
-    })
     
 };
 

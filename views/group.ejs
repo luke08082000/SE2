@@ -15,7 +15,7 @@
   
     <div class="container">
       <div class="header">
-        <h1>Group</h1>
+        <h1>Groups</h1>
       </div>
         <div class="top-container">
           <% if (role === 'Faculty' && faculty) { %>
@@ -50,57 +50,81 @@
         </div>
       
         <div class="card-grid">
+          <% if(role == 'Faculty') { %>
+          <div class="header">
+            <h2>Active Groups</h2>
+          </div>
+          <% } %>
             <% for (let i = 0; i < group.length; i++) { %>
                 <% if (role === 'Faculty' || (role === 'Student' && (hasGroup && group[i].id == user.groupId)) || !hasGroup && group[i].section === section) { %>
                   <% if(group[i].batchId == activeBatchId ) { %>
-                  <div class="card">
-                    <h4><%= group[i].name %></h4>
-                    <% if(role == 'Student') { %>
-                      <% if(!group[i].capstoneTitle && user.groupId == group[i].id) { %>
-                        <form action="/student/group/capstone/title" method="POST">
-                          <input type="text" placeholder="Capstone Project Title" id="title" name="title"><br>
-                          <input type="hidden" value="<%= group[i].id %>" name="groupId">
-                          <button type="submit">OK</button>
+                  <div class="card card-group">
+                    <div class="group-columns">
+                      <p>Group name</p>
+                      <h4><%= group[i].name %></h4>
+                      
+                      <% if(role == 'Student') { %>
+                        <% if(!group[i].capstoneTitle && user.groupId == group[i].id) { %>
+                          <form action="/student/group/capstone/title" method="POST">
+                            <input type="text" placeholder="Capstone Project Title" id="title" name="title"><br>
+                            <input type="hidden" value="<%= group[i].id %>" name="groupId">
+                            <button type="submit">OK</button>
+                          </form>
+                          <% } %>
+                          <% } %>
+                    </div>
+                    <div class="group-columns">
+                      <p>Project Title</p>
+                      <% if (group[i].capstoneTitle) { %>
+                          <h4><%= group[i].capstoneTitle %></h4>
+                      <% } else { %>
+                        <p>No title yet</p>
+                      <% } %>
+                    </div>
+                     <div class="group-columns">
+                      <p>Section</p>
+                      <h4><%= group[i].section.toUpperCase() %></h4>
+                     </div>   
+                    <div class="group-columns">
+                      <p>Technical Adviser:</p>
+                      <% if (techAdv[i]) { %>
+                        <p><%= techAdv[i] %></p>
+                      <% } else { %>
+                        <p>No technical adviser assigned.</p>
+                      <% } %>
+                    </div>
+                    <div class="group-columns">
+                      <p>Members:</p>
+                      <% if (members[i] && members[i].length) { %>
+                        <ul>
+                        <% members[i].forEach(member => { %>
+                            <li><%= member %></li>
+                        <% }); %>
+                        </ul>
+                      <% } else { %>
+                        <p>No members yet.</p>
+                      <% } %>
+                    </div>
+                    <div class="buttons">
+                      <% if(role == 'Faculty') { %>
+                        <form action="/faculty/archive/view/<%= group[i].id %>" method="GET">
+                          <button type="submit">View</button>
                         </form>
                       <% } %>
-                    <% } %>
-                      <% if (group[i].capstoneTitle) { %>
-                        <h4><%= group[i].capstoneTitle %></h4>
-                        <% if(role == 'Student') { %>
-                        <% } %>
-                      <% } else { %>
-                        <p>No Capstone Project Title yet</p>
+                      <% if(role == 'Student') { %>
+                        <form action="/student/group/view/<%= group[i].id %>" method="GET">
+                          <button type="submit">View</button>
+                        </form>
                       <% } %>
-                    <h6>Section: <span class="section"><%= group[i].section.toUpperCase() %></span></h6>
-                    <h6>Technical Adviser:</h6>
-                    <% if (techAdv[i]) { %>
-                      <p><%= techAdv[i] %></p>
-                    <% } else { %>
-                      <p>No technical adviser assigned.</p>
-                    <% } %>
-                    <h6>Members:</h6>
-                    <% if (members[i] && members[i].length) { %>
-                      <ul>
-                      <% members[i].forEach(member => { %>
-                          <li><%= member %></li>
-                      <% }); %>
-                      </ul>
-                    <% } else { %>
-                      <p>No members yet.</p>
-                    <% } %>
-
-                    <% if(role == "Faculty" && !group[i].adviserId) { %>
-                      <form action="/faculty/activities/roles" method="POST">
-                        <button value="technical-adviser" name="role">Become Technical Adviser</button>
-                        <input type="hidden" value="<%= group[i].id %>" name="groupId">
-                        <input type="hidden" value="<%= group[i].section %>" name="groupSection">
-                      </form>
-                    <% } %>
-                    <% if(role == 'Faculty') { %>
-                    <form action="/faculty/archive/view/<%= group[i].id %>" method="GET">
-                      <button type="submit">View</button>
-                    </form>
-                    <% } %>
+                      <% if(role == "Faculty" && !group[i].adviserId) { %>
+                        <form action="/faculty/activities/roles" method="POST">
+                          <button value="technical-adviser" name="role">Become Technical Adviser</button>
+                          <input type="hidden" value="<%= group[i].id %>" name="groupId">
+                          <input type="hidden" value="<%= group[i].section %>" name="groupSection">
+                        </form>
+                      <% } %>
+                      
+                    
                     <% if (!hasGroup && role === "Student") { %>
                       <form action="/student/group" method="POST">
                         <button>Join Group</button>
@@ -108,6 +132,7 @@
                         <input type="hidden" value="<%= group[i].section %>" name="groupSection">
                       </form>
                     <% } %>
+                  </div>
                   </div>
                   <% } %>
                 <% } %>
