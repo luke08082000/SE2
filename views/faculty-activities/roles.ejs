@@ -15,64 +15,91 @@
   <%- include ('../partials/navigation.ejs') %>
   <div class="container">
     <div class="header">
-        <h1>Faculty Roles</h1>
+        <h1>Faculty</h1>
     </div>
     <div class="body">
-        <div class="roles">
-        <h4>Faculty Members with roles:</h4>
+        <div class="roles role-columns">
+            <div class="column-headers">
+                <h3>List of Faculty Members with Role</h3>
+            </div>
         <form action="/faculty/activities/remove" method="POST">
             <% if(facultyMembers.length > 0) { %>
             <% facultyMembers.forEach((member, i) => { %>
+                <div class="item-container">
+                    <div class="name">
+                        <p><%= member.firstName + ' ' + member.lastName %></p>
+                    </div> 
+                   <div class="role gray-texts">
                     <% if (userFaculty[i].role == 'course-facilitator') { %>
-                        <p><%= userFaculty[i].role + ' ' + userFaculty[i].section %></p>
+                        <p><%= userFaculty[i].role.toUpperCase() + ' ' + userFaculty[i].section.toUpperCase() %></p>
                         <% } else { %>
-                            <p><%= userFaculty[i].role %></p>
-                            <% } %>
-                            <p><%= member.firstName + ' ' + member.lastName %></p>
-                            <button value="<%= userFaculty[i].id %>" name="facultyId" type="submit">Remove</button>
-                            <br>
+                            <p><%= userFaculty[i].role.toUpperCase() %></p>
+                        <% } %>
+                    </div>
+                    <div class="remove-button">
+                        <button value="<%= userFaculty[i].id %>" name="facultyId" type="submit" class="remove-buttons">Remove</button>
+                    </div>
+                </div>
+                
+                <br>
                 <% }) %>
             <% } %>
         </form>
         
     </div>
-    <div class="members">
-        <h4>All Faculty Members</h4>
+    <div class="members role-columns">
+        <div class="column-headers">
+        <h3>All Faculty Members</h3>
+        </div>
         <% if(faculty.length > 0) { %>
             <% faculty.forEach(member => { %>
-                <p>ID: <%= member.id %></p>
-                <p><%= member.firstName + ' ' + member.lastName %></p>
+                <div class="item-container">
+                    <div class="item-columns">
+                        <h4>ID: <%= member.id %></h4>
+                    </div>
+                    <div class="item-columns">
+                        <p><%= member.firstName + ' ' + member.lastName %></p>
+                    </div>
+                </div>
+                
                 <br>
             <% }) %>
         <% } %>
     </div>
-    <div class="assign">
+    <div class="assign role-columns">
         <form action="/faculty/activities/roles" method="POST">
+            <div class="column-headers">    
+                <h3>Assign Roles</h3>
+                <p class="gray-texts">(Input faculty id to assign role.)</p>
+            </div>
+            <div class="column-body">
                 <div class="form-control">
                   <h4>Course Department Chair</h4>
-                  <input type="text" name="userId">
-                  <button value="course-department-chair" name="role" type="submit">Assign Role</button>
+                  <input type="text" name="userId" class="input-boxes">
+                  <button value="course-department-chair" name="role" type="submit" class="submit-buttons">Submit</button>
                 </div>
             <div class="form-control">
                 <h4>Course Coordinator</h4>
-                <input type="text" name="userId">
-                <button value="course-coordinator" name="role" type="submit">Assign Role</button>
+                <input type="text" name="userId" class="input-boxes">
+                <button value="course-coordinator" name="role" type="submit" class="submit-buttons">Submit</button>
             </div>
             <div class="form-control">
                 <h4>Course Facilitator</h4>
-                <input type="text" name="userId">
-                <label for="section">Section: </label>
-                <select name="section" id="section">
+                <input type="text" name="userId" class="input-boxes">
+                <label for="section">Section:</label>
+                <select name="section" id="section" class="input-boxes">
                   <option value="isa">IS A</option>
                   <option value="isb">IS B</option>
                 </select>
-                <button value="course-facilitator" name="role" type="submit">Assign Role</button>
+                <button value="course-facilitator" name="role" type="submit" class="submit-buttons">Submit</button>
             </div>
             <div class="form-control">
                 <h4>Track Head</h4>
-                <input type="text" name="userId">
-                <button value="track-head" name="role" type="submit">Assign Role</button>
+                <input type="text" name="userId" class="input-boxes">
+                <button value="track-head" name="role" type="submit" class="submit-buttons">Submit</button>
             </div>
+            </div>
+                
         </form>
     </div>
     </div>

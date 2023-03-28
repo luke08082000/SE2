@@ -48,7 +48,12 @@
                         <h2><%= submission.title %></h2> 
                         </div>
                         <div class="form-control">
-                        <h2><%= submission.status %></h2>  
+                        <% if(submission.status == 'approved') { %>
+                            <h3 class="green-texts"><%= submission.status.charAt(0).toUpperCase() + submission.status.slice(1) %></h3>
+                        <% } %>
+                        <% if(submission.status == 'pending') { %>
+                            <h3 class="yellow-texts"><%= submission.status.charAt(0).toUpperCase() + submission.status.slice(1) %></h3>
+                        <% } %>  
                         </div>
                         <% if(role == 'Faculty') { %>
                         <form action="/faculty/activities/view/<%= submission.id %>" method="GET">

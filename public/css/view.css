@@ -3,7 +3,7 @@ body {
 }
 
 .header {
-  border-bottom: 2px solid grey;
+  border-bottom: 1px solid grey;
   width: 78rem;
   margin-bottom: 1.5rem;
 }
@@ -14,6 +14,21 @@ body {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
+}
+
+.select-box {
+    border-radius: 4px; /* adjust the value as per your need */
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+  background-color: lightgrey;
+    border: none;
+    border-radius: 4px;
+    padding: 0rem 1rem;
+    cursor: pointer;
+    height: 1.8rem;
 }
 
 .container-top {
@@ -47,12 +62,30 @@ a {
   position: relative;
   width: 30%;
   padding-inline: 20px;
-  border-style: dashed;
+  border-style: solid;
+}
 
+.green-texts {
+  color: green;
+}
+
+
+.bold-texts {
+  font-weight: bold;
+}
+
+.status-entry .log-entries {
+  display: block;
+  margin-block: 1rem;
 }
 
 .status, .names {
   padding-top: 20px;
+}
+
+.container-top .status-log {
+  background-color: rgba(211, 211, 211, 0.2);
+  border-width: 1px;
 }
 
 .container-top .status-log .buttons {
@@ -72,13 +105,12 @@ a {
 }
 
 .upload-file button {
-  background-color: #0070f3;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 0.5rem 1rem;
-  margin-block: 1rem;
-  cursor: pointer;
+    background-color: lightgrey;
+    border: none;
+    border-radius: 4px;
+    padding: 0rem 1rem;
+    cursor: pointer;
+    height: 1.8rem;
 }
 
 
@@ -102,12 +134,12 @@ a {
   }
   
   .comment-section form button {
-    background-color: #0070f3;
-    color: #fff;
+    background-color: lightgrey;
     border: none;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    padding: 0rem 1rem;
     cursor: pointer;
+    height: 1.8rem;
   }
   
   .comment-section .comments {

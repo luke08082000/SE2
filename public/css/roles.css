@@ -13,3 +13,54 @@
     width: 20rem;
 }
 
+.role-columns {
+    border-top: 2px solid grey;
+    border: 2px solid grey;
+    border-right: 2px solid grey;
+    padding: 1rem;
+}
+
+.members {
+    max-width:12rem;
+}
+
+.roles {
+    width: 35%;
+}
+
+.item-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gray-texts {
+    color: gray;
+    font-style: italic;
+}
+
+.input-boxes {
+    border-radius: 4px; /* adjust the value as per your need */
+    padding: 5.5px;
+    border: 1px solid #ccc;
+}
+
+.form-control .submit-buttons {
+    border-radius: 4px; /* adjust the value as per your need */
+}
+.roles .remove-buttons {
+  background-color: rgb(213, 65, 65); /* Use an appropriate shade of red */
+  color: #fff; /* Set text color to white */
+  border: none; /* Remove button border */
+  border-radius: 4px; /* Add some border radius for rounded edges */
+  cursor: pointer; /* Add a pointer cursor to indicate interactivity */
+}
+
+.assign .column-body h4 {
+    margin-block: 0px;
+}
+
+.item-container .item-columns {
+    margin-block: -10px;
+}
+

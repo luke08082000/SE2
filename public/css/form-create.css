@@ -20,6 +20,8 @@ body {
   margin-bottom: 1.5rem;
 }
 
+
+
 .container form {
     width: 50%;
     margin-left: 2rem;
@@ -30,7 +32,7 @@ body {
     padding: 12px 20px;
     margin-bottom: 20px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
+    border: 1px solid #231F20;
     border-radius: 4px;
 }
 
@@ -47,7 +49,7 @@ body {
     padding: 12px 20px;
     margin-bottom: 20px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
+    border: 1px solid #231F20;
     border-radius: 4px;
 }
 
@@ -57,26 +59,32 @@ body {
 }
 
 .form-control-2 button {
-    background-color: #0070f3;
-    color: #fff;
+    background-color: lightgrey;
     border: none;
-    border-radius: 5px;
-    padding: 0.1rem 1rem;
+    border-radius: 4px;
+    padding: 0rem 1rem;
     cursor: pointer;
-   
+    height: 1.8rem;
 }
+.container button:hover {
+    background-color: rgba(211, 211, 211, 0.8);
+}
+
 
 .flex {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .container .btn {
-    width: 30%;
-    padding-block: 1rem;
-    margin-block: 1rem;
-    border-radius: 1rem;
-    display: block;
+    background-color: lightgrey;
+    border: none;
+    border-radius: 4px;
+    padding: 0rem 3rem;
+    cursor: pointer;
+    height: 1.8rem;
+    margin-top: 1rem;
 }
 
 select {

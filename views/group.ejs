@@ -19,7 +19,7 @@
       </div>
         <div class="top-container">
           <% if (role === 'Faculty' && faculty) { %>
-            <div class="card card-faculty">
+            <div class="card card-faculty add-group">
               <h4>Create Group for <%= faculty.section.toUpperCase() %></h4>
               <form action="/faculty/group" method="POST">
                 <div class="form-control">

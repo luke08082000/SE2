@@ -47,7 +47,7 @@
                 <% if (status.length > 0) { %>
                   <% status.forEach((status, index) => { %>
                     <div class="status-entry">
-                      <h4>Approved by: <%= usersApprove[index].user.firstName + ' ' + usersApprove[index].user.lastName %> as <%= usersApprove[index].role %></h4>
+                      <span class="log-entries"><span class="green-texts">Approved: </span><%= usersApprove[index].user.firstName + ' ' + usersApprove[index].user.lastName %> as <span class="bold-texts"><%= usersApprove[index].role %></span></span>
                     </div>
                   <% }) %>
                 <% } else { %>
@@ -58,7 +58,7 @@
                 <% if (role == 'Faculty') { %>
                   <form action="/faculty/activities/approve-documents" method="POST">
                     <label for="roleChosen">Pick role: </label>
-                      <select name="roleChosen" id="roleChosen">
+                      <select name="roleChosen" id="roleChosen" class="select-box">
                         <% if(rolesTaken) { %>
                           <% rolesTaken.forEach((role, i) => { %>
                               <% if (role !== 'course-facilitator' && role !== 'technical-adviser' ) { %>

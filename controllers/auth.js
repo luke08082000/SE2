@@ -108,9 +108,21 @@ exports.postRegister = (req, res, next) => {
             }
             
         }
-        console.log(password);
         if(password !== confirmPassword) {
             req.flash('error', 'Passwords do not match.')
+            if (role == 'faculty') {
+                return res.render('auth/faculty-register', {
+                    errorMessage: req.flash('error')
+                })
+            }
+            if (role == 'student') {
+                return res.render('auth/student-register', {
+                    errorMessage: req.flash('error')
+                })
+            }
+        }
+        if(password.length < 10) {
+            req.flash('error', 'Password must be atleast 10 characters long.')
             if (role == 'faculty') {
                 return res.render('auth/faculty-register', {
                     errorMessage: req.flash('error')

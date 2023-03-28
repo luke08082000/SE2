@@ -37,12 +37,15 @@ body {
 }
 
 .container button {
-    background-color: #0070f3;
-    color: #fff;
+    background-color: lightgrey;
     border: none;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    padding: 0rem 1rem;
     cursor: pointer;
+    height: 1.8rem;
+}
+.container button:hover {
+    background-color: rgba(211, 211, 211, 0.8);
 }
 
 .form-control {

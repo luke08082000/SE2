@@ -50,3 +50,12 @@
   line-height: 1.5;
 }
 
+.container button {
+  background-color: lightgrey;
+  border: none;
+  border-radius: 4px;
+  padding: 0rem 1rem;
+  cursor: pointer;
+  height: 1.8rem;
+  margin-top:1rem;
+}
