@@ -1,21 +1,15 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 250px;
-    
+  display: flex;
+  flex-direction: column;
+  margin-left: 250px;
+  margin-right: 1%;
 }
 
 .header {
-  margin-left: 0.75rem;
+  margin-left: 1%;
   margin-top: 1rem;
   border-bottom: 2px solid grey;
-  width: 78rem;
   margin-bottom: 1.5rem;
-}
-  
-.container {
-  margin-left: 250px;
-  max-width: 50%;
 }
 
 .row {
@@ -25,7 +19,7 @@
 }
 
 .column {
-  flex-basis: calc(50% - 10px);
+  flex-basis: 100%;
   margin-bottom: 10px;
 }
 
@@ -58,4 +52,10 @@
   cursor: pointer;
   height: 1.8rem;
   margin-top:1rem;
+}
+
+@media screen and (min-width: 768px) {
+  .column {
+    flex-basis: calc(50% - 10px);
+  }
 }

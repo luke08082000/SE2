@@ -33,7 +33,6 @@
   
 
     <div id="form-container">
-
       <% for (let i = 0; i < submissions.length; i++) { %>
           <% if (submissions[i].status !== null && submissions[i].status !== 'approved') { %>
             <% if(submissions[i].batchId == activeBatchId && submissions[i].version == 1) { %>

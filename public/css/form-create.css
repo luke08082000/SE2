@@ -3,24 +3,20 @@ body {
 }
 
 .container {
-    width: 90%;
-    margin: 0 auto;
-    margin-inline: 250px 100px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #ccc;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  margin-left: 250px;
+  margin-right:3%;
 }
 
 .header {
   margin-left: 0.75rem;
   margin-top: 1rem;
-  border-bottom: 2px solid grey;
-  width: 78rem;
+  border-bottom: 1px solid grey;
+  width: 100%;
   margin-bottom: 1.5rem;
 }
-
-
 
 .container form {
     width: 50%;
@@ -39,13 +35,13 @@ body {
 .form-list {
   margin-left: 0.75rem;
   margin-top: 1rem;
-  border-top: 2px solid grey;
-  width: 78rem;
+  border-top: 1px solid grey;
+  width: 100%;
   margin-bottom: 1.5rem;
 }
 
 .form-control-2 {
-    width: 77rem;
+    width: 100%;
     padding: 12px 20px;
     margin-bottom: 20px;
     box-sizing: border-box;

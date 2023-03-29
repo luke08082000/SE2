@@ -4,7 +4,7 @@ body {
 
 .header {
   border-bottom: 1px solid grey;
-  width: 78rem;
+  width: 100%;
   margin-bottom: 1.5rem;
 }
 
@@ -23,7 +23,7 @@ body {
 }
 
 button {
-  background-color: lightgrey;
+    background-color: lightgrey;
     border: none;
     border-radius: 4px;
     padding: 0rem 1rem;
@@ -34,14 +34,14 @@ button {
 .container-top {
     display: flex;
     padding-bottom: 1.5rem;
-    width: 78rem;
-    border-bottom: 2px solid black;
+    width: 100%;
+    border-bottom: 1px solid grey;
     margin-top: 1rem;
 }
 
 .description {
   min-height: 10rem;
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid black;
   margin-top: 1rem;
 }
 
@@ -51,12 +51,15 @@ a {
 
 .container-top .members {
   margin-right: 3rem;
+  width: 50%;
 }
 
 .container-top .pdf-viewer {
     width: 60%;
     padding-inline: 1rem;
 }
+
+
 
 .container-top .status-log {
   position: relative;

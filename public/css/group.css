@@ -1,13 +1,14 @@
 .container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
   margin-left: 250px;
+  margin-right:3%;
 }
 
 .header {
-  border-bottom: 2px solid grey;
-  width: 78rem;
+  border-bottom: 1px solid grey;
+  width: 100%;
   margin-bottom: 1.5rem;
 }
 
@@ -50,7 +51,7 @@
 }
 
 .card-container {
-  flex-basis: 45%;
+  flex-basis: 35%;
 }
 
 .filter-card {
