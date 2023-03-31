@@ -16,7 +16,11 @@
     <% if(group) { %>
     <div class="container">
         <div class="header">
+            <% if(group.capstoneTitle) { %>
             <h1><%= group.capstoneTitle %></h1>
+            <% } else { %>
+            <h1 class="gray-texts">No title yet</h1>
+            <% } %>
         </div>
         <div class="container-top">
             <div class="members">
@@ -25,14 +29,16 @@
                     <% members.forEach(member => { %>
                     <p><%= member.firstName + ' ' + member.lastName %></p>
                     <% }) %>
-                <% } %>
+                <% } else { %>
+                    <p class="gray-texts">No members yet</p>
+                    <% } %>
             </div>
             <div class="adviser">
                 <h4>Adviser</h4>
                 <% if(adviser) { %>
                     <p><%= adviser.firstName + ' ' + adviser.lastName %></p>
                   <% } else { %>
-                    <p>No Adviser Yet</p>
+                    <p class="gray-texts">No Adviser Yet</p>
                   <% } %>
                   
                   
@@ -68,6 +74,8 @@
                     </div>
                     <% } %>
                 <% }) %>
+            <% } else { %>
+                <p class="gray-texts">No submissions yet</p>
             <% } %>
         </div>
     </div>

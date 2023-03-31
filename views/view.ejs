@@ -16,6 +16,7 @@
     <div class="container">
       <div class="header">
         <% if(role == "Faculty") { %>
+          <% if(subGrp.capstoneTitle) { %>
           <h1><%= subGrp.capstoneTitle %></h1>
           <% } %>
           <% if(role == "Student") { %>

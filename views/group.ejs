@@ -117,8 +117,8 @@
                         </form>
                       <% } %>
                       <% if(role == "Faculty" && !group[i].adviserId) { %>
-                        <form action="/faculty/activities/roles" method="POST">
-                          <button value="technical-adviser" name="role">Become Technical Adviser</button>
+                        <form action="/faculty/activities/roles" method="POST" onsubmit="return confirmation();">
+                          <button value="technical-adviser" name="role" id="secondary-button">Become Technical Adviser</button>
                           <input type="hidden" value="<%= group[i].id %>" name="groupId">
                           <input type="hidden" value="<%= group[i].section %>" name="groupSection">
                         </form>
@@ -154,6 +154,17 @@
             }
         });
         }
+
+    function confirmation() {
+      if (confirm("Are you sure you want to become this group's technical adviser?")) {
+        // If the user clicks "OK", return true to submit the form
+        return true;
+      } else {
+        // If the user clicks "Cancel", prevent the form submission
+        event.preventDefault();
+        return false;
+      }
+    }
 
     </script>
 

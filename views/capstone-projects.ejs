@@ -16,7 +16,11 @@
         <% for (let i = 0; i < submissions.length; i++) { %>
                 <article class="card">
                   <div class="form-control card-header">
-                    <h1 class="form__title"><%= submissions[i].title %></h1>
+                    <% if(!submissions[i].title) { %>
+                      <h1 class="form__title">No title yet</h1>
+                      <% } else { %>
+                        <h1 class="form__title"><%= submissions[i].title %></h1>
+                    <% } %>
                   </div>
                   <div class="form-control">
                     <h4>Status: <%= submissions[i].status %></h4>
@@ -28,7 +32,6 @@
                     <% if(role === "Faculty") { %>
                     <button>Approve</button>
                     <% } %>
-                    <a onclick="toggleIframe(<%= i %>)">View</a>
                   </div>
                 </article>
         <% } %>

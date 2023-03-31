@@ -18,7 +18,11 @@
       <% groups.forEach((group, i) => { %>
         <article class="card">
           <div class="form-control card-header">
+            <% if(group.capstoneTitle) { %>
             <h1 class="form__title"><%= group.capstoneTitle %></h1>
+            <% } else { %>
+            <p class="gray-texts">No title yet</p>
+            <% } %>
           </div>
           <div class="form-control">
             <p>Group name: </p>
@@ -26,7 +30,11 @@
           </div>
           <div class="form-control">
             <p>Adviser: </p>
+            <% if(adviser[i]) { %>
             <h4><%= adviser[i] && adviser[i].firstName + ' ' + adviser[i].lastName %></h4>
+            <% } else { %>
+            <p class="gray-texts">No adviser yet</p>
+            <% } %>
           </div>
           <div class="form-control">
             <p>Section: </p>

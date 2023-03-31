@@ -54,4 +54,7 @@ body {
     padding: 5px 5px;
 }
 
-
+.gray-texts {
+    color: gray;
+    font-style: italic;
+}

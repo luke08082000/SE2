@@ -22,7 +22,7 @@
             <div class="column-headers">
                 <h3>List of Faculty Members with Role</h3>
             </div>
-        <form action="/faculty/activities/remove" method="POST">
+        <form action="/faculty/activities/remove" method="POST" id="remove-role-form" onsubmit="return confirmRemove();">
             <% if(facultyMembers.length > 0) { %>
             <% facultyMembers.forEach((member, i) => { %>
                 <div class="item-container">
@@ -40,7 +40,6 @@
                         <button value="<%= userFaculty[i].id %>" name="facultyId" type="submit" class="remove-buttons">Remove</button>
                     </div>
                 </div>
-                
                 <br>
                 <% }) %>
             <% } %>
@@ -76,7 +75,7 @@
                 <div class="form-control">
                   <h4>Course Department Chair</h4>
                   <input type="text" name="userId" class="input-boxes">
-                  <button value="course-department-chair" name="role" type="submit" class="submit-buttons" >Submit</button>
+                  <button value="course-department-chair" name="role" type="submit" class="submit-buttons">Submit</button>
                 </div>
             <div class="form-control">
                 <h4>Course Coordinator</h4>
@@ -104,5 +103,18 @@
     </div>
     </div>
 </div>
+
+<script>
+    function confirmRemove() {
+      if (confirm("Are you sure you want to remove this faculty member?")) {
+        // If the user clicks "OK", return true to submit the form
+        return true;
+      } else {
+        // If the user clicks "Cancel", prevent the form submission
+        event.preventDefault();
+        return false;
+      }
+    }
+  </script>
 
 </body>

@@ -19,18 +19,18 @@
           <% if(role == "Faculty" && isBatchActive == false) { %>
             <div class="card">
               <h4>Create Batch:</h4>
-              <form action="/faculty/home" method="POST">
-                <input type="text" name="name">
-                <button type="submit" name="button" value="start" id="batch-button">Start</button>
+              <form action="/faculty/home" method="POST" id="batch-form-start">
+                <input type="text" name="name" class="input-boxes" required>
+                <button type="submit" name="button" value="start" class="green-button">Start</button>
               </form>
             </div>
           <% } %>
           <% if(role == "Faculty" && isBatchActive == true) { %>
             <div class="card">
-              <form action="/faculty/home" method="POST">
+              <form action="/faculty/home" method="POST" id="batch-form-stop" onsubmit="return confirmRemove();">
                 <h4>Current Batch:</h4>
                 <p><%= batchName %></p>
-                <button type="submit" name="button" value="stop">Stop</button>
+                <button type="submit" name="button" value="stop" class="red-button">Stop</button>
               </form>
             </div>
           <% } %>
@@ -60,5 +60,18 @@
         </div>
       </div>
     </div>
+
+    <script>
+      function confirmRemove() {
+        if (confirm("Are you sure you want to end the current batch?")) {
+          // If the user clicks "OK", return true to submit the form
+          return true;
+        } else {
+          // If the user clicks "Cancel", prevent the form submission
+          event.preventDefault();
+          return false;
+        }
+      }
+    </script>
 </body>
 </html>
