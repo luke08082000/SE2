@@ -72,6 +72,10 @@ a {
   color: green;
 }
 
+.gray-texts {
+  color: gray;
+  font-style: italic;
+}
 
 .bold-texts {
   font-weight: bold;

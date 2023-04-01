@@ -62,36 +62,46 @@ exports.getSubmit = (req, res) => { // should only output forms that the group h
 };
   
 exports.postSubmit = (req, res) => {
-        const role = req.session.user.role;
-        const filePath = req.file.path.substring(6) // to exclude public folder
-        const fileName = req.file.filename;
-        const formId = req.body.formId;
-        const title = req.body.formTitle;
-        const email = req.session.user.email;
+  const formId = req.body.formId;
+  const role = req.session.user.role;
+      if (!req.file) {
+        res.status(400).req.flash('error', 'No file was uploaded')
+        return res.redirect(`/student/activities/form/view/${formId}`);
+      }
+      if (req.file.mimetype !== 'application/pdf') {
+        res.status(400).req.flash('error', 'Only PDF files are allowed')
+        console.log(req.file.mimetype);
+        return res.redirect(`/student/activities/form/view/${formId}`);
+      } 
+      const filePath = req.file.path.substring(6) // to exclude public folder
+      const fileName = req.file.filename;
+      const title = req.body.formTitle;
+      const email = req.session.user.email;
+      
+      batchPromise.then(activeBatch => {
+        UserStudent.findOne({ where : { userId: req.session.user.id }})
+      .then(student => {
+          SubmissionForm.findByPk(formId)
+          .then(submission => {
+              Submission.create ({ 
+                  fileName: fileName,
+                  filePath: filePath,
+                  status: 'pending',
+                  submittedBy: email,
+                  userId: student.userId,
+                  submissionId: formId,
+                  groupId: student.groupId,
+                  title: title,
+                  version: 1,
+                  batchId: activeBatch.id
+              })
+              res.redirect('/student/activities/monitor');
+          })
+      })
+      .catch(err => console.log(err))
+      })
+    }
 
-        batchPromise.then(activeBatch => {
-          UserStudent.findOne({ where : { userId: req.session.user.id }})
-        .then(student => {
-            SubmissionForm.findByPk(formId)
-            .then(submission => {
-                Submission.create ({ 
-                    fileName: fileName,
-                    filePath: filePath,
-                    status: 'pending',
-                    submittedBy: email,
-                    userId: student.userId,
-                    submissionId: formId,
-                    groupId: student.groupId,
-                    title: title,
-                    version: 1,
-                    batchId: activeBatch.id
-                })
-                res.redirect('/student/activities/monitor');
-            })
-        })
-        .catch(err => console.log(err))
-        })
-}
 
 exports.getFormView = (req, res) => {
     const role = req.session.user.role;
@@ -110,7 +120,8 @@ exports.getFormView = (req, res) => {
               res.render('formView', {
                   role: role,
                   form: form,
-                  forms: forms
+                  forms: forms,
+                  messages: req.flash('error')
               })
             }
           })
@@ -177,8 +188,6 @@ exports.getMonitorView = (req, res) => {
   
                 Promise.all([Promise.all(statusPromises), Promise.all(commentPromises), revisionPromises, groupPromise, formPromise])
                   .then(([usersApprove, usersComment, revisions, group, form]) => {
-                    //console.log(JSON.stringify(usersApprove, null, 2));
-                    //console.log('User commented ' + JSON.stringify(usersComment, null, 2));
                     return res.render('view', {
                       submission: submission,
                       form: form,

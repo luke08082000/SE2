@@ -16,7 +16,9 @@
       </div>
       <div class="row">
         <div class="column">
-          <% if(role == "Faculty" && isBatchActive == false) { %>
+          <% if(role == 'Faculty') { %>
+          <% if(adminUser) { %>
+          <% if(isBatchActive == false) { %>
             <div class="card">
               <h4>Create Batch:</h4>
               <form action="/faculty/home" method="POST" id="batch-form-start">
@@ -25,7 +27,7 @@
               </form>
             </div>
           <% } %>
-          <% if(role == "Faculty" && isBatchActive == true) { %>
+          <% if(isBatchActive == true) { %>
             <div class="card">
               <form action="/faculty/home" method="POST" id="batch-form-stop" onsubmit="return confirmRemove();">
                 <h4>Current Batch:</h4>
@@ -33,6 +35,8 @@
                 <button type="submit" name="button" value="stop" class="red-button">Stop</button>
               </form>
             </div>
+          <% } %>
+          <% } %>
           <% } %>
           <div class="card">
             <h4>First Name:</h4>

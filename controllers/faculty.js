@@ -12,23 +12,29 @@ const Batch = require('../models/batch');
 
 
 exports.getHome = (req, res) => {
+    const AdminUserPromise = UserFaculty.findOne({ where: { userId: req.session.user.id, role: 'course-department-chair' } });
     const BatchPromise = Batch.findOne({ where: { isActive: true }});
     const role = req.session.user.role;
     const firstName = req.session.user.firstName;
     const lastName = req.session.user.lastName;
     const email = req.session.user.email;
     
-    BatchPromise.then(activeBatch => {
+      AdminUserPromise.then(admin => {
+      BatchPromise.then(activeBatch => {
       res.render('home', {
         role: role,
         firstName: firstName,
         lastName: lastName,
         email: email,
+        adminUser: (admin !== null) ? true : false,
         batchName: activeBatch ? activeBatch.name : 'No active batch',
         isBatchActive: activeBatch && activeBatch.isActive ? true : false
 
       })
     })
+    })
+
+
     
     
 };
