@@ -38,6 +38,17 @@ const fileStorage = multer.diskStorage({
     }
 })
 
+const upload = multer({
+    storage: fileStorage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Only PDF files are allowed'));
+        }
+    },
+});
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({storage: fileStorage}).single('file'));
 app.use(express.static(path.join(__dirname, 'public')));

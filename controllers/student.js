@@ -8,6 +8,8 @@ const Status = require('../models/status');
 const Comment = require('../models/comment');
 const Batch = require('../models/batch');
 
+const fs = require('fs');
+
 const batchPromise = Batch.findOne({ where: { isActive: true }})
 
 exports.getHome = (req, res) => {
@@ -71,8 +73,13 @@ exports.postSubmit = (req, res) => {
       if (req.file.mimetype !== 'application/pdf') {
         res.status(400).req.flash('error', 'Only PDF files are allowed')
         console.log(req.file.mimetype);
+        // delete the uploaded file
+        fs.unlink(req.file.path, (err) => {
+          if (err) throw err;
+          console.log('File deleted');
+        });
         return res.redirect(`/student/activities/form/view/${formId}`);
-      } 
+      }
       const filePath = req.file.path.substring(6) // to exclude public folder
       const fileName = req.file.filename;
       const title = req.body.formTitle;
