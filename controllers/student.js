@@ -7,8 +7,8 @@ const UserFaculty = require('../models/userFaculty');
 const Status = require('../models/status');
 const Comment = require('../models/comment');
 const Batch = require('../models/batch');
-
 const fs = require('fs');
+
 
 const batchPromise = Batch.findOne({ where: { isActive: true }})
 
@@ -17,12 +17,14 @@ exports.getHome = (req, res) => {
     const firstName = req.session.user.firstName;
     const lastName = req.session.user.lastName;
     const email = req.session.user.email;
+    verification = req.session.user.emailVerified;
     
     res.render('home', {
         role: role,
         firstName: firstName,
         lastName: lastName,
-        email: email
+        email: email,
+        verification: verification
     })
 };
 

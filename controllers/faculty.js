@@ -18,6 +18,7 @@ exports.getHome = (req, res) => {
     const firstName = req.session.user.firstName;
     const lastName = req.session.user.lastName;
     const email = req.session.user.email;
+    const verification = req.session.user.emailVerified;
     
       AdminUserPromise.then(admin => {
       BatchPromise.then(activeBatch => {
@@ -28,7 +29,9 @@ exports.getHome = (req, res) => {
         email: email,
         adminUser: (admin !== null) ? true : false,
         batchName: activeBatch ? activeBatch.name : 'No active batch',
-        isBatchActive: activeBatch && activeBatch.isActive ? true : false
+        isBatchActive: activeBatch && activeBatch.isActive ? true : false,
+        verification: verification
+
 
       })
     })

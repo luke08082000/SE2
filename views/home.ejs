@@ -55,11 +55,13 @@
           <div class="card">
             <h4>Email:</h4>
             <p><%= email %></p>
+            <% if(verification == 'verified') { %>
             <p><a href="/auth/change-email">Update Email</a></p>
           </div>
           
           <div class="card">
             <p><a href="/auth/change-password">Change Password</a></p>
+          <% } %>
           </div>
         </div>
       </div>
