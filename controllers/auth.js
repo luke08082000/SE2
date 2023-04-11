@@ -90,6 +90,7 @@ exports.postRegister = (req, res, next) => {
     const confirmPassword = req.body.confirmPassword;
     const role = req.body.role;
     const section = req.body.section;
+    const employeeId = req.body.employeeId;
 
     console.log('this is the role: ' + role);
     User.findOne({ where: { email: email } })
@@ -144,7 +145,8 @@ exports.postRegister = (req, res, next) => {
                 role: role,
                 password: hashedPassword,
                 emailVerified: 'unverified',
-                token: token
+                token: token,
+                employee_id: role == 'faculty' ? employeeId : 0
         })
         return user.save();
         })

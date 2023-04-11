@@ -35,6 +35,7 @@ const User = sequelize.define('user', {
         values: ['unverified', 'verified'],
         defaultValue: 'unverified'
     },
+    employee_id: Sequelize.INTEGER,
     token: Sequelize.STRING
 })
 

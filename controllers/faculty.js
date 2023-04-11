@@ -403,7 +403,7 @@ exports.postRole = (req, res) => {
 
 
     if (roleChosen === 'technical-adviser') {
-      UserFaculty.create({ userId: currentUser.id, role: 'technical-adviser', section: 'all'}, { returning: true })
+      UserFaculty.create({ userId: currentUser.employee_id, role: 'technical-adviser', section: 'all'}, { returning: true })
         .then(createdFaculty => { 
           Group.findByPk(groupId)
             .then(group => {
@@ -413,7 +413,7 @@ exports.postRole = (req, res) => {
         })
     }
     
-    User.findOne({ where: { role: "Faculty", id: userId } })
+    User.findOne({ where: { role: "Faculty", employee_id: userId } })
     .then(user => {
         UserFaculty.findAll()
         .then(userFaculties => {
@@ -434,6 +434,7 @@ exports.postRole = (req, res) => {
             } else {
             UserFaculty.create({ 
                 userId: user.id,
+                employee_id: userId,
                 role: roleChosen,
                 section: roleChosen === 'course-facilitator' ? sectionChosen : 'all'
             })
