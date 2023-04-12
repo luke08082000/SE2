@@ -16,6 +16,10 @@ const UserFaculty = sequelize.define('user-faculty', {
     section: {
         type: Sequelize.STRING,
         defaultValue: 'all'
+    },
+    track: {
+        type: Sequelize.STRING,
+        defaultValue: 'n/a'
     }
 })
 

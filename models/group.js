@@ -12,7 +12,8 @@ const Group = sequelize.define('group', {
     name: Sequelize.STRING,
     capstoneTitle: Sequelize.STRING(500),
     section: Sequelize.STRING,
-    adviserId: Sequelize.INTEGER
+    adviserId: Sequelize.INTEGER,
+    track: Sequelize.STRING
 })
 
 module.exports = Group;

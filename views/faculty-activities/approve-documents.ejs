@@ -36,7 +36,11 @@
       <% for (let i = 0; i < submissions.length; i++) { %>
           <% if (submissions[i].status !== null && submissions[i].status !== 'approved') { %>
             <% if(submissions[i].batchId == activeBatchId && submissions[i].version == 1) { %>
-            <article class="card section">
+            <% let cardRendered = false %> <!-- filters out duplicates -->
+            <% faculty.forEach(member => { %>
+              <% if(member.role == 'course-department-chair' || member.role == 'course-coordinator' || (member.role == 'course-facilitator' && member.section == groups[i].section) || (member.role == 'technical-adviser' && member.id == groups[i].adviserId) || (member.role == 'track-head' && member.track == groups[i].track)) { %><!-- filter  -->
+              <% if(!cardRendered) { %>
+              <article class="card section">
               <div class="form-control card-header">
                 <h1 class="form__title"><%= submissions[i].title %></h1>
               </div>
@@ -55,9 +59,12 @@
                   <button>View</button>
                 </form>
                 <% } %>
-                <!-- <a onclick="toggleIframe(<%= i %>)">View</a> -->
               </div>
             </article>
+            <% cardRendered = true %>
+              <% } %>
+              <% } %>
+            <% }) %>
             <% } %>
         <% } %>
       <% } %>

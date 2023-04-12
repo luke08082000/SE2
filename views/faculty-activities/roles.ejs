@@ -32,9 +32,11 @@
                    <div class="role gray-texts">
                     <% if (userFaculty[i].role == 'course-facilitator') { %>
                         <p><%= userFaculty[i].role.toUpperCase() + ' ' + userFaculty[i].section.toUpperCase() %></p>
-                        <% } else { %>
-                            <p><%= userFaculty[i].role.toUpperCase() %></p>
-                        <% } %>
+                    <% } else if(userFaculty[i].role == 'track-head') { %>
+                            <p><%= userFaculty[i].role.toUpperCase() + ' ' + userFaculty[i].track.toUpperCase() %></p>
+                    <% } else { %>
+                        <p><%= userFaculty[i].role.toUpperCase() %></p>
+                    <% } %>
                     </div>
                     <div class="remove-button">
                         <button value="<%= userFaculty[i].id %>" name="facultyId" type="submit" class="remove-buttons">Remove</button>
@@ -95,6 +97,11 @@
             <div class="form-control">
                 <h4>Track Head</h4>
                 <input type="text" name="userId" class="input-boxes">
+                <label for="section">Track:</label>
+                <select name="track" id="section" class="input-boxes">
+                  <option value="ba">BA</option>
+                  <option value="sm">SM</option>
+                </select>
                 <button value="track-head" name="role" type="submit" class="submit-buttons">Submit</button>
             </div>
             </div>

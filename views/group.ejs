@@ -24,6 +24,11 @@
               <form action="/faculty/group" method="POST">
                 <div class="form-control">
                   <input type="text" class="form-control" id="name" name="name" placeholder="Group Name" required>
+                  <label for="section">Track</label>
+                  <select name="track" id="section" class="input-boxes">
+                    <option value="ba">BA</option>
+                    <option value="sm">SM</option>
+                  </select>
                 </div>
                 <div class="form-control">
                   <button>Add Group</button>
@@ -82,8 +87,8 @@
                       <% } %>
                     </div>
                      <div class="group-columns">
-                      <p>Section</p>
-                      <h4><%= group[i].section.toUpperCase() %></h4>
+                      <p>Section / Track</p>
+                      <h4><%= group[i].section.toUpperCase() %> / <%= group[i].track.toUpperCase() %></h4>
                      </div>   
                     <div class="group-columns">
                       <p>Technical Adviser:</p>

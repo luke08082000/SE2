@@ -72,26 +72,30 @@ exports.postBatch = (req, res) => {
 
 exports.getApproveDocuments = (req, res) => {
     const BatchPromise = Batch.findOne({ where: { isActive: true }}); 
+    const FacultyPromise = UserFaculty.findAll({ where: { userId: req.session.user.id } });
     const role = req.session.user.role;
     const userGroup = req.session.user.groupId;
     const currentUser = req.session.user;
     const groupId = req.body.groupId
 
   BatchPromise.then(activeBatch => {
-    Submission.findAll()
-    .then(submissions => {
-      const groupsPromises = submissions.map(submission => {
-        return Group.findByPk(submission.groupId)
-      })
-      Promise.all(groupsPromises).then(groups => {
-        res.render('faculty-activities/approve-documents', {
-          submissions: submissions,
-          userGroup: userGroup,
-          role: role,
-          currentUser: currentUser,
-          groups: groups,
-          activeBatchId: activeBatch ? activeBatch.id : 0
-      });
+    FacultyPromise.then(faculty => {
+      Submission.findAll()
+      .then(submissions => {
+        const groupsPromises = submissions.map(submission => {
+          return Group.findByPk(submission.groupId)
+        })
+        Promise.all(groupsPromises).then(groups => {
+          res.render('faculty-activities/approve-documents', {
+            submissions: submissions,
+            userGroup: userGroup,
+            role: role,
+            currentUser: currentUser,
+            groups: groups,
+            faculty: faculty,
+            activeBatchId: activeBatch ? activeBatch.id : 0
+        });
+        })
       })
     })
     .catch(err => console.log(err))
@@ -400,6 +404,7 @@ exports.postRole = (req, res) => {
     const sectionChosen = req.body.section;
     const groupId = req.body.groupId;
     const currentUser = req.session.user
+    const track = req.body.track;
 
 
     if (roleChosen === 'technical-adviser') {
@@ -423,7 +428,11 @@ exports.postRole = (req, res) => {
                 console.log('role is already taken by userFaculty: ' + userFaculty.userId)
                 roleTaken = true;
             }
-                const possibleRoles = ['course-department-chair', 'course-coordinator', 'track-head', 'technical-adviser'];
+            if(roleChosen === 'track-head' && userFaculty.role === 'track-head' && userFaculty.track === track) {
+              console.log('role is already taken by userFaculty: ' + userFaculty.userId)
+              roleTaken = true;
+          }
+                const possibleRoles = ['course-department-chair', 'course-coordinator', 'technical-adviser'];
                 if(userFaculty.role === roleChosen && possibleRoles.includes(roleChosen)) {
                     console.log('role is already taken by: ' + user.email)
                     roleTaken = true;
@@ -436,7 +445,8 @@ exports.postRole = (req, res) => {
                 userId: user.id,
                 employee_id: userId,
                 role: roleChosen,
-                section: roleChosen === 'course-facilitator' ? sectionChosen : 'all'
+                section: roleChosen === 'course-facilitator' ? sectionChosen : 'all',
+                track: roleChosen === 'track-head' ? track : 'n/a'
             })
             .then(result => {
                 console.log('new user-faculty created with role: ' + roleChosen)
@@ -584,12 +594,14 @@ exports.postGroup = (req, res) => {
   const BatchPromise = Batch.findOne({ where: { isActive: true }});
         const section = req.body.section;
         const name = req.body.name;
+        const track = req.body.track;
 
         BatchPromise.then(activeBatch => {
           Group.create({
             section: section,
             name: name,
-            batchId: activeBatch.id
+            batchId: activeBatch.id,
+            track: track
         })
         .then(group => {
             console.log('new group created');
