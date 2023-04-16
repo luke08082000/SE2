@@ -9,7 +9,12 @@ const UserStudent = sequelize.define('user-student', {
         allowNull: false,
         primaryKey: true
     },
-    section: Sequelize.STRING
+    section: Sequelize.STRING,
+    role: {
+        type: Sequelize.ENUM,
+        values: ['project-manager', 'quality-assurance', 'front-end-developer', 'back-end-developer']
+    },
+    studentId: Sequelize.INTEGER
 })
 
 module.exports = UserStudent;

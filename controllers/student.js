@@ -130,6 +130,7 @@ exports.getFormView = (req, res) => {
                   role: role,
                   form: form,
                   forms: forms,
+                  student: student,
                   messages: req.flash('error')
               })
             }
@@ -221,25 +222,35 @@ exports.getMonitorView = (req, res) => {
 exports.getArchiveView = (req, res) => {
   const role = req.session.user.role;
   const groupId = req.params.id;
+  const currentStudent = UserStudent.findOne({ where: { userId: req.session.user.id }});
 
   Group.findByPk(groupId).then(group => {
    UserStudent.findAll({ where: { groupId: group.id } }).then(members => {
       const membersPromise = members.map(member => { //returns user info for every member
         return User.findByPk(member.userId)
       })
+    const allMembers = UserStudent.findAll({ where: { groupId: group.id }});
+
       UserFaculty.findByPk(group.adviserId).then(adviser => { //returns info for adviser
         const adviserPromise = adviser?.userId ? User.findByPk(adviser.userId) : Promise.resolve(null);
         const submissionsPromise = Submission.findAll({ where: { groupId: group.id }});// returns all submissions from group
 
-          Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
-            res.render('archiveView', {
-            role: role,
-            group: group,
-            members: members,
-            adviser: adviser ?? 'No adviser yet',
-            submissions: submissions
-            })
+      allMembers.then(allMembers => {
+        currentStudent.then(student => {
+                Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
+                    res.render('archiveView', {
+                    role: role,
+                    group: group,
+                    members: members,
+                    adviser: adviser ?? 'No adviser yet',
+                    submissions: submissions,
+                    student: student,
+                    allMembers: allMembers
+                    })
+                })
           })
+      })
+     
           .catch(e => console.log(e))
         })
         .catch(e => console.log(e))
@@ -371,8 +382,6 @@ exports.getGroup = (req, res) => {
                 }
               })
           });
-          
-
           // Wait for all promises to resolve
           Promise.all([...techAdvPromises, ...groupMembers])
             .then(results => {
@@ -404,6 +413,29 @@ exports.getGroup = (req, res) => {
     .catch(err => console.log(err));
 }
 
+exports.postRole = (req, res) => {
+  const role = req.body.role;
+  const studentId = req.body.studentId;
+  const groupId = req.body.groupId;
+
+  UserStudent.findOne({ where: { studentId: studentId} }).then(student => {
+    if(role == 'project-manager') {
+      UserStudent.findAll({ where: { groupId: groupId }}).then(members => {
+        members.forEach(member => {
+          if(member.role == 'project-manager') {
+            console.log('Group already has a project manager!')
+            return res.redirect('/student/group')
+          }
+        })
+      })
+      
+    }
+    student.update({ role: role })
+    student.save()
+    res.redirect('/student/group')
+  })
+  .catch(err => console.log(err))
+}
 
 exports.postGroup = (req, res) => {
     const groupId = req.body.groupId;

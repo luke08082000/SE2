@@ -33,6 +33,7 @@ button {
 
 .container-top {
     display: flex;
+    justify-content: space-between;
     padding-bottom: 1.5rem;
     width: 100%;
     border-bottom: 1px solid grey;
@@ -49,10 +50,7 @@ a {
   text-decoration: none;
 }
 
-.container-top .members {
-  margin-right: 3rem;
-  width: 50%;
-}
+
 
 .container-top .pdf-viewer {
     width: 60%;

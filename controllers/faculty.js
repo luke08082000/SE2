@@ -497,25 +497,35 @@ exports.getCapstoneProjects = (req, res) => {
 exports.getArchiveView = (req, res) => {
   const role = req.session.user.role;
   const groupId = req.params.id;
+  const currentStudent = UserStudent.findOne({ where: { userId: req.session.user.id }});
 
   Group.findByPk(groupId).then(group => {
    UserStudent.findAll({ where: { groupId: group.id } }).then(members => {
       const membersPromise = members.map(member => { //returns user info for every member
         return User.findByPk(member.userId)
       })
+    const allMembers = UserStudent.findAll({ where: { groupId: group.id }});
+
       UserFaculty.findByPk(group.adviserId).then(adviser => { //returns info for adviser
         const adviserPromise = adviser?.userId ? User.findByPk(adviser.userId) : Promise.resolve(null);
         const submissionsPromise = Submission.findAll({ where: { groupId: group.id }});// returns all submissions from group
 
-          Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
-            res.render('archiveView', {
-            role: role,
-            group: group,
-            members: members,
-            adviser: adviser ?? 'No adviser yet',
-            submissions: submissions
-            })
+      allMembers.then(allMembers => {
+        currentStudent.then(student => {
+                Promise.all([Promise.all(membersPromise), submissionsPromise, adviserPromise]).then(([members, submissions, adviser]) => {
+                    res.render('archiveView', {
+                    role: role,
+                    group: group,
+                    members: members,
+                    adviser: adviser ?? 'No adviser yet',
+                    submissions: submissions,
+                    student: student,
+                    allMembers: allMembers
+                    })
+                })
           })
+      })
+     
           .catch(e => console.log(e))
         })
         .catch(e => console.log(e))

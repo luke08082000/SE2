@@ -36,7 +36,7 @@
                 <% } %>
             <% } %>
         </div>
-            <% if(role == 'Student') { %>
+            <% if(role == 'Student' && student.role == 'project-manager') { %>
             <form action="/student/activities/submit" method="POST" enctype="multipart/form-data">
                 <div class="form-control upload-file">
                     <p>Upload your file</p>

@@ -58,3 +58,16 @@ body {
     color: gray;
     font-style: italic;
 }
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.flex #id {
+    margin-right: 0.5rem;
+}
+
+.flex #role {
+    margin-left: 0.5rem;
+}
