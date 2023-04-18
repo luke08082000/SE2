@@ -139,7 +139,6 @@ exports.postRegister = (req, res, next) => {
         return bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
-            console.log(studentId);
             const user = new User({
                 firstName: firstName,
                 lastName: lastName,
@@ -148,8 +147,8 @@ exports.postRegister = (req, res, next) => {
                 password: hashedPassword,
                 emailVerified: 'unverified',
                 token: token,
-                employee_id: role == 'faculty' ? employeeId : 0,
-                studentId: role == 'student' ? studentId : 0
+                employee_id: role == 'faculty' ? employeeId : 0
+
         })
         return user.save();
         })
@@ -158,7 +157,8 @@ exports.postRegister = (req, res, next) => {
             if(user.role == "student") {
                 UserStudent.create({
                     userId: user.id,
-                    section: section
+                    section: section,
+                    studentId: studentId
                 })
             }
             var message = {
