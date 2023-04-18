@@ -49,7 +49,7 @@
                 <% if (status.length > 0) { %>
                   <% status.forEach((status, index) => { %>
                     <div class="status-entry">
-                      <span class="log-entries"><span class="green-texts">Approved: </span><%= usersApprove[index].user.firstName + ' ' + usersApprove[index].user.lastName %> as <span class="bold-texts"><%= usersApprove[index].role %></span></span>
+                      <span class="log-entries"><span class="<%= status.status == 'approved' ? 'green-texts' : 'red-texts' %>"><%= status.status.toUpperCase() + ":" %> </span><%= usersApprove[index].user.firstName + ' ' + usersApprove[index].user.lastName %> as <span class="bold-texts"><%= usersApprove[index].role %></span></span>
                     </div>
                   <% }) %>
                 <% } else { %>
@@ -58,26 +58,44 @@
               </div>
               <div class="buttons">
                 <% if (role == 'Faculty') { %>
+                  <button id="openModalBtn">Create Feedback</button>
+                  <!-- <button value="approved" name="statusChosen">Approve</button> -->
+
                   <form action="/faculty/activities/approve-documents" method="POST">
-                    <label for="roleChosen">Pick role: </label>
-                      <select name="roleChosen" id="roleChosen" class="select-box">
-                        <% if(rolesTaken) { %>
-                          <% rolesTaken.forEach((role, i) => { %>
-                              <% if (role !== 'course-facilitator' && role !== 'technical-adviser' ) { %>
-                                <option value="<%= role %>"><%= role %></option>
-                              <% } %>
-                              <% if (role == 'course-facilitator' && subGrp.section == section ) { %>
-                                <option value="<%= role %>"><%= role %></option>
-                              <% } %>
-                              <% if (role == 'technical-adviser' && subGrp.adviserId == facultyId[i] ) { %>
-                                <option value="<%= role %>"><%= role %></option>
-                              <% } %>
-                          <% }) %>
-                        <% } %>
-                      </select>
-                    <button value="approved" name="statusChosen">Approve</button>
-                    <input type="hidden" value="<%= submission.id %>" name="submissionId">
-                  </form>
+                    <div id="myModal" class="modal">
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2>Create Feedback</h2>
+                        <label for="roleChosen">Pick role: </label>
+                        <select name="roleChosen" id="roleChosen" class="select-box">
+                          <% if(rolesTaken) { %>
+                            <% rolesTaken.forEach((role, i) => { %>
+                                <% if (role !== 'course-facilitator' && role !== 'technical-adviser' ) { %>
+                                  <option value="<%= role %>"><%= role %></option>
+                                <% } %>
+                                <% if (role == 'course-facilitator' && subGrp.section == section ) { %>
+                                  <option value="<%= role %>"><%= role %></option>
+                                <% } %>
+                                <% if (role == 'technical-adviser' && subGrp.adviserId == facultyId[i] ) { %>
+                                  <option value="<%= role %>"><%= role %></option>
+                                <% } %>
+                            <% }) %>
+                          <% } %>
+                        </select>
+                        <div class="radio">
+                          <input type="radio" name="decision" value="approved" checked> Approve<br>
+                          <input type="radio" name="decision" value="reject"> Reject<br>
+                        </div>
+                        <textarea id="comment" placeholder="Enter your comment" name="comment" rows="6"></textarea>
+                        <div>
+                        <button id="submitBtn">Submit</button>
+                        <input type="hidden" value="<%= submission.id %>" name="submissionId">
+                        <input type="hidden" value="<%= submission.version %>" name="submissionVersion">
+                        <input type="hidden" value="<%= currentUser.id %>" name="currentUserId">
+                        </div>
+                      </div>
+                    </div>
+                  </form> 
                 <% } %>
                 <% if (role == 'Student' && submission.status !== 'approved') { %>
                   <form action="/student/activities/revise" method="POST" enctype="multipart/form-data">
@@ -102,8 +120,8 @@
               <h2>Comments</h2>
               <% if (role == 'Faculty') { %>
                 <form action="/faculty/activities/post/comment" method="POST">
-                  <textarea name="comment" required placeholder="Write a comment"></textarea>
-                  <button type="submit">Submit</button>
+                  <!-- <textarea name="comment" required placeholder="Write a comment"></textarea> -->
+                  <!-- <button type="submit">Submit</button> -->
                   <input type="hidden" value="<%= submission.id %>" name="submissionId">
                   <input type="hidden" value="<%= submission.version %>" name="submissionVersion">
                   <input type="hidden" value="<%= currentUser.id %>" name="currentUserId">
@@ -112,7 +130,7 @@
               <div class="comments">
                 <% if (comments.length > 0) { %>
                   <% comments.forEach((comment, index) => { %>
-                    <div class="comment">
+                    <div class="comment <%= status[index].status == 'approved' ? 'green-comment' : 'red-comment' %> ">
                       <% const userComment = usersComment[index]; %>
                       <% if (userComment) { %>
                         <p>For version: <%= comment.forVersion %></p>
@@ -133,5 +151,43 @@
             </div>              
           </div>
     </div>
+
+    <script>
+      // Get the modal element
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("openModalBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks the button, open the modal 
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      // When the user clicks outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      // When the user clicks on the submit button, get the selected radio option and comment, and close the modal
+      var submitBtn = document.getElementById("submitBtn");
+      submitBtn.onclick = function() {
+        var decision = document.querySelector('input[name="decision"]:checked').value;
+        var comment = document.getElementById("comment").value;
+        console.log("Decision: " + decision + ", Comment: " + comment);
+        modal.style.display = "none";
+      }
+
+    </script>
 </body>
 </html>

@@ -11,7 +11,7 @@ const Status = sequelize.define('status', {
     },
     status: {
         type: Sequelize.ENUM,
-        values: ['approved', 'revise']
+        values: ['approved', 'reject']
     },
     submissionId: Sequelize.INTEGER,
     userFacultyId: Sequelize.INTEGER

@@ -139,6 +139,7 @@ exports.postRegister = (req, res, next) => {
         return bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
+            console.log(studentId);
             const user = new User({
                 firstName: firstName,
                 lastName: lastName,

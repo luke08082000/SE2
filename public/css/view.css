@@ -70,6 +70,19 @@ a {
   color: green;
 }
 
+.red-texts {
+  color: red;
+}
+
+.green-comment {
+  border: 1px solid rgb(187, 252, 187);
+  background-color: rgb(238, 255, 238);
+}
+.red-comment {
+  border: 1px solid rgb(249, 195, 195);
+  background-color: rgb(254, 234, 234);
+}
+
 .gray-texts {
   color: gray;
   font-style: italic;
@@ -152,7 +165,7 @@ a {
   }
   
   .comment-section .comment {
-    border: 1px solid #ccc;
+    
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
@@ -173,3 +186,52 @@ a {
   }
   
   
+  /* Modal */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); 
+  
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal #comment {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  margin-block: 1rem;
+}
+
+.radio {
+  margin-top: 1rem;
+}

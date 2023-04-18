@@ -106,8 +106,17 @@ exports.getApproveDocuments = (req, res) => {
 exports.postApproveDocuments = (req, res) => {
     const submissionId = req.body.submissionId;
     const roleChosen = req.body.roleChosen;
+    const comment = req.body.comment;
+    const submissionVersion = req.body.submissionVersion;
+    const decision = req.body.decision;
     UserFaculty.findOne({ where: { userId: req.session.user.id, role: roleChosen } })// palitan later to allow single users with multiple faculty roles
     .then(userFaculty => {
+      Comment.create({
+        comment: comment,
+        submissionId: submissionId,
+        userFacultyId: userFaculty.id,
+        forVersion: submissionVersion
+      })
         const role = userFaculty.role;
         Status.findOne({ where: { userFacultyId: userFaculty.id, submissionId: submissionId }}) //You can only approve a document once per role
         .then(status => {
@@ -115,7 +124,8 @@ exports.postApproveDocuments = (req, res) => {
                 console.log('You have already approved this document');
                 res.redirect(`/faculty/activities/view/${submissionId}`);
             } else {
-                const status = req.body.statusChosen;
+              console.log(decision);
+                const status = decision;
                 console.log(submissionId + ' is the submission id');
                 Status.create({ userFacultyId: userFaculty.id, submissionId: submissionId, status: status })
                   .then(() => {
@@ -123,30 +133,30 @@ exports.postApproveDocuments = (req, res) => {
                     Status.findAll({ where: { submissionId: submissionId } })
                       .then(statuses => {
                         let statusNum = 0;
-                        let hasRevise = false;
+                        let hasReject = false;
                         statuses.forEach(status => {
-                          if (status.status == 'revise') {
-                            hasRevise = true;
+                          if (status.status == 'reject') {
+                            hasReject = true;
                           }
                           if (status) {
                             statusNum++
                           }
                         }) 
                         console.log(statusNum + ' sdfsfdf')
-                        if (statusNum === 5 && !hasRevise) {
+                        if (statusNum === 5 && !hasReject) {
                           Submission.findOne({ where: { id: submissionId }})
                             .then(submission => {
                               submission.update({ status: 'approved' })
                               console.log(submission.status + ' is the new status')
                             })
                           console.log('All 5 statuses are approved');
-                        } else if (statusNum === 5 && hasRevise) {
+                        } else if (statusNum === 5 && hasReject) {
                           Submission.findOne({ where: { id: submissionId }})
                             .then(submission => {
-                              submission.update({ status: 'forRevision' })
+                              submission.update({ status: 'rejected' })
                               console.log(submission.status + ' is the new status')
                             })
-                          console.log('At least one of the 5 statuses is revise');
+                          console.log('At least one of the 5 statuses is reject');
                         } else {
                           console.log(5 - statusNum + ' more need/s to approve');
                         }
