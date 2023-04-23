@@ -16,6 +16,7 @@
         <h1>Archive</h1>
       </div>
       <% groups.forEach((group, i) => { %>
+        <% if(activeBatch == group.batchId) { %>
         <article class="card">
           <div class="form-control card-header">
             <% if(group.capstoneTitle) { %>
@@ -50,6 +51,7 @@
             </form>
           </div>
         </article>
+        <% } %>
         <% }) %>
       </div>
     <% } %>

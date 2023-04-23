@@ -493,12 +493,16 @@ exports.getCapstoneProjects = (req, res) => {
               })
           })
           Promise.all([Promise.all(groupBatchPromise), Promise.all(groupAdviserPromise)]).then(([groupBatch, groupAdviser]) => {
-            res.render('faculty-activities/capstone-projects', {
+            Batch.findOne({ where : { isActive: true }}).then(activeBatch => {
+                res.render('faculty-activities/capstone-projects', {
                 role: role,
                 groups: groups,
                 batch: groupBatch,
-                adviser: groupAdviser
+                adviser: groupAdviser,
+                activeBatch: activeBatch ? activeBatch.id : 0
             })
+            })
+
           })
         })
         .catch(err => console.log(err))
