@@ -28,11 +28,10 @@ exports.getHome = (req, res) => {
         lastName: lastName,
         email: email,
         adminUser: (admin !== null) ? true : false,
-        batchName: activeBatch ? activeBatch.name : 'No active batch',
+        batchStart: activeBatch ? (new Date(activeBatch.start)).getFullYear() : 'No active batch',
+        batchEnd: activeBatch ? (new Date(activeBatch.end)).getFullYear() : 'No active batch',
         isBatchActive: activeBatch && activeBatch.isActive ? true : false,
         verification: verification
-
-
       })
     })
     })
@@ -43,12 +42,13 @@ exports.getHome = (req, res) => {
 };
 
 exports.postBatch = (req, res) => {
-  const name = req.body.name;
+  const start = req.body.start;
+  const end = req.body.end;
   const button = req.body.button;
   const adminPromise = UserFaculty.findOne({ where: { role: 'course-department-chair' }});
 
   if(button == 'start') {
-    Batch.create({ name: name, isActive: true })
+    Batch.create({ start: start, end: end, isActive: true })
     .then(batch => {
       console.log('new batch created')
       Promise.all([adminPromise]).then(admin => { //updates admin's batchId 

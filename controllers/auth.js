@@ -123,8 +123,8 @@ exports.postRegister = (req, res, next) => {
                 })
             }
         }
-        if(password.length < 10) {
-            req.flash('error', 'Password must be atleast 10 characters long.')
+        if(password.length <= 8 || password.length >= 16) {
+            req.flash('error', 'Password must be 8 to 16 characters long.')
             if (role == 'faculty') {
                 return res.render('auth/faculty-register', {
                     errorMessage: req.flash('error')

@@ -42,7 +42,7 @@
           </div>
           <div class="form-control">
             <p>Batch: </p>
-            <h4><%= batch[i].name %></h4>
+            <h4><%= (new Date(batch[i].start)).getFullYear() %> - <%= (new Date(batch[i].end)).getFullYear() %></h4>
           </div>
           <div class="card-actions">
             <form action="/faculty/archive/view/<%= group.id %>" method="GET">

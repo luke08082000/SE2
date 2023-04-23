@@ -10,7 +10,9 @@ const Batch = sequelize.define('batch', {
         primaryKey: true
     },
     name: Sequelize.STRING,
-    isActive: Sequelize.BOOLEAN
+    isActive: Sequelize.BOOLEAN,
+    start: Sequelize.DATEONLY,
+    end: Sequelize.DATEONLY
 })
 
 module.exports = Batch;
