@@ -169,6 +169,7 @@ app.use(commonRoutes);
 sequelize.sync()
   .then(() => {
     console.log('Models synchronized with database.');
+    app.listen(3000);
   })
   .catch((err) => {
     console.error('Error synchronizing models:', err);
