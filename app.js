@@ -150,9 +150,7 @@ UserFaculty.hasMany(Comment, { foreignKey: 'userFacultyId' });
 Comment.belongsTo(UserFaculty, { foreignKey: 'userFacultyId' });
 
 //ROUTES
-app.use("/", (req, res) => {
-    res.send('Hello')
-})
+
 app.use(authRoutes);
 
 function handleRoutes(req, res, next) {
