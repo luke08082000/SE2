@@ -28,10 +28,8 @@ const commonRoutes = require('./routes/common');
 const app = express();
 
 app.use(express.json());
-app.use(cors());
-app.use(router);
 
-export default app;
+
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
