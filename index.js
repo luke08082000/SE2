@@ -53,19 +53,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({storage: fileStorage}).single('file'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-require('dotenv').config(); // Load environment variables from .env file
-
-// Access environment variables
-    const dbHost = process.env.DB_HOST;
-    const dbUser = process.env.DB_USER;
-    const dbPassword = process.env.DB_PASSWORD;
 
 const mysqlOptions
  = {
-    host: dbHost,
+    host: 'database-3.cuyayftpxpkn.ap-southeast-2.rds.amazonaws.com',
     port: 3306,
-    user: dbUser,
-    password: dbPassword,
+    user: 'admin',
+    password: 'password',
     database: 'capstonehub',
     schema: {
 		tableName: 'sessions',

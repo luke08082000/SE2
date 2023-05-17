@@ -11,8 +11,8 @@ const dbPassword = process.env.DB_PASSWORD;
 //     dialect: 'mysql',
 //     host: 'localhost'
 // })
-const sequelize = new Sequelize('capstonehub', dbUser, dbPassword, {
-    host: dbHost,
+const sequelize = new Sequelize('capstonehub', 'admin', 'password', {
+    host: 'database-3.cuyayftpxpkn.ap-southeast-2.rds.amazonaws.com',
     port: '3306',
     dialect: 'mysql',
   });
