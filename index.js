@@ -80,7 +80,7 @@ const sessionStore = new MySQLStore({}, connection)
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-
+console.log('test');
 
 app.use(session({
     key: 'cookieMonster',
