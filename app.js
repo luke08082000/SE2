@@ -9,6 +9,7 @@ const multer = require('multer');
 const flash = require('connect-flash');
 
 //MODELS
+const Batch = require('./models/batch');
 const User = require('./models/user');
 const UserStudent = require('./models/userStudent');
 const UserFaculty = require('./models/userFaculty');
@@ -17,7 +18,6 @@ const SubmissionForm = require('./models/submissionForm');
 const Group = require('./models/group');
 const Status = require('./models/status');
 const Comment = require('./models/comment');
-const Batch = require('./models/batch');
 
 //ROUTES
 const authRoutes = require('./routes/auth');
@@ -26,6 +26,7 @@ const studentRoutes = require('./routes/student');
 const commonRoutes = require('./routes/common');
 
 const app = express();
+
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -55,11 +56,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const mysqlOptions
  = {
-    host: 'localhost',
+    host: 'database-3.cuyayftpxpkn.ap-southeast-2.rds.amazonaws.com',
     port: 3306,
-    user: 'root',
-    password: 'pass123',
-    database: 'crsa',
+    user: 'admin',
+    password: 'password',
+    database: 'capstonehub',
     schema: {
 		tableName: 'sessions',
 		columnNames: {
@@ -159,9 +160,17 @@ app.use(handleRoutes);
 app.use(commonRoutes);
 
 
-sequelize
-.sync()
-.then(result => {
-    app.listen(3000);
-})
-.catch(err => console.log(err))
+// sequelize
+// .sync()
+// .then(result => {
+//     app.listen(3000);
+// })
+// .catch(err => console.log(err))
+sequelize.sync()
+  .then(() => {
+    console.log('Models synchronized with database.');
+  })
+  .catch((err) => {
+    console.error('Error synchronizing models:', err);
+  });
+

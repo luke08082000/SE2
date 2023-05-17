@@ -1,8 +1,14 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('crsa', 'root', 'pass123', {
+// const sequelize = new Sequelize('crsa', 'root', 'pass123', {
+//     dialect: 'mysql',
+//     host: 'localhost'
+// })
+const sequelize = new Sequelize('capstonehub', 'admin', 'password', {
+    host: 'database-3.cuyayftpxpkn.ap-southeast-2.rds.amazonaws.com',
+    port: '3306',
     dialect: 'mysql',
-    host: 'localhost'
-})
+  });
+  
 
 module.exports = sequelize;
