@@ -27,7 +27,6 @@ const commonRoutes = require('./routes/common');
 
 const app = express();
 
-
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'public/pdf-files');
@@ -54,12 +53,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({storage: fileStorage}).single('file'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+require('dotenv').config(); // Load environment variables from .env file
+
+// Access environment variables
+    const dbHost = process.env.DB_HOST;
+    const dbUser = process.env.DB_USER;
+    const dbPassword = process.env.DB_PASSWORD;
+
 const mysqlOptions
  = {
-    host: 'database-3.cuyayftpxpkn.ap-southeast-2.rds.amazonaws.com',
+    host: dbHost,
     port: 3306,
-    user: 'admin',
-    password: 'password',
+    user: dbUser,
+    password: dbPassword,
     database: 'capstonehub',
     schema: {
 		tableName: 'sessions',
