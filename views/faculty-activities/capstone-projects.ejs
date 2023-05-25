@@ -16,7 +16,7 @@
         <h1>Archive</h1>
       </div>
       <% groups.forEach((group, i) => { %>
-        <% if(activeBatch == group.batchId) { %>
+        <% if(activeBatch !== group.batchId) { %>
         <article class="card">
           <div class="form-control card-header">
             <% if(group.capstoneTitle) { %>
@@ -43,7 +43,9 @@
           </div>
           <div class="form-control">
             <p>Batch: </p>
+            <% if(batch[i]) { %>
             <h4><%= (new Date(batch[i].start)).getFullYear() %> - <%= (new Date(batch[i].end)).getFullYear() %></h4>
+            <% } %>
           </div>
           <div class="card-actions">
             <form action="/faculty/archive/view/<%= group.id %>" method="GET">

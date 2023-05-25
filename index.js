@@ -60,11 +60,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const mysqlOptions
  = {
-    host: 'database-3.cuyayftpxpkn.ap-southeast-2.rds.amazonaws.com',
+    host: 'localhost',
     port: 3306,
-    user: 'admin',
-    password: 'password',
-    database: 'capstonehub',
+    user: 'root',
+    password: 'pass123',
+    database: 'crsa',
     schema: {
 		tableName: 'sessions',
 		columnNames: {

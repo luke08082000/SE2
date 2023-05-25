@@ -57,7 +57,7 @@ exports.postLogin = (req, res, next) => {
                     if(req.session.user.role === "Student") {
                         return res.redirect('/student/home');
                     }
-                    if(req.session.user.role === "Faculty") {
+                    if(req.session.user.role === "Faculty" || req.session.user.role == 'faculty') {
                         return res.redirect('/faculty/home');
                     }
                     
@@ -147,7 +147,7 @@ exports.postRegister = (req, res, next) => {
                 password: hashedPassword,
                 emailVerified: 'unverified',
                 token: token,
-                employee_id: role == 'faculty' ? employeeId : 0
+                employee_id: role == 'faculty' || role == 'Faculty' ? employeeId : 0
 
         })
         return user.save();

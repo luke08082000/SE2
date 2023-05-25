@@ -392,9 +392,9 @@ exports.getGroup = (req, res) => {
             studentPromise.then(studentUser => {
               BatchPromise.then(activeBatch => {
               res.render('group', {
-                groupId: role !== "Student" ? '' : student.groupId,
-                hasGroup: role !== "Student" ? '' : student.groupId,
-                section: role !== "Student" ? '' : student.section,
+                groupId: student.groupId,
+                hasGroup: student.groupId,
+                section: student.section,
                 user: student,
                 student: studentUser,
                 group: groups,

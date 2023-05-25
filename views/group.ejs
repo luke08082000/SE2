@@ -18,8 +18,9 @@
         <h1>Groups</h1>
       </div>
         <div class="top-container">
-          <% if (role === 'Faculty' && faculty) { %>
+          <% if (role === 'Faculty' || role == 'faculty') { %>
             <div class="card card-faculty add-group">
+              <% if(faculty) { %>
               <h4>Create Group for <%= faculty.section.toUpperCase() %></h4>
               <form action="/faculty/group" method="POST">
                 <div class="form-control">
@@ -35,10 +36,11 @@
                   <input type="hidden" value="<%= faculty.section %>" name="section">
                 </div>
               </form>
+              <% } %>
             </div>
           <% } %>
           <div class="card-container">
-              <% if(role === "Faculty") { %>
+              <% if(role === "Faculty" || role === 'faculty') { %>
                 <div class="card filter-card">
                     <form>
                     <label for="section">Filter by Section:</label>
@@ -55,20 +57,21 @@
         </div>
       
         <div class="card-grid">
-          <% if(role == 'Faculty') { %>
+          <% if(role == 'Faculty' || role == 'faculty') { %>
           <div class="header">
             <h2>Active Groups</h2>
           </div>
           <% } %>
             <% for (let i = 0; i < group.length; i++) { %>
-                <% if (role === 'Faculty' || (role === 'Student' && (hasGroup && group[i].id == user.groupId)) || !hasGroup && group[i].section === section) { %>
-                  <% if(group[i].batchId == activeBatchId ) { %>
+              <% if(group[i]){console.log(user.section)} %>
+                <% if (((role === 'Faculty' || role == 'faculty') ) || ((role == 'Student' || role == 'student') && (hasGroup && group[i].id === user.groupId) || (!hasGroup && group[i].section === user.section))) { %>
+                  <% if(group[i].batchId == activeBatchId) { %>
                   <div class="card card-group">
                     <div class="group-columns">
                       <p>Group name</p>
                       <h4><%= group[i].name %></h4>
                       
-                      <% if(role == 'Student') { %>
+                      <% if(role == 'Student' || role == 'student') { %>
                         <% if(!group[i].capstoneTitle && user.groupId == group[i].id) { %>
                           <form action="/student/group/capstone/title" method="POST">
                             <input type="text" placeholder="Capstone Project Title" id="title" name="title"><br>
@@ -111,17 +114,17 @@
                       <% } %>
                     </div>
                     <div class="buttons">
-                      <% if(role == 'Faculty') { %>
+                      <% if(role == 'Faculty' || role == 'faculty') { %>
                         <form action="/faculty/archive/view/<%= group[i].id %>" method="GET">
                           <button type="submit">View</button>
                         </form>
                       <% } %>
-                      <% if(role == 'Student') { %>
+                      <% if(role == 'Student' || role == 'student') { %>
                         <form action="/student/group/view/<%= group[i].id %>" method="GET">
                           <button type="submit">View</button>
                         </form>
                       <% } %>
-                      <% if(role == "Faculty" && !group[i].adviserId) { %>
+                      <% if((role == "Faculty" || role == 'faculty') && !group[i].adviserId) { %>
                         <form action="/faculty/activities/roles" method="POST" onsubmit="return confirmation();">
                           <button value="technical-adviser" name="role" id="secondary-button">Become Technical Adviser</button>
                           <input type="hidden" value="<%= group[i].id %>" name="groupId">
@@ -130,7 +133,7 @@
                       <% } %>
                       
                     
-                    <% if (!hasGroup && role === "Student") { %>
+                    <% if (!hasGroup && (role === "Student" || role == 'student')) { %>
                       <form action="/student/group" method="POST">
                         <button>Join Group</button>
                         <input type="hidden" value="<%= group[i].id %>" name="groupId">

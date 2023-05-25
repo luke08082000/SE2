@@ -20,7 +20,8 @@ const UserFaculty = sequelize.define('user-faculty', {
     track: {
         type: Sequelize.STRING,
         defaultValue: 'n/a'
-    }
+    },
+    
 })
 
 module.exports = UserFaculty;

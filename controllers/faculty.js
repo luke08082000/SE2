@@ -418,7 +418,7 @@ exports.postRole = (req, res) => {
 
 
     if (roleChosen === 'technical-adviser') {
-      UserFaculty.create({ userId: currentUser.employee_id, role: 'technical-adviser', section: 'all'}, { returning: true })
+      UserFaculty.create({ userId: currentUser.id, role: 'technical-adviser', section: 'all'}, { returning: true })
         .then(createdFaculty => { 
           Group.findByPk(groupId)
             .then(group => {
@@ -428,7 +428,7 @@ exports.postRole = (req, res) => {
         })
     }
     
-    User.findOne({ where: { role: "Faculty", employee_id: userId } })
+    User.findOne({ where: { role: "Faculty" || 'faculty', employee_Id: req.session.user.employee_Id} })
     .then(user => {
         UserFaculty.findAll()
         .then(userFaculties => {
@@ -453,7 +453,6 @@ exports.postRole = (req, res) => {
             } else {
             UserFaculty.create({ 
                 userId: user.id,
-                employee_id: userId,
                 role: roleChosen,
                 section: roleChosen === 'course-facilitator' ? sectionChosen : 'all',
                 track: roleChosen === 'track-head' ? track : 'n/a'
@@ -591,16 +590,16 @@ exports.getGroup = (req, res) => {
               const techAdvNames = results.slice(0, groups.length);
               const groupMembers = results.slice(groups.length);
               BatchPromise.then(activeBatch => {
-                CourseFaci.then(faculty => {
+                CourseFaci.then(courseFaci => {
                   res.render('group', {
                   groupId: role !== "Student" ? '' : student.groupId,
                   hasGroup: role !== "Student" ? '' : student.groupId,
                   section: role !== "Student" ? '' : student.section,
-                  user: student,
+                  user: student ? student : 'na',
                   group: groups,
                   members: groupMembers,
                   techAdv: techAdvNames,
-                  faculty: faculty ? faculty : null,
+                  faculty: courseFaci ? courseFaci : null,
                   role: role,
                   activeBatchId: activeBatch ? activeBatch.id : 0
                 });
