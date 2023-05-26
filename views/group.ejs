@@ -63,7 +63,7 @@
           </div>
           <% } %>
             <% for (let i = 0; i < group.length; i++) { %>
-              <% if(group[i]){console.log(user.section)} %>
+              <% if(group[i]){console.log(user.groupId)} %>
                 <% if (((role === 'Faculty' || role == 'faculty') ) || ((role == 'Student' || role == 'student') && (hasGroup && group[i].id === user.groupId) || (!hasGroup && group[i].section === user.section))) { %>
                   <% if(group[i].batchId == activeBatchId) { %>
                   <div class="card card-group">

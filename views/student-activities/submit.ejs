@@ -11,7 +11,7 @@
 </head>
 <body>
   <%- include ('../partials/navigation.ejs') %>
-  <% if (role === "Student") { %>
+  <% if (role === "Student" || role == 'student') { %>
     <% if (forms.length > 0) { %>
       <% console.log(forms.length) %>
       <div class="container">
@@ -19,13 +19,12 @@
           <h1>Submit Documents</h1>
         </div>
         <% for (let i = 0; i < forms.length; i++) { %>
-          <% if (forms[i].section === section && !submissions.find(submission => submission.submissionId === forms[i].id && submission.groupId === student.groupId)) { %>
+          <% if(forms[i].batchId == activeBatchId) { %>
+          <% if (forms[i].section == section && !submissions.find(submission => submission.submissionId === forms[i].id && submission.groupId === student.groupId)) { %>
             <article class="card">
               <div class="form-control card-header">
                 <h1 class="form__title"><%= forms[i].title %></h1>
               </div>
-              <% if (role === "Student") { %>
-                <% } %>
                 <div class="card-actions">
                   <form action="/student/activities/form/view/<%= forms[i].id %>" method="GET">
                     <button class="btn" type="submit">Open</button>
@@ -36,10 +35,11 @@
                 <input type="hidden" value="<%= forms[i].title %>" name="formTitle">
               </article>
               <% } %>
-        <% } %>
-      </div>
-    <% } %>
-  <% } %>
+            <% } %>
+            <% } %>
+            <% } %>
+            <% } %>
+            </div>
   
 </body>
 </html>

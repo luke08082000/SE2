@@ -10,7 +10,7 @@
 </head>
 <body>
   <%- include ('../partials/navigation.ejs') %>
-  <% if(role === "Student") { %>
+  <% if(role === "Student" || role == 'student') { %>
     <% if (submissions.length > 0) { %>
       <% console.log(submissions.length) %>
       <% console.log(student.groupId + " student group id") %>

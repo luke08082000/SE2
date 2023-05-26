@@ -315,15 +315,18 @@ exports.postComment = (req, res) => {
 
 exports.getCreateForm = (req, res) => {
     const role = req.session.user.role;
-
+    const BatchPromise = Batch.findOne({ where: { isActive: true }});
     UserFaculty.findOne({ where: { userId: req.session.user.id, role: 'course-facilitator' }}).then(faculty => {
       if(faculty) {
+        BatchPromise.then(activeBatch => {
         SubmissionForm.findAll({ where: { section: faculty.section }}).then(forms => {
           res.render('faculty-activities/create-form', {
           section: faculty.section,
           role: role,
-          forms: forms ? forms : 0
+          forms: forms ? forms : 0,
+          activeBatch: activeBatch ? activeBatch.id : 0
           })
+        })
         })
       } else {
         res.redirect('/404');

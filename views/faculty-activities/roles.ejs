@@ -27,20 +27,26 @@
             <% facultyMembers.forEach((member, i) => { %>
                 <div class="item-container">
                     <div class="name">
+                    <% if(userFaculty[i].role !== 'technical-adviser') { %>
                         <p><%= member.firstName + ' ' + member.lastName %></p>
+                    <% } %>
                     </div> 
                    <div class="role gray-texts">
-                    <% if (userFaculty[i].role == 'course-facilitator') { %>
-                        <p><%= userFaculty[i].role.toUpperCase() + ' ' + userFaculty[i].section.toUpperCase() %></p>
-                    <% } else if(userFaculty[i].role == 'track-head') { %>
-                            <p><%= userFaculty[i].role.toUpperCase() + ' ' + userFaculty[i].track.toUpperCase() %></p>
-                    <% } else { %>
-                        <p><%= userFaculty[i].role.toUpperCase() %></p>
+                    <% if(userFaculty[i].role !== 'technical-adviser') { %>
+                        <% if (userFaculty[i].role == 'course-facilitator') { %>
+                            <p><%= userFaculty[i].role.toUpperCase() + ' ' + userFaculty[i].section.toUpperCase() %></p>
+                        <% } else if(userFaculty[i].role == 'track-head') { %>
+                                <p><%= userFaculty[i].role.toUpperCase() + ' ' + userFaculty[i].track.toUpperCase() %></p>
+                        <% } else { %>
+                            <p><%= userFaculty[i].role.toUpperCase() %></p>
+                        <% } %>
                     <% } %>
                     </div>
-                    <div class="remove-button">
-                        <button value="<%= userFaculty[i].id %>" name="facultyId" type="submit" class="remove-buttons">Remove</button>
-                    </div>
+                    <% if(userFaculty[i].role !== 'technical-adviser') { %>
+                        <div class="remove-button">
+                            <button value="<%= userFaculty[i].id %>" name="facultyId" type="submit" class="remove-buttons">Remove</button>
+                        </div>
+                    <% } %>
                 </div>
                 <br>
                 <% }) %>

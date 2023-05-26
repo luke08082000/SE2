@@ -44,12 +44,14 @@
           </div>
           <% if(forms.length > 0) { %>
             <% forms.forEach(form => { %>
+          <% if(form.batchId == activeBatch) { %>
               <div  class="form-control-2 flex">
                 <form action="/faculty/activities/form-view" method="GET" class="flex s">
                   <h4><%= form.title %></h4>
                   <button value="<%= form.id %>" type="submit" name="formId">View</button>
                 </form>
               </div>
+              <% } %>
             <% }) %>
           <% } %>
         </div>
